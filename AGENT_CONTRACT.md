@@ -175,10 +175,10 @@ A degraded result says it is degraded, in the artifact a downstream consumer rea
 |---|---|---|
 | C1 Read-before-write | **ENFORCED** | This turn: full tree, `git status`, all 9 lane reports, all 3 `src/` modules read; defects quoted by line in `docs/00-audit.md` §A/§D |
 | C2 Update-before-create | **ENFORCED** | Corrections applied in place this turn (see `DECISIONS.md` 2026-10-25 entries); 41 KB of boilerplate deleted, not filed |
-| C3 `Last verified:` + 90-day rule | **DECLARED** | No `docs/` content exists yet (A0 will introduce the header). Rule is live for every doc written from now on |
+| C3 `Last verified:` + 90-day rule | **PARTIAL** | Header pair present on every doc written since this file was committed (`docs/00-audit.md`, `docs/09-eu-legal-compliance.md`); the clock is still **manual** because `scripts/fresh.py` does not exist |
 | C4 `check-sources.mjs`, `fresh.py`, `provenance.py` | **DECLARED — DEBT** | Scripts promised as A0 exit criteria; until they exist this repo is not releasable. Owner forbade code in the audit turn, so they are not written yet |
 | C5 Labels + grades | **ENFORCED** | Grades used in `docs/00-audit.md` §B, including 5 retractions and 8 `U` items |
-| C6 Known-unknowns + probe | **PARTIAL** | Unknowns listed in `docs/00-audit.md` §C with probes; `docs/08-known-unknowns.md` itself is an A0 artifact |
+| C6 Known-unknowns + probe | **PARTIAL — improving** | `docs/00-audit.md` §C plus **six legal unknowns with named probes** at `docs/09-eu-legal-compliance.md` §7 (OJ-1…OJ-6). `docs/08-known-unknowns.md` itself is still an A0 artifact; those six migrate into it verbatim |
 | C7 Product posture | **ENFORCED** | No dependency added (package still has zero runtime deps); `__init__.py` no longer advertises an API that does not exist |
 
 **Escalation rule:** if an agent cannot satisfy a clause it must stop and report the clause

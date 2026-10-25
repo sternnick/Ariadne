@@ -158,7 +158,7 @@ detail… Mark UNVERIFIED"). The map says UNKNOWN instead.
 | G-2 | Parser vendor attribution (Textkernel / Daxtra / Sovren / Radancy) | tells us which failure modes are *engine* vs *vendor*; also our competitive claim | partner/partner-listing pages of Textkernel + Daxtra (their own "works with X" pages) | 1 lane |
 | G-3 | NYC LL144 requirement + enforcement date + penalty | C6 + product posture: we ship a score | `camo_navigate` `nyc.gov/site/ccp/services-projects/local-law-144/`, then `rules.cityof.newyorkcity.gov` and the NYC CCP FAQ PDF | 3 fetches |
 | G-4 | Illinois 820 ILCS 42 effective date | B.2 conflict | `ilga.gov` with a 120 s budget, or IL Public Act 101-0657 text via `ilga.gov/legislation/publicacts/` | 2 fetches |
-| G-5 | EU AI Act: is employment screening high-risk as of 2026, and does a candidate-side tool inherit anything | decides whether our scoring code needs an audit trail as a product requirement | `eur-lex.europa.eu` Annex III (3) + Art. 6(3), official text, not a blog | 2 fetches |
+| G-5 | ~~EU AI Act high-risk status for a candidate-side tool~~ **RESOLVED 2026-10-25 at grade A** — Annex III(4)(a) read verbatim, Art. 6(3) derogation + profiling override read, and the amending instrument **Reg. (EU) 2026/1744** read in the OJ (Annex III route now 2 Dec 2027; Art. 50 live since 2 Aug 2026). Two branches answered in `docs/09` §1.2 | settled, with residual items at `docs/09` §7 | Publications Office Cellar `celex/32024R1689` + `celex/32026R1744` after EUR-Lex HTML returned **202 with a zero-byte body** | 0 |
 | G-6 | Rezi's "not an official ATS score" wording | our own disclaimer benchmark | `help.rezi.ai` search for "ATS score" | 2 fetches |
 | G-7 | A background corpus for IDF (P7) | without it, IDF is decorative | ESCO skills API + 500 public JDs, or `data/` seed we compile; declare licence in DECISIONS | 1 day |
 | G-8 | Ground-truth superiority pairs | no accuracy claim is possible without them | build synthetically per arXiv 2602.18550 / 2609.16517 method; PopResume (2603.22714) availability request | 2-3 days |
@@ -171,7 +171,8 @@ detail… Mark UNVERIFIED"). The map says UNKNOWN instead.
 `05-reliability-fairness-security.md` · `06-open-source-landscape.md` ·
 `07-product-workflow-teardown.md` · `08-known-unknowns.md` · `docs/DECISIONS.md` *(placed at
 repo root as `DECISIONS.md` instead — D-001 reasoning; if you want it under `docs/`, say so and
-I move it with history)*. **Status: 0 of 9 written.** `.work/lanes/*.md` hold the content;
+I move it with history)*.
+**Status updated 2026-10-25: 1 of 10 written** — `docs/09-eu-legal-compliance.md` exists (owner-mandated EU deliverable, D-009), as does this file. The other 8 are unwritten; `.work/lanes/*.md` still hold their content as raw reports (no `Last verified:` header, no source ids, mixed voice). `docs/08-known-unknowns.md` is now partly **forced** by `docs/09` §7, whose six legal unknowns each carry a named probe and migrate into it verbatim when it is written.
 they are raw reports, not docs — no `Last verified:` header, no source ids, mixed voice.
 
 ### C.3 Infrastructure
@@ -203,7 +204,9 @@ and no accuracy measurement of any kind, so we cannot state what our score means
 wrong, or on which populations. The commercial blockers are therefore not missing features: they
 are **(1)** no verified knowledge of any real ATS's acceptance rules or internals (B.3 — 7 of 8
 targets UNKNOWN), **(2)** no validity harness, so every accuracy sentence would be invented,
-**(3)** an unassessed legal surface (we could not even source LL144), **(4)** a codebase that
+**(3)** a legal surface assessed for the EU only (`docs/09-eu-legal-compliance.md`, grade A on the
+instruments that bind a candidate-side tool, six items still open at its §7) and for **nothing**
+directly outside the EU by explicit scope decision, **(4)** a codebase that
 fails on non-English input while the literature we cite is explicitly multilingual, and
 **(5)** an undecided licence and copyright holder. Drifting? No — but the gap is now *measured*
 rather than assumed, which is the difference between a project with debts and one with surprises.
@@ -259,7 +262,7 @@ rather than assumed, which is the difference between a project with debts and on
 | **G4** | Repo mechanics: **A** commit `main` from `/tmp/ats-research` into empty `Ariadne` / **B** push, then branch+PR for everything after / **C** keep local, mirror | **B** | A one-shot push to seed history, then PRs; `Ariadne` is private and empty, so there is no second writer to race |
 | **G5** | Corpus: **A** synthetic fixtures only / **B** synthetic + your own CV behind a local flag (gitignored) / **C** public datasets | **B** | No public corpus has ground-truth superiority (G-8) and HF `datasetmaster/resumes` is flagged weak; your own CV is the single best reality check, kept out of the public tree by `.gitignore` |
 | **G6** | Models: **A** OpenAI-compatible adapter + offline hashing baseline / **B** require sentence-transformers / **C** remote-only | **A** | `sentence-transformers`/`sklearn` absent here; a scoring lane with no network call is also the reproducible one (JobScout's "no AI call" precedent, ±10/−6 contract) |
-| **G7** | Legal depth: **A** primary-source verification pass now (G-3/4/5) / **B** publish with an explicit "no legal analysis" notice | **A before any public release**, **B is acceptable only while private** | The notice is already in `LICENSE`; publishing a commercial tool on a snippet-grade legal surface is the exact liability you named |
+| **G7** | Legal depth: **A** primary-source verification pass (done for the EU, 2026-10-25) / **B** publish with a "no legal analysis" notice | **A for the EU is complete**; next is `docs/09` §7 OJ-1/OJ-2/OJ-3 (registration section, EDPB Art. 22 guidance, Dir. 2000/43) before any public release | The EU deliverable is now grade A on the binding instruments and records 6 unresolved items with probes instead of filling them; `LICENSE` still carries the no-legal-advice notice. Non-EU stays deferred per `docs/09` §9 |
 | **G8** | Visibility: **A** keep private until A2 exit / **B** publish now / **C** publish at A0 | **A** | A2 is where we can say what the score means and how often it is wrong; publishing an unvalidated score invites the criticism we would deserve |
 
 **Stop here.** No further file will be written until you approve this report (C1.2, and your

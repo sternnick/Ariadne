@@ -5,6 +5,25 @@ responsibility was considered and why it could not absorb the content.
 
 ---
 
+## D-009 · 2026-10-25 · New file: `docs/09-eu-legal-compliance.md` (EU-only, owner-mandated)
+**Considered:** `docs/08-known-unknowns.md` (its responsibility is unresolved items, not obligations —
+and the owner specified §7 of the deliverable *feeds* it rather than replaces it); `docs/00-audit.md`
+§C.1 (a gap list is not an obligation matrix); a `legal/` subdirectory (one jurisdiction does not need
+a tree).
+**Why it could not be absorbed:** no existing file carried an instrument-by-instrument obligation
+matrix, and the mandated column schema (jurisdiction | instrument | role | classification |
+obligation | applies_from | grade | status | evidence) is the extensibility mechanism for future
+jurisdictions — that schema belongs in one file that is *about* jurisdictional extension.
+**Sources, all read at primary level on 2026-10-25:** Reg. (EU) 2024/1689; **Reg. (EU) 2026/1744**
+(the amending instrument — read rather than believed from press coverage); Reg. (EU) 2016/679;
+Dir. (EU) 2024/2831; Dir. 2006/54/EC; Dir. 2004/113/EC; Dir. (EU) 2024/1500; Impl. Decision (EU)
+2026/2274; ISO catalogue pages 81230 / 27001 / 27701 / 79488.
+**Rejected:** citing any law-firm or vendor page for a date or obligation (owner's rule + C5);
+analysing non-EU regimes (scope restriction).
+**Downgrade recorded here:** Dir. 2000/43/EC is left **U** with all four failed rungs listed — the
+employment-access article is *not* cited in the document, and it was tempting to cite it from memory.
+ISO/IEC 42001's "Annex A = 38 controls" figure is likewise **not asserted**: no official source found.
+
 ## D-008 · 2026-10-25 · Licence posture MIT (code) + CC BY 4.0 (docs) — [OPEN G2]
 **Decision used for now:** MIT with a CC BY 4.0 grant over documentation, and an explicit
 non-affiliation / non-compliance-advice notice.
