@@ -7,16 +7,21 @@ name: health-check
 # This is the only workflow allowed to touch the network (`check-sources.py --probe`), because a
 # scheduled job cannot be triggered by an untrusted PR.
 #
-# Cadence: daily at 00:00 UTC (owner's spec) + manual. Live probing is therefore once per day for
-# ~46 URLs at one request per second — deliberately polite; if that ever becomes unwelcome, the
-# probe step can move to a weekly cron without touching the offline gates.
+# Cadence (D-034, owner decision 2026-10-25 — alert fatigue beats detection latency):
+#   * every Sunday 03:00 UTC  -> live source probe (~46 URLs at 1 req/sec), the only networked check
+#   * 1st of every month 04:00 UTC -> offline freshness + provenance clocks
+#   * manual dispatch          -> all three
+# Rationale: freshness decays on a 30/90-day clock, so checking it daily bought nothing but noise;
+# and external links do not change hour to hour. A gate nobody reads is worse than a gate that runs
+# rarely and is believed.
 #
-# On failure it opens ONE issue (or comments on the existing one) — never a new issue per day, which
+# On failure it opens ONE issue (or comments on the existing one) — never a new issue per run, which
 # is how alerting becomes noise and noise becomes ignored.
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 3 * * 0"    # Sundays 03:00 UTC — external source probe
+    - cron: "0 4 1 * *"    # 1st of month 04:00 UTC — docs freshness
   workflow_dispatch:
 
 permissions:
@@ -43,6 +48,8 @@ jobs:
 
       - name: Gate 1 — freshness (90-day and 30-day clocks)
         id: fresh
+        # monthly cron + manual only
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 4 1 * *'
         continue-on-error: true
         run: |
           set -o pipefail
@@ -50,6 +57,8 @@ jobs:
 
       - name: Gate 2 — provenance (citation integrity)
         id: provenance
+        # monthly cron + manual only
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 4 1 * *'
         continue-on-error: true
         run: |
           set -o pipefail
@@ -57,6 +66,8 @@ jobs:
 
       - name: Gate 3 — live source probe (network; allowed here, never on push)
         id: sources
+        # weekly cron + manual only
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 3 * * 0'
         continue-on-error: true
         run: |
           set -o pipefail
@@ -72,7 +83,7 @@ jobs:
           failed="${failed#,}"
           if [ -z "$failed" ]; then
             echo "failed=" >> "$GITHUB_OUTPUT"
-            echo "OK: all three gates passed."
+            echo "OK: every gate scheduled for this trigger passed."
           else
             echo "failed=$failed" >> "$GITHUB_OUTPUT"
             echo "::error::Scheduled health check failed: $failed"
@@ -84,12 +95,13 @@ jobs:
           {
             echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             echo "Commit: ${{ github.sha }}"
+            echo "Trigger: ${{ github.event_name }} ${{ github.event.schedule }}"
             echo "Failing gates: ${{ steps.verdict.outputs.failed || 'none' }}"
             echo
             for f in fresh provenance sources; do
               echo "### $f"
               echo '```'
-              tail -n 60 "${RUNNER_TEMP}/${f}.log" 2>/dev/null || echo "(no output)"
+              tail -n 60 "${RUNNER_TEMP}/${f}.log" 2>/dev/null || echo "(not scheduled for this trigger)"
               echo '```'
             done
           } > "${RUNNER_TEMP}/report.md"
