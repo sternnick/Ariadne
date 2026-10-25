@@ -1,31 +1,14 @@
-__pycache__/
-*.py[cod]
-*.egg-info/
-.eggs/
-build/
-dist/
-.venv/
-venv/
-.mypy_cache/
-.pytest_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-
-# local / private — this is a public research repo, never commit a real CV
-*.pdf
-*.docx
-*.doc
-!examples/**/*.docx
-/private/
+# Scratch and tooling noise stay out of the public tree.
+/.work/*
+# EXCEPT the distilled lane reports: docs/ cites them as primary evidence.
+!/.work/lanes/
+# The operator's own CV, if it ever exists locally. Defence in depth only -- D-011 records that
+# this is NOT the control (git add -f exists), which is why the corpus is synthetic-only.
 /personal/
 /data/local/
 /cache/
 *.log
+__pycache__/
+*.pyc
+.pytest_cache/
 .DS_Store
-# Scratch, tooling noise and raw research transcripts stay out of the public tree.
-/.work/*
-# EXCEPT the distilled lane reports: docs/ cites them as primary evidence, and AGENT_CONTRACT
-# C1.1(e) requires an agent to be able to read them from a clone. Ignoring them would make
-# every citation in docs/ unresolvable (measured: 9 files, 51 KB, untracked until now).
-!/.work/lanes/

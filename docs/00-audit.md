@@ -64,7 +64,7 @@ resolvable by id**. `scripts/` — none, so C3/C4 are unenforced. CI — none. `
 
 | # | Probe result | Where | Consequence |
 |---|---|---|---|
-| P1 | `tokenize("Développeur … mit C++ und C")` → `['d','veloppeur','full-stack','mit','c','und','c']` | `textutil.py:24` `re.ASCII` | **any non-English résumé is shredded.** Directly contradicts evidence in our own corpus (German resumes arXiv 2609.22188; French pipeline JobScout; 5-language JobResQA 2601.23183) |
+| P1 | `tokenize("Développeur … mit C++ und C")` → `['d','veloppeur','full-stack','mit','c','und','c']` | `textutil.py:24` `re.ASCII` | **any non-English résumé is shredded.** Directly contradicts evidence in our own corpus (German resumes arXiv 2609.22188 [EV-12]; French pipeline JobScout; 5-language JobResQA 2601.23183 [EV-13]) |
 | P2 | `content_words("C, Python, Go")` has **no `'c'`** | `content_words` `len(t)>1` | the skill **C** is invisible to every lexical feature. A toy test `compare('a b','b c')` returns cosine **0.0** for exactly this reason |
 | P3 | `looks_multicolumn(tab-separated 2-column text)` → `False`, both before and after `normalize()` | `looks_multicolumn` | its only two signals are `\t` and ≥4 spaces, and `normalize()` collapses both → **a dead feature that always says "single column"** |
 | P4 | `bullets_of("Led a team of nine engineers to ship the platform")` → `[]` | `bullets_of` | CSS-list or table-layout resumes lose markers on extraction → the whole achievement-quantification feature family silently scores 0 |
@@ -84,42 +84,42 @@ Grades: **A** primary read · **B** ≥2 independent secondaries · **C** snippe
 
 | Claim | Grade | Source |
 |---|---|---|
-| ATS = requisition/candidate CRM; 9 canonical modules | **A** | `.work/lanes/fundamentals.md` → Wikipedia rev. 2026-10-16 |
+| ATS = requisition/candidate CRM; 9 canonical modules | **A** | `.work/lanes/fundamentals.md` → Wikipedia rev. 2026-10-16 [EV-17] |
 | Software touches nearly every application first (parse → dedupe → field/keyword filter → optional rank) | B | fundamentals (2 sources) |
-| 97.4 % of Fortune 500 have a detectable ATS; Workday >40 % | **B⁻** *(vendor telemetry, 2 secondaries, self-interested)* | `pin.com/blog/ats-market-share-report`, `matchr.io` |
+| 97.4 % of Fortune 500 have a detectable ATS; Workday >40 % | **B⁻** *(vendor telemetry, 2 secondaries, self-interested)* | `pin.com/blog/ats-market-share-report`, `matchr.io` [EV-18] |
 | Outside F500: 23 systems, none >16.5 %, HHI ≈1,000 | C *(single vendor's telemetry)* | pin.com |
 | Market size: $17.22 B vs $2.5 B — 6.9× disagreement | **B (recorded as a conflict, not a number)** | pin.com |
 | "ATS auto-rejects 75 %" is unsupported | B | davron.net, duperrin.com |
-| Parser pipeline = extraction → OCR fallback → layout/reading-order → **section segmentation** → per-section NER → normalisation; evaluated as field-level EM/F1 | **A** | arXiv 1910.03089, 2509.06200, ScienceDirect S2590005626004418 |
-| Segment-specialised ensemble beats single model: **+7 % Recruitment-Similarity**, field-specific weighting | **A** | arXiv 2509.06200 (MSLEF) |
-| "100 % parse accuracy" is LinkedIn-format-only; 73 % on suitability | **A** | arXiv 1910.03089 |
+| Parser pipeline = extraction → OCR fallback → layout/reading-order → **section segmentation** → per-section NER → normalisation; evaluated as field-level EM/F1 | **A** | arXiv 1910.03089 [EV-06], 2509.06200 [EV-05] |
+| Segment-specialised ensemble beats single model: **+7 % Recruitment-Similarity**, field-specific weighting | **A** | arXiv 2509.06200 (MSLEF) [EV-05] |
+| "100 % parse accuracy" is LinkedIn-format-only; 73 % on suitability | **A** | arXiv 1910.03089 [EV-06] |
 | "~95 % accuracy" claims are vendor marketing; **no public leaderboard found** | C + **U** | 3 vendor blogs; absence is our measurement |
-| TF-IDF + cosine is the real baseline; hybrid = NER → skill normalisation → TF-IDF → sentence embeddings → weighted ranking | **A** | arXiv 2503.17438; sbert.net docs |
-| Embeddings at scale need ANN + **retrieve→cross-encoder re-rank** | **A** | sbert.net |
-| Career vault exists: 12-node LangGraph agent; **+7.8 pts same-domain, −8.0 pts out-of-domain** (n=1, 9 JDs, pilot) | **A, pilot** | **arXiv 2605.05257** |
-| ConFit v2 +13.8 % recall / +17.5 % nDCG | **A** | arXiv 2502.12361 |
-| Score instability: validity 0.781 with **29.6 % matched-pair reversals** | **A** | arXiv 2609.16517 |
-| LLMs fail to pick the objectively better résumé; no abstention on ties | **A** | arXiv 2602.18550 |
-| Screening friction = excess false negatives; semantic matching cuts FN without losing precision | **A** | arXiv 2602.04087 |
-| Adverse-impact: +2.12 pp pro-White gap reproduced by a 2023 model, null-to-−3.01 pp for 2024+ | **A** | arXiv 2606.28978 |
-| Anonymisation **leaks** demographics (4,100 variants, 18 LLMs) | **A** | arXiv 2603.05189 |
-| Self-preferencing: +23–60 % shortlisting for same-LLM candidates | **A** | arXiv 2509.00462 |
-| Prompt-injection benchmarks exist for résumé screening (channel separation) | **A** | arXiv 2609.20188, 2605.28999 |
-| **JSON Resume v1.7.0**: Draft-07, ISO 8601, 14 optional sections, `custom` = sanctioned, preserved extension point | **A** | jsonresume.org/schema/ (`[PROVEN]`) |
-| Rezi: Free $0 / Pro **$29/mo** / Lifetime **$149** / Enterprise **$99/mo per 200 users**; "62 % of users land an interview" = marketing | **A** for the page, **C** for the claim | rezi.ai/pricing `[PROVEN]` |
+| TF-IDF + cosine is the real baseline; hybrid = NER → skill normalisation → TF-IDF → sentence embeddings → weighted ranking | **A** | arXiv 2503.17438 [EV-07]; sbert.net docs [EV-15] |
+| Embeddings at scale need ANN + **retrieve→cross-encoder re-rank** | **A** | sbert.net [EV-15] |
+| Career vault exists: 12-node LangGraph agent; **+7.8 pts same-domain, −8.0 pts out-of-domain** (n=1, 9 JDs, pilot) | **A, pilot** | **arXiv 2605.05257** [EV-01] |
+| ConFit v2 +13.8 % recall / +17.5 % nDCG | **A** | arXiv 2502.12361 [EV-07] |
+| Score instability: validity 0.781 with **29.6 % matched-pair reversals** | **A** | arXiv 2609.16517 [EV-02] |
+| LLMs fail to pick the objectively better résumé; no abstention on ties | **A** | arXiv 2602.18550 [EV-03] |
+| Screening friction = excess false negatives; semantic matching cuts FN without losing precision | **A** | arXiv 2602.04087 [EV-04] |
+| Adverse-impact: +2.12 pp pro-White gap reproduced by a 2023 model, null-to-−3.01 pp for 2024+ | **A** | arXiv 2606.28978 [EV-11] |
+| Anonymisation **leaks** demographics (4,100 variants, 18 LLMs) | **A** | arXiv 2603.05189 [EV-08] |
+| Self-preferencing: +23–60 % shortlisting for same-LLM candidates | **A** | arXiv 2509.00462 [EV-10] |
+| Prompt-injection benchmarks exist for résumé screening (channel separation) | **A** | arXiv 2609.20188 [EV-09] |
+| **JSON Resume v1.7.0**: Draft-07, ISO 8601, 14 optional sections, `custom` = sanctioned, preserved extension point | **A** | jsonresume.org/schema/ (`[PROVEN]`) [EV-16] |
+| Rezi: Free $0 / Pro **$29/mo** / Lifetime **$149** / Enterprise **$99/mo per 200 users**; "62 % of users land an interview" = marketing | **A** for the page, **C** for the claim | rezi.ai/pricing `[PROVEN]` [EV-21] |
 | Enhancv free = 7 days, 12 section items; Pro price is JS-injected (`€ NaN` in raw HTML) | **A** | enhancv.com/pricing `[PROVEN]` |
-| JobScout: **deterministic local scoring, no AI call**, ±10/−6 contract, re-score endpoint, deletion-based anti-hallucination, pdf-parse/pdfjs/mammoth/tesseract FR+EN | **A** (`[PROVEN]` README body) | github.com/latenightsbeats1208-pixel/jobscout |
-| AviCV exposes **MCP** at `avicv.com/mcp`, RenderCV PDF, FastAPI+SQLite, Gemini via OpenRouter | **A** | sinaatalay/avicv `[PROVEN]` |
+| JobScout: **deterministic local scoring, no AI call**, ±10/−6 contract, re-score endpoint, deletion-based anti-hallucination, pdf-parse/pdfjs/mammoth/tesseract FR+EN | **A** (`[PROVEN]` README body) | github.com/latenightsbeats1208-pixel/jobscout [EV-19] |
+| AviCV exposes **MCP** at `avicv.com/mcp`, RenderCV PDF, FastAPI+SQLite, Gemini via OpenRouter | **A** | sinaatalay/avicv `[PROVEN]` [EV-20] |
 | Resume-Scanner = all-MiniLM-L6-v2 + TF-IDF + Gradient Boosting; calls its score *"an analytical estimate"* | **A** | Soham-Barate/Resume-Scanner `[PROVEN]` |
 | career-ops has a **fact-gate** (commit-level) | **C** | `fix(fact-gate): read French counts in generated CVs` |
-| Jobsuit workflow: per-section autofix → score 66→69 → keyword-match → per-keyword bullet proposal w/ accept/reject → categories **modification / contextual match / not applicable** | **B** (transcript; workflow only, **not** its numbers) | `data/sources/…jobSuit-ai-demo-transcript.md` |
+| Jobsuit workflow: per-section autofix → score 66→69 → keyword-match → per-keyword bullet proposal w/ accept/reject → categories **modification / contextual match / not applicable** | **B** (transcript; workflow only, **not** its numbers) | `data/sources/…jobSuit-ai-demo-transcript.md` [EV-22] |
 | This box: pypdf/pymupdf/python-docx/numpy **present**; sklearn/sentence-transformers/chromadb/rendercv/typst **absent** | **A** (executed 15:38Z) | local probe |
 
 ### B.2 Retracted this turn — corrected in place, no `corrections.md`
 
 | Retracted claim | What it became | Where the wrong statement came from |
 |---|---|---|
-| *"NYC LL144 effective 1 Jan 2023"* | **U** — deleted from evidence; the date was **in my own search query string**, never in retrieved text; the NYC.gov page returned *"outdated or non-existing page"* | `.work/lanes/legal.md:13,37` |
+| *"NYC LL144 effective 1 Jan 2023"* | **U** — deleted from evidence; the date was **in my own search query string**, never in retrieved text; the NYC.gov page returned *"outdated or non-existing page"* | `.work/lanes/legal.md:13,37` [EV-24] |
 | *"Illinois AEDTA/AIVA dates"* | **C with an unresolved conflict** — 820 ILCS 42, "effective January 2020" ×3 blogs; `ilga.gov` ActID=4088 **timed out at 45 s** | `legal.md:8,9` |
 | *career-ops 77,167 ★ as landscape evidence* | **C, not a design input** — implausible vs peers, flagged by the lane itself; popularity is metadata | `opensource.md:33` |
 | *"Jobscan $49.95/mo"* (from the owner's brief) | **U** — curl → 6,653 bytes of "Jobscan"; `app.jobscan.co/plan` → `content_chars: 0`; Camoufox → *"Just a moment…"* | `commercial.md` |
@@ -143,7 +143,7 @@ targets. The obvious filler is the pair of SEO blogs that "agree" on Greenhouse'
 set, and the standard-engineering story (ToUnicode/ActualText extraction, x-y projection reading
 order, header-band rejection, ESCO/O\*NET linking). I have left both out of the standing table:
 the first is two low-quality secondaries for one fact, the second appeared **in a subagent's own
-notes as its knowledge, not as retrieved text** (`.work/lanes/parsing.md`, "Unverified engineering
+notes as its knowledge, not as retrieved text** (`.work/lanes/parsing.md` [EV-23], "Unverified engineering
 detail… Mark UNVERIFIED"). The map says UNKNOWN instead.
 
 ---
@@ -161,7 +161,7 @@ detail… Mark UNVERIFIED"). The map says UNKNOWN instead.
 | G-5 | ~~EU AI Act high-risk status for a candidate-side tool~~ **RESOLVED 2026-10-25 at grade A** — Annex III(4)(a) read verbatim, Art. 6(3) derogation + profiling override read, and the amending instrument **Reg. (EU) 2026/1744** read in the OJ (Annex III route now 2 Dec 2027; Art. 50 live since 2 Aug 2026). Two branches answered in `docs/09` §1.2 | settled, with residual items at `docs/09` §7 | Publications Office Cellar `celex/32024R1689` + `celex/32026R1744` after EUR-Lex HTML returned **202 with a zero-byte body** | 0 |
 | G-6 | Rezi's "not an official ATS score" wording | our own disclaimer benchmark | `help.rezi.ai` search for "ATS score" | 2 fetches |
 | G-7 | A background corpus for IDF (P7) | without it, IDF is decorative | ESCO skills API + 500 public JDs, or `data/` seed we compile; declare licence in DECISIONS | 1 day |
-| G-8 | Ground-truth superiority pairs | no accuracy claim is possible without them | build synthetically per arXiv 2602.18550 / 2609.16517 method; PopResume (2603.22714) availability request | 2-3 days |
+| G-8 | Ground-truth superiority pairs | no accuracy claim is possible without them | build synthetically per arXiv 2602.18550 [EV-03] / 2609.16517 method; PopResume (2603.22714 [EV-14]) availability request | 2-3 days |
 | G-9 | arXiv `date_conflict` cause (6 rows) | tiny, but it is an unlabelled data defect in a shipped file | one arXiv API call per conflicting id, compare `published` vs `updated` | 6 calls |
 
 ### C.2 Promised in A0 and not written
@@ -172,19 +172,24 @@ detail… Mark UNVERIFIED"). The map says UNKNOWN instead.
 `07-product-workflow-teardown.md` · `08-known-unknowns.md` · `docs/DECISIONS.md` *(placed at
 repo root as `DECISIONS.md` instead — D-001 reasoning; if you want it under `docs/`, say so and
 I move it with history)*.
-**Status updated 2026-10-25: 1 of 10 written** — `docs/09-eu-legal-compliance.md` exists (owner-mandated EU deliverable, D-009), as does this file. The other 8 are unwritten; `.work/lanes/*.md` still hold their content as raw reports (no `Last verified:` header, no source ids, mixed voice). `docs/08-known-unknowns.md` is now partly **forced** by `docs/09` §7, whose six legal unknowns each carry a named probe and migrate into it verbatim when it is written.
+**Status updated 2026-10-25: 2 of 10 written** — `docs/09-eu-legal-compliance.md` (owner-mandated EU
+deliverable, D-009) and **`docs/SOURCES.md`** (the source register, C4, D-013), plus this file. The other 8 are unwritten; `.work/lanes/*.md` still hold their content as raw reports (no `Last verified:` header, no source ids, mixed voice). `docs/08-known-unknowns.md` is now partly **forced** by `docs/09` §7, whose six legal unknowns each carry a named probe and migrate into it verbatim when it is written.
 they are raw reports, not docs — no `Last verified:` header, no source ids, mixed voice.
 
 ### C.3 Infrastructure
 
-1. `scripts/check-sources.mjs` — 98 URLs currently have **no reachability record at all**.
-2. `scripts/fresh.py` — the 90-day/30-day clocks; nothing enforces the header yet.
-3. `scripts/provenance.py` — bidirectional `[Xn]` ↔ SOURCES check; **cannot pass today because
-   SOURCES.md does not exist** (that is the honest C4 `DECLARED` entry).
-4. CI — nothing runs. `py_compile` passes by hand; there are **zero tests**; the package was
-   broken-on-import until this turn and **no existing check would have caught it**.
+1. ~~`scripts/check-sources.mjs`~~ **DONE 2026-10-25** — `scripts/check-sources.py`: 39-source probe
+   manifest, `ok/walled/dead/unreachable` classification, content-length + hash delta, `--probe`
+   manual only, fails on a registered-but-unprobeable source.
+2. ~~`scripts/fresh.py`~~ **DONE** — 90-day general clock + 30-day `Live surfaces:` clock, exits 1 on
+   a missing header or a stale doc.
+3. ~~`scripts/provenance.py`~~ **DONE** — bidirectional `[Xn]` ↔ `SOURCES.md`, currently
+   **39 sources / 0 dangling / 0 uncited**.
+4. CI — **still nothing runs.** `py_compile` passes by hand and there is now **one** test file
+   (`tests/test_no_profiling.py`, 7 tests, all passing), but no CI definition exists, so nothing is
+   enforced on a push.
 5. Packaging — `pyproject.toml` absent, so "installable" is false, and C7.2 (declared
-   dependencies) has nothing to declare into.
+   dependencies) has nothing to declare into. **`pytest` is currently an undeclared dev dependency.**
 6. `README.md` absent → an outside engineer cannot learn what this is in 30 seconds.
 
 ---
@@ -248,7 +253,7 @@ rather than assumed, which is the difference between a project with debts and on
    round-trips to JSON Resume 1.7.0; package installs from `pyproject.toml`; import + CI green
    with **zero runtime dependencies**.
    *Evidence:* the 12 probes above; arXiv 2509.06200 (layout/segmentation is the failure axis);
-   multilingual evidence 2609.22188 / 2601.23183.
+   multilingual evidence 2609.22188 / 2601.23183 [EV-13].
 
 ---
 

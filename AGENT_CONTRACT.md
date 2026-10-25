@@ -167,6 +167,31 @@ changed deliberately and recorded.
 **7.7** Failures are visible: no bare `except`, no silent skip, no `pass` on an error path.
 A degraded result says it is degraded, in the artifact a downstream consumer reads.
 
+## C8 — USER-FACING STRINGS ARE LEGAL INSTRUMENTS
+
+**8.1** Every user-facing string — README, UI copy, docs that read as marketing, sales material,
+error messages, the package `description`, commit messages that ship in a changelog — is checked
+against `docs/09-eu-legal-compliance.md` §8 (Explicit non-claims) **before it is committed**.
+
+**8.2** Why this is a clause and not style advice: Reg. (EU) 2024/1689 Art. 3(12) defines intended
+purpose by reference to "the information supplied by the provider in the instructions for use,
+**promotional or sales materials and statements**, as well as in the technical documentation".
+A tagline can therefore move us into Annex III(4)(a) and, with it, into the high-risk regime. Copy is
+classification.
+
+**8.3** Banned unless a named artifact satisfies the claim: "AI Act compliant/ready", any ISO
+certification or control count, "ISO 30405 certified", blanket "GDPR compliant", "ATS-proof",
+"guarantees passing", "beats the ATS", "bias-free", "fairness-audited", and any restatement of the
+"2027 delay" narrative that does not cite Reg. (EU) 2026/1744.
+
+**8.4** A new user-facing string that makes a comparative or outcome claim requires: the evidence id
+from `docs/SOURCES.md`, the §8 line it satisfies or the reason it is not covered, and the sentence
+shown to the user that qualifies it. Recorded in `DECISIONS.md` (template: D-010).
+
+**8.5** Enforcement: `scripts/provenance.py` covers citations, not prose. String review is manual
+and is a checklist item in the commit that introduces the string; a later automated scanner is a
+nice-to-have, not a substitute (a scanner cannot tell a metaphor from a promise).
+
 ---
 
 ## Compliance ledger (must be updated in the same change that changes status)
@@ -175,11 +200,12 @@ A degraded result says it is degraded, in the artifact a downstream consumer rea
 |---|---|---|
 | C1 Read-before-write | **ENFORCED** | This turn: full tree, `git status`, all 9 lane reports, all 3 `src/` modules read; defects quoted by line in `docs/00-audit.md` §A/§D |
 | C2 Update-before-create | **ENFORCED** | Corrections applied in place this turn (see `DECISIONS.md` 2026-10-25 entries); 41 KB of boilerplate deleted, not filed |
-| C3 `Last verified:` + 90-day rule | **PARTIAL** | Header pair present on every doc written since this file was committed (`docs/00-audit.md`, `docs/09-eu-legal-compliance.md`); the clock is still **manual** because `scripts/fresh.py` does not exist |
-| C4 `check-sources.mjs`, `fresh.py`, `provenance.py` | **DECLARED — DEBT** | Scripts promised as A0 exit criteria; until they exist this repo is not releasable. Owner forbade code in the audit turn, so they are not written yet |
+| C3 `Last verified:` + 90-day rule | **ENFORCED** | Header pair on every doc; `scripts/fresh.py` computes age, applies the 90-day general clock and the 30-day `Live surfaces:` clock, and exits 1 on a missing header or a stale doc |
+| C4 `check-sources.py`, `fresh.py`, `provenance.py` | **CLOSED 2026-10-25** | All three exist and run: `provenance.py` passes bidirectionally (39 sources, 0 dangling, 0 uncited); `fresh.py` reports every doc dated/attributed/within clock; `check-sources.py` has a 39-line probe manifest, fails on a registered-but-unprobeable source, records `ok/walled/dead/unreachable`, and writes `docs/source-status.json`. `--probe` is manual, never a hook (a push may not depend on third parties) |
 | C5 Labels + grades | **ENFORCED** | Grades used in `docs/00-audit.md` §B, including 5 retractions and 8 `U` items |
-| C6 Known-unknowns + probe | **PARTIAL — improving** | `docs/00-audit.md` §C plus **six legal unknowns with named probes** at `docs/09-eu-legal-compliance.md` §7 (OJ-1…OJ-6). `docs/08-known-unknowns.md` itself is still an A0 artifact; those six migrate into it verbatim |
-| C7 Product posture | **ENFORCED** | No dependency added (package still has zero runtime deps); `__init__.py` no longer advertises an API that does not exist |
+| C6 Known-unknowns + probe | **PARTIAL — improving** | Three of six legal unknowns **closed at A/B** this turn (OJ-1/2/3, `docs/09` §7.1) with the primary evidence named; OJ-4/5/6 remain with probes. `docs/08-known-unknowns.md` is still an A0 artifact; the open three migrate into it verbatim |
+| C7 Product posture | **ENFORCED** | No dependency added (package still has zero runtime deps); `__init__.py` no longer advertises an API that does not exist. Test dependency: `pytest` (dev-only; declared when `pyproject.toml` lands in A0) |
+| C8 User-facing strings | **ENFORCED (manual)** | Clause added 2026-10-25 with the Art. 3(12) rationale; first application recorded in `DECISIONS.md` D-010 (tagline verdict) |
 
 **Escalation rule:** if an agent cannot satisfy a clause it must stop and report the clause
 number, the missing input, and the cheapest action that would close it. It may not

@@ -1,0 +1,52 @@
+{
+  "EV-01": {
+    "https://arxiv.org/abs/2605.05257": {
+      "bytes_read": 43070,
+      "elapsed_s": 0.28,
+      "error": null,
+      "http": 200,
+      "kind": "ok",
+      "sha256_64k": "43df841ea753d201"
+    }
+  },
+  "EV-16": {
+    "https://jsonresume.org/schema/": {
+      "bytes_read": 63578,
+      "elapsed_s": 0.94,
+      "error": null,
+      "http": 200,
+      "kind": "ok",
+      "sha256_64k": "e756f9b182f82dbc"
+    }
+  },
+  "EV-22": {
+    "local:data/sources/2026-10-25-jobSuit-ai-demo-transcript.md": {
+      "bytes_read": 15910,
+      "elapsed_s": 0.0,
+      "error": null,
+      "http": null,
+      "kind": "ok",
+      "sha256_64k": null
+    }
+  },
+  "EV-23": {
+    "local:.work/lanes/parsing.md": {
+      "bytes_read": 5193,
+      "elapsed_s": 0.0,
+      "error": null,
+      "http": null,
+      "kind": "ok",
+      "sha256_64k": null
+    }
+  },
+  "EV-24": {
+    "local:.work/lanes/legal.md": {
+      "bytes_read": 6577,
+      "elapsed_s": 0.0,
+      "error": null,
+      "http": null,
+      "kind": "ok",
+      "sha256_64k": null
+    }
+  }
+}
