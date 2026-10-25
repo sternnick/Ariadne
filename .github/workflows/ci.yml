@@ -38,13 +38,13 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
 
-      - name: C3 freshness (90-day gate; fails on stale or missing header)
+      - name: C3 freshness (90-day gate, fails on stale or missing header)
         run: python scripts/fresh.py
 
       - name: C4 provenance (fails on a dangling id or an uncited source)
         run: python scripts/provenance.py
 
-      - name: C4 source registry (offline: recorded state, no --probe)
+      - name: C4 source registry (offline mode, recorded state, no --probe)
         run: python scripts/check-sources.py
 
       - name: C4 dead relative links in tracked markdown
