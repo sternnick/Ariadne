@@ -96,7 +96,7 @@ owns the gap, and the artefact that would prove closure. This table is the singl
 | DR-10 | `06` §6.2 | "no vector DB anywhere" is an absence of mention | code search per repo for `chromadb|qdrant|pgvector|faiss|pinecone` | hits, or "absence-of-use confirmed" |
 | DR-11 | `08` §8.2 | every vendor `U` | as DR-1 | as DR-1 |
 | DR-12 | `08` §8.4 | no corpus with ground-truth superiority (**D-4**) | synthetic pairs per the M-2 method; request PopResume access ([EV-14]) | a corpus path + a licence note, or a recorded refusal |
-| DR-13 | `05`/`09` | branch protection absent (plan-gated) — **see D-021** | make the repository public, or upgrade the account to a plan offering rulesets on private repos | `gh api repos/sternnick/Ariadne/branches/main/protection` returning the six contexts |
+| ~~DR-13~~ | `05`/`09` | ~~branch protection absent (plan-gated)~~ **CLOSED 2026-10-25** — repository flipped public, protection active with six required contexts (`D-031` carries the API response) | — | — |
 
 **Priority.** DR-4 is first: it is the cheapest, it closes the highest-value unknown, and it is A2's
 acceptance criterion. DR-1 is second: it is the only gap that limits what the product may *say* about

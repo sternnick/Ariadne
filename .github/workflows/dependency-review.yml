@@ -25,8 +25,22 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
         with:
           persist-credentials: false
+      # NON-BLOCKING BY NECESSITY, with a recorded reason (DECISIONS D-031):
+      # the action answers "Dependency review is not supported on this repository. Please ensure that
+      # Dependency graph is enabled along with GitHub Advanced Security" even though
+      # /dependency-graph/sbom returns 200. Advanced Security is not available on this account, so the
+      # job would be permanently red — and a permanently red job is how a real failure gets ignored.
+      # The dependency policy itself is enforced by C7.2 review + Dependabot, not by this action.
       - name: Review dependency changes
+        continue-on-error: true
+        id: review
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294  # v5.0.0
         with:
           fail-on-severity: moderate
           comment-summary-in-pr: on-failure
+
+      - name: Report platform limitation
+        if: steps.review.outcome == 'failure'
+        run: |
+          echo "::warning::dependency-review did not run: this repository has no GitHub Advanced Security (D-031). Not blocking the PR; see DECISIONS.md."
+          echo "Dependency policy is manual: a new runtime dependency needs a DECISIONS entry (C7.2)."

@@ -68,6 +68,94 @@ D-014-style future audits.
 **Rejected:** deleting it (it is accurate as a metaphor and carries no legal claim); keeping it
 unqualified (a metaphor next to a score is read as a promise).
 
+## D-032 · 2026-10-25 · Zero-touch automation: three workflows, and why each shape was chosen
+The owner must not have to watch the repository. Three workflows, all SHA-pinned, all with explicit
+least-privilege `permissions:`, none referencing a secret a fork could reach.
+
+**A — `.github/workflows/health-check.yml`** (daily 00:00 UTC + manual).
+Runs the three gates that decay without a push: `fresh.py`, `provenance.py`, and
+`check-sources.py --probe` (**the only place live probing happens**; push CI stays offline so a
+third party's bad afternoon cannot block a commit). On failure it opens **one** issue labelled
+`health-check` and *comments on it* on subsequent failures rather than opening a new one per day —
+alert volume is the thing that kills alerting. When green it comments "recovered" and closes it. The
+run still exits non-zero after the issue exists: a red repo must not produce a green run.
+
+**B — `.github/workflows/ci-failure-alert.yml`** (`workflow_run` on `ci`, completed).
+Fires only when `conclusion == 'failure'` **and** `head_branch == 'main'` — a red PR branch is normal
+work in progress, not an alarm. Opens `CI Failed on main: <sha>` with the run link, assigns the repo
+owner, and de-duplicates by title so repeated failures on one commit become comments.
+
+**C — `.github/workflows/dependabot-auto-merge.yml`** (`pull_request`, actor Dependabot).
+`semver-patch`/`semver-minor` → approve + `gh pr merge --auto --squash`; **major stays manual**.
+Auto-merge only *queues*: the six required checks still gate the merge, which is what makes this safe.
+
+**Honest limits, recorded rather than discovered later:**
+* The `dependency-review` job cannot run on this account (D-031). It is retained, non-blocking, and
+  emits a `::warning::` on every PR that it did not actually review. A skipped check that pretends to
+  be green would be worse than no check.
+* Workflow B's true test needs a failing `main` run, which I will not manufacture. It is verified
+  syntactically (YAML parses, event/condition correct) and by the same `github-script` code path that
+  Workflow A exercises live.
+* Workflow A's `schedule` cannot be triggered on demand to prove the cron; `workflow_dispatch` proves
+  the *job*, and the cron expression is validated only by GitHub accepting the file.
+
+## D-031 · 2026-10-25 · GATE 5 executed: repository public, protected, and monitored
+**Flip:** `gh repo edit sternnick/Ariadne --visibility public --accept-visibility-change-consequences`
+→ `gh repo view --json visibility` returns **`PUBLIC`**. Performed only after D-028/D-029/D-030 were green.
+
+**Branch protection — API proof** (`gh api repos/sternnick/Ariadne/branches/main/protection`):
+```json
+{
+  "allow_deletions": false,
+  "allow_force_pushes": false,
+  "enforce_admins": true,
+  "required_conversation_resolution": true,
+  "required_pull_request_reviews": {
+    "count": 0,
+    "dismiss_stale": true
+  },
+  "required_status_checks": {
+    "contexts": [
+      "fresh",
+      "provenance",
+      "sources",
+      "links",
+      "compile",
+      "pytest"
+    ],
+    "strict": true
+  }
+}
+```
+Six required contexts, `strict: true`, admins enforced, force-push and deletion refused.
+**Deliberate deviation, recorded:** `required_approving_review_count` is **0**, not 1. This is a
+single-maintainer repository; requiring one approval would mean the owner can never merge their own
+PR and would have to self-approve through a second account. A PR *is* still required, which is the
+part that makes "the first public commit unguarded" impossible.
+
+**Security features, each verified by API, not by clicking:**
+| Feature | State | Evidence |
+|---|---|---|
+| Secret scanning | **enabled** | `security_and_analysis.secret_scanning.status` |
+| Secret scanning push protection | **enabled** | same block, `…push_protection.status` |
+| Dependabot alerts | **enabled** | `PUT /vulnerability-alerts` → **204**, re-read 204 |
+| Dependabot security updates | **enabled** | `security_and_analysis.dependabot_security_updates.status` |
+| CodeQL default setup | **configured** | `PATCH /code-scanning/default-setup` → run `40219758977`; `state: configured` |
+| Auto-merge (needed by Workflow C) | **enabled** | `allow_auto_merge: true` |
+| Delete branch on merge | **enabled** | `delete_branch_on_merge: true` |
+
+**Two features the platform refused, recorded as refusals rather than silently missing:**
+* `secret_scanning_validity_checks` and `secret_scanning_non_provider_patterns` remain **disabled**
+  after an explicit PATCH — they are gated behind GitHub Advanced Security on this account.
+* `dependency-review-action` fails with *"Dependency review is not supported on this repository.
+  Please ensure that Dependency graph is enabled along with GitHub Advanced Security"* even though
+  `/dependency-graph/sbom` answers **200**. Consequence: the job is retained but made
+  **non-blocking** (`continue-on-error: true`) with the reason in the workflow; the real dependency
+  policy (C7.2: a new runtime dependency needs a DECISIONS entry) is enforced by review and
+  Dependabot, not by that action.
+
+**DR-13 closed** in `docs/08-known-unknowns.md`.
+
 ## D-030 · 2026-10-25 · GATE 4 hardening: pinned actions, read-only permissions, no secrets
 Before a public flip, the workflow surface is the attack surface a stranger can reach. Recorded item by
 item, with the file that proves it:
