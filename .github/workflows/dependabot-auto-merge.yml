@@ -1,0 +1,66 @@
+name: dependabot-auto-merge
+
+# Workflow C — let safe dependency updates merge themselves (D-032).
+#
+# Policy: `semver-patch` and `semver-minor` are auto-approved and auto-merged once the six required
+# gates pass. **Major** updates are left for a human, because a major bump is a decision, not
+# maintenance (`AGENT_CONTRACT` C7.2: a new runtime dependency needs a DECISIONS entry, and a major
+# bump of the dev extra deserves the same look).
+#
+# Safety notes:
+#   * this runs on `pull_request` (not `pull_request_target`), and only when the actor is Dependabot;
+#   * the token is scoped to `contents: write` + `pull-requests: write` — the minimum needed to
+#     approve and enable auto-merge, and nothing else;
+#   * `gh pr merge --auto` does not merge immediately: it queues the merge behind the required
+#     status checks, which is what makes this safe at all.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: auto-merge-dependabot
+    if: github.actor == 'dependabot[bot]' && github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a  # v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Decide eligibility
+        id: decide
+        run: |
+          echo "update-type=${{ steps.meta.outputs.update-type }}"
+          echo "dependency-type=${{ steps.meta.outputs.dependency-type }}"
+          case "${{ steps.meta.outputs.update-type }}" in
+            version-update:semver-patch|version-update:semver-minor)
+              echo "eligible=true" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "eligible=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Major update or unknown type — leaving for a human review." ;;
+          esac
+
+      - name: Approve
+        if: steps.decide.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr review "$PR" --approve \
+            --body "Automated approval: patch/minor Dependabot update (D-032). Major updates stay manual."
+
+      - name: Enable auto-merge (queued behind the required checks)
+        if: steps.decide.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr merge "$PR" --auto --squash

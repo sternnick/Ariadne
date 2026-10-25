@@ -1,0 +1,144 @@
+name: health-check
+
+# Workflow A — scheduled health check with auto-issue (D-032).
+#
+# Why this exists: the six push gates only run when something is pushed. Freshness and *external*
+# source reachability decay while nobody commits — that is precisely how a doc goes silently stale.
+# This is the only workflow allowed to touch the network (`check-sources.py --probe`), because a
+# scheduled job cannot be triggered by an untrusted PR.
+#
+# Cadence: daily at 00:00 UTC (owner's spec) + manual. Live probing is therefore once per day for
+# ~46 URLs at one request per second — deliberately polite; if that ever becomes unwelcome, the
+# probe step can move to a weekly cron without touching the offline gates.
+#
+# On failure it opens ONE issue (or comments on the existing one) — never a new issue per day, which
+# is how alerting becomes noise and noise becomes ignored.
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: health-check
+  cancel-in-progress: false
+
+jobs:
+  health:
+    name: health
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
+        with:
+          python-version: "3.11"
+
+      - name: Gate 1 — freshness (90-day and 30-day clocks)
+        id: fresh
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/fresh.py 2>&1 | tee "${RUNNER_TEMP}/fresh.log"
+
+      - name: Gate 2 — provenance (citation integrity)
+        id: provenance
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/provenance.py 2>&1 | tee "${RUNNER_TEMP}/provenance.log"
+
+      - name: Gate 3 — live source probe (network; allowed here, never on push)
+        id: sources
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/check-sources.py --probe --write 2>&1 | tee "${RUNNER_TEMP}/sources.log"
+
+      - name: Decide outcome
+        id: verdict
+        run: |
+          failed=""
+          [ "${{ steps.fresh.outcome }}" = "failure" ] && failed="$failed,freshness"
+          [ "${{ steps.provenance.outcome }}" = "failure" ] && failed="$failed,provenance"
+          [ "${{ steps.sources.outcome }}" = "failure" ] && failed="$failed,sources"
+          failed="${failed#,}"
+          if [ -z "$failed" ]; then
+            echo "failed=" >> "$GITHUB_OUTPUT"
+            echo "OK: all three gates passed."
+          else
+            echo "failed=$failed" >> "$GITHUB_OUTPUT"
+            echo "::error::Scheduled health check failed: $failed"
+          fi
+
+      - name: Assemble report
+        if: always()
+        run: |
+          {
+            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "Commit: ${{ github.sha }}"
+            echo "Failing gates: ${{ steps.verdict.outputs.failed || 'none' }}"
+            echo
+            for f in fresh provenance sources; do
+              echo "### $f"
+              echo '```'
+              tail -n 60 "${RUNNER_TEMP}/${f}.log" 2>/dev/null || echo "(no output)"
+              echo '```'
+            done
+          } > "${RUNNER_TEMP}/report.md"
+
+      - name: Open or update the health-check issue
+        if: steps.verdict.outputs.failed != ''
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync(process.env.RUNNER_TEMP + '/report.md', 'utf8');
+            const title = 'Scheduled Health Check Failed: ' + process.env.FAILED_GATES;
+            const label = 'health-check';
+            const { owner, repo } = context.repo;
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: label, per_page: 10,
+            });
+            if (open.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: open.data[0].number, body,
+              });
+              core.info(`Commented on existing issue #${open.data[0].number}`);
+            } else {
+              const created = await github.rest.issues.create({ owner, repo, title, body, labels: [label] });
+              core.info(`Opened issue #${created.data.number}`);
+            }
+        env:
+          FAILED_GATES: ${{ steps.verdict.outputs.failed }}
+
+      - name: Close the health-check issue when green
+        if: steps.verdict.outputs.failed == ''
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7
+        with:
+          script: |
+            const label = 'health-check';
+            const { owner, repo } = context.repo;
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: label, per_page: 10,
+            });
+            for (const issue of open.data) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: issue.number,
+                body: `Recovered: all health gates pass as of ${new Date().toISOString()} (run ${context.runId}).`,
+              });
+              await github.rest.issues.update({ owner, repo, issue_number: issue.number, state: 'closed' });
+            }
+
+      # The job still fails if a gate failed, AFTER the issue exists. An alerting workflow that goes
+      # green on a red repo teaches everyone to ignore it.
+      - name: Fail the run if a gate failed
+        if: steps.verdict.outputs.failed != ''
+        run: exit 1
