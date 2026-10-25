@@ -118,12 +118,17 @@ def main() -> int:
     # A registered source with no manifest line would otherwise be silently un-probeable — the
     # "skipped sources never print READY" failure. It is a defect and it fails the run.
     unprobeable = sorted(declared - set(registered))
+    ghosts = sorted(set(registered) - declared)  # manifest line for a source with no row
     prev = json.loads(STATUS.read_text()) if STATUS.is_file() else {}
     only = {s.strip() for s in args.only.split(",")} if args.only else None
 
     if unprobeable:
         print("FAIL: registered but not probeable (no manifest line): " + ", ".join(unprobeable),
               file=sys.stderr)
+        return 1
+    if ghosts:
+        print("FAIL: manifest entry with no SOURCES.md row (delete it or register it): "
+              + ", ".join(ghosts), file=sys.stderr)
         return 1
 
     if not args.probe:
