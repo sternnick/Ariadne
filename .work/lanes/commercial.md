@@ -32,7 +32,7 @@ Role adopted: repo-analyst/research-rescuer — distilling one recovered transcr
 
 **Transcript shape**
 - The lane wrote **zero `## SAY` notes** — 7 `## CALL` / 7 `## RESULT` only. There is no analyst interpretation, no comparison, no conclusion. The lane died mid-task on the Jobscan bot-wall.
-- First call was `ls /tmp/ats-research` + `cat $PI_CODING_AGENT_DIR/trusted-sources.md` (generic AI-doc/NIST/arXiv source table) — unrelated to ATS vendors, no pricing value.
+- First call was `ls <working copy>` + `cat <agent-dir>/trusted-sources.md` (generic AI-doc/NIST/arXiv source table) — unrelated to ATS vendors, no pricing value.
 
 GAPS:
 - No Jobscan pricing, free tier, or resume-score methodology anywhere in the file.

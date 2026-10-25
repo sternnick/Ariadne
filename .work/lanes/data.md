@@ -27,7 +27,7 @@
 - Kaggle Piramal ML Hackathon resume dataset, bare host `kaggle.com/datasets/abhishekgautam12/piramal-ml-hackathon-resume-dataset` [SNIPPET-ONLY] (https://www.mdpi.com/2079-9292/14/14/2787)
 - Labeled resume–vacancy corpus "over 7,000 resume–vacancy pairs" [SNIPPET-ONLY] (https://www.researchgate.net/publication/396317231_Smart_Application_for Recruiting_…_Siamese_Neural_Network_Architecture)
 - Licence determination deferred to an external "licensing guide"; no asset licence proven anywhere [SNIPPET-ONLY] (https://arxiv.org/html/2406.12031v1)
-- Local repo state (bash `ls -R`, PROVEN): `/tmp/ats-research/data/sources/2026-10-25-jobSuit-ai-demo-transcript.md` is the **only** file under `data/`; `data/corpora`, `docs`, `examples`, `scripts`, `src/ats_research`, `tests` are all empty; a top-level `LICENSE` exists but is never read. Only other local hit: `domain-pool.md:54` → https://huggingface.co/blog [PROVEN]
+- Local repo state (bash `ls -R`, PROVEN): `<repo>/data/sources/2026-10-25-jobSuit-ai-demo-transcript.md` is the **only** file under `data/`; `data/corpora`, `docs`, `examples`, `scripts`, `src/ats_research`, `tests` are all empty; a top-level `LICENSE` exists but is never read. Only other local hit: `domain-pool.md:54` → https://huggingface.co/blog [PROVEN]
 
 **GAPS:** no page body was ever fetched except jsonresume.org/schema (the only PROVEN asset); all taxonomy sizes/licences are snippet-grade and single-engine (`single_engine_only` warning on every search); the JSON Resume query returned `count: 0` so RenderCV/typst/parse-safe-PDF are NOT-IN-FILE; O*NET endpoint/auth/fields entirely absent; HF row flagged `entity_mismatch` → treat as unverified; transcript truncates before publications/skills/languages/projects/meta fields.
 

@@ -1,14 +1,48 @@
-# Scratch and tooling noise stay out of the public tree.
-/.work/*
-# EXCEPT the distilled lane reports: docs/ cites them as primary evidence.
-!/.work/lanes/
-# The operator's own CV, if it ever exists locally. Defence in depth only -- D-011 records that
-# this is NOT the control (git add -f exists), which is why the corpus is synthetic-only.
+# Scratch, secrets, local data and machine state never enter this repository.
+.DS_Store
+*.log
+
+# --- credentials and keys (defence in depth: the gates also grep history) -------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.token
+secrets/
+credentials/
+.netrc
+.aws/
+.ssh/
+
+# --- local data stores --------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+
+# --- the operator's own documents (D-011: corpus is synthetic-only) -----------------------
+# This is NOT the control. `git add -f` defeats any ignore file, which is why the decision was
+# to drop the personal-CV option entirely rather than rely on this line.
 /personal/
+
+# --- Python -------------------------------------------------------------------------------
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+build/
+dist/
+
+# --- research scratch --------------------------------------------------------------------
+# Raw research transcripts and tooling noise stay local. The DISTILLED lane reports are tracked,
+# because docs/ cites them as primary evidence and a citation must resolve from a clone.
+/.work/*
+!/.work/lanes/
 /data/local/
 /cache/
-*.log
-__pycache__/
-*.pyc
-.pytest_cache/
-.DS_Store

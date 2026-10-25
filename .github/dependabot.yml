@@ -1,0 +1,33 @@
+# Dependabot (GATE 4). Two ecosystems, both weekly, both grouped so a public repo does not drown in
+# single-package PRs. Every update still has to pass the six required gates, and a new *runtime*
+# dependency additionally needs a DECISIONS entry (AGENT_CONTRACT C7.2) — Dependabot cannot add one,
+# so reviewers must.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        patterns: ["pytest*"]
+    commit-message:
+      prefix: "deps(pip)"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "deps(actions)"

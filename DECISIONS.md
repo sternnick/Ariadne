@@ -68,6 +68,55 @@ D-014-style future audits.
 **Rejected:** deleting it (it is accurate as a metaphor and carries no legal claim); keeping it
 unqualified (a metaphor next to a score is read as a promise).
 
+## D-030 · 2026-10-25 · GATE 4 hardening: pinned actions, read-only permissions, no secrets
+Before a public flip, the workflow surface is the attack surface a stranger can reach. Recorded item by
+item, with the file that proves it:
+
+| Item | Status | Proof |
+|---|---|---|
+| Third-party actions pinned to a full commit SHA | **done** | `.github/workflows/ci.yml` — `actions/checkout@11d5960a…` (v4), `actions/setup-python@a26af69b…` (v5); `.github/workflows/dependency-review.yml` — `actions/dependency-review-action@a1d282b3…` (v5.0.0). Verified by scanning for `@v[0-9]`/`@main`: **none remain** |
+| Explicit `permissions:`, default `contents: read` | **done** | top-level `permissions: contents: read` in both workflows, plus a per-job block in `ci.yml`; the dependency-review job adds only `pull-requests: write` (to post its own summary) |
+| No `pull_request_target` with untrusted checkout | **done** | `grep -rn pull_request_target .github/` → only the comment stating the rule |
+| No secrets reachable by a fork PR | **done** | `grep -rn 'secrets\.' .github/` → **none**. No workflow references a secret at all |
+| No self-hosted runner | **done** | every job is `runs-on: ubuntu-latest` (GitHub-hosted, ephemeral) |
+| `dependency-review` job on `pull_request` | **done** | `.github/workflows/dependency-review.yml` (`fail-on-severity: moderate`) |
+| Dependabot for pip + github-actions | **done** | `.github/dependabot.yml`, weekly, grouped, `deps(...)` prefixes |
+| `persist-credentials: false` on checkout | **done** | every `actions/checkout` step; a fork PR's token cannot be pushed with |
+
+**One honest limit:** SHA pinning freezes the action *supply chain* but also freezes security fixes.
+The mitigation is Dependabot's `github-actions` ecosystem, which will open a PR with the new SHA —
+i.e. pinning plus automated bumping, not pinning alone.
+
+## D-029 · 2026-10-25 · GATE 3: local paths removed from the published tree
+The GATE 3 sweep for absolute paths found `/Users|/home/<user>|C:\Users` **clean**, but a broader scan
+(whose absence the literal command would have hidden) found six files carrying non-identifying
+absolute paths and one harness env var:
+`/tmp/ats-research` → `<working copy>` (in `DECISIONS.md`, `docs/00-audit.md`, `.work/lanes/data.md`),
+`ls /tmp/ats-research` → `ls <repo>` and `$PI_CODING_AGENT_DIR/trusted-sources.md` →
+`<agent-dir>/trusted-sources.md` (`.work/lanes/commercial.md`), and one `~/.pi/sessions/...` reference.
+**Judgement recorded:** `/tmp/a.txt` in the CI smoke test and `/tmp/ariadne-gate.log` in the pre-push
+hook are *runner/process* temp paths, not machine state, and are kept — rewriting them to a fictional
+path would make working code worse to satisfy a pattern.
+**What this does not do:** earlier commits still contain the old strings. They are non-sensitive, so a
+history rewrite (`git filter-repo`) would trade real risk (rewriting published history) for no gain.
+The distinction the gate asks about — personal data and credentials — was clean in every revision.
+
+## D-028 · 2026-10-25 · GATE 1 result: history is clean, with two findings that are not secrets
+Every command was run over **all refs** (`--all`, `git rev-list --all`), not just `main`:
+* secret-shaped files: **none** (`\.env|\.pem|\.key|\.p12|\.pfx|secrets?/|credentials?/|\.token|\.sqlite|\.db`);
+* secret-shaped content: the loose `sk-` pattern matched 12 lines in `docs/09` and `check-links.py` —
+  all of them the substring inside **"ri*sk-*assessment"**. The strict pattern
+  (`gh[pousr]_…|github_pat_…|sk-ant-…|\bsk-[A-Za-z0-9]{32,}|AKIA…|AIza…|xox[baprs]-…`) returned
+  **nothing** in any revision;
+* identity: author and committer are `ariadne@local` in every commit — no personal email;
+* personal files: the only `*.docx` ever committed is `tests/fixtures/malformed.docx`, whose 46 bytes
+  are literally `PK\x03\x04this is not a zip central directory at all` — a deliberate corrupt-input
+  fixture, not a CV;
+* blobs >1 MB: **none** (largest blob in history: 35,965 bytes, a markdown doc);
+* dangling/unreachable objects: **none** (`git fsck --full --unreachable --no-reflogs` empty).
+**Two commit messages matched the credential grep** and are false positives of the word "key"/"token":
+"P1 … key" and "tokeniser"/"tokenize". No message contains a credential.
+
 ## D-025 · 2026-10-25 · A1 also fixed audit P1–P5 and deleted the superseded helpers
 A1 could have added `layout.py`/`segment.py` beside the defective `textutil` helpers. That would have
 left two contradictory implementations of the same idea — the "ghost" C2.4 bans. So:
@@ -296,7 +345,7 @@ no evidence we need it yet).
 `rm .work/rescue/{18ea5316,1a28a27e,4acf9ebf,d792319c,d7c8d8de}.md` — 41 KB, each file a
 `Subagent timed out after 300000ms` stub whose bulk is a `git diff --no-index` usage dump
 (the run's cwd was not a git repository). No findings inside; the real content of those runs
-was recovered separately from `~/.pi/sessions/.../session.jsonl` into the `.txt` files.
+was recovered separately from `<agent-dir>/sessions/.../session.jsonl` into the `.txt` files.
 **Rule:** C2.4 (garbage found is garbage removed, same turn).
 
 ## D-006 · 2026-10-25 · Added `date_conflict` column instead of choosing a date
@@ -334,7 +383,7 @@ would create doc content in an audit-only turn).
 
 ## D-002 · 2026-10-25 · Naming — [OPEN G1]
 Repo/agent is `Ariadne` (owner's words, 2026-10-25). Working directory is
-`/tmp/ats-research`, Python package is `ats_research`, and LICENSE now says "Ariadne project
+`<working copy>`, Python package is `ats_research`, and LICENSE now says "Ariadne project
 contributors" instead of "ats-research contributors" — a holder claim I could not leave
 naming a project the owner does not use. Renaming the package/directory is deferred until G1
 so a single commit does the move with history.
