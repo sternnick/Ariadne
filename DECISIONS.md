@@ -68,6 +68,30 @@ D-014-style future audits.
 **Rejected:** deleting it (it is accurate as a metaphor and carries no legal claim); keeping it
 unqualified (a metaphor next to a score is read as a promise).
 
+## D-033 · 2026-10-25 · Post-flip verification: what was actually observed
+Every claim below is an observation, with the artifact that shows it.
+
+| Check | Result | Evidence |
+|---|---|---|
+| Visibility | **PUBLIC** | `gh repo view --json visibility` → `PUBLIC private=false` |
+| Protection active, not merely configured | **active** | `required_status_checks.contexts = fresh,provenance,sources,links,compile,pytest`, `strict=true`, `enforce_admins=true`, `allow_force_pushes=false`, `allow_deletions=false` (full JSON in D-031) |
+| Protection actually bites | **observed** | the six checks were required on PR #2 and it merged only after `mergeStateStatus` went `UNSTABLE → CLEAN`; a direct push is now rejected by the platform (and by `.githooks/pre-push` locally, which refused a red tree earlier in this session) |
+| Workflow A, happy path | **green** | run `40220035574` (dispatch, `main`) — all steps success, no issue created, no-op close step |
+| Workflow A, failure path | **issue opened** | run `40220172702` on a throwaway branch with a deliberate dangling citation → **issue #4 "Scheduled Health Check Failed: provenance"**, labelled `health-check`, run exits non-zero |
+| Workflow A, recovery path | **issue closed** | dispatch on `main` → run `40220275924` commented "Recovered…" on #4 and closed it (`state=CLOSED reason=COMPLETED comments=1`) |
+| Workflow B | **syntax + logic verified, not fired** | YAML parses; condition is `conclusion == 'failure' && head_branch == 'main'`. Its true test needs a failing `main` run, which would mean deliberately breaking the branch we just protected — **not done, by choice** |
+| Workflow C | **ran, correctly declined** | run `40220210510` on a Dependabot PR: `fetch-metadata` reported `update-type: version-update:semver-major` (github-script 7→9), `eligible=false`, approve/auto-merge skipped. This is the designed behaviour |
+| Workflow C, positive path | **NOT exercised** | every open Dependabot PR (#1, #3) is a **major** bump, so the patch/minor branch never ran. Stated as unverified rather than implied |
+| Fresh clone + quickstart | **works** | `git clone` → `pip install -e ".[dev]"` → `ariadne --version` `0.1.0` → `ariadne parse` produced 2 facts; `pytest` → **32 passed, 1 skipped** (the skip is the PDF-with-text test, `importorskip("pymupdf")` — the dev extra deliberately does not pull a PDF backend); all four gates exit 0 |
+| CI on `main` after merge | **green** | six required checks `success` on `6d8a4ec` |
+
+**Deliberate bypass, recorded:** the failure-path probe branch was pushed with `git --no-verify`
+because the pre-push hook correctly refused a tree with a dangling citation. That is the hook working;
+the bypass was limited to a throwaway branch, deleted afterwards, and never touched `main`.
+
+**Open, and left open:** Dependabot PRs #1 and #3 are major bumps awaiting a human. Auto-merge is
+built to not touch them.
+
 ## D-032 · 2026-10-25 · Zero-touch automation: three workflows, and why each shape was chosen
 The owner must not have to watch the repository. Three workflows, all SHA-pinned, all with explicit
 least-privilege `permissions:`, none referencing a secret a fork could reach.
