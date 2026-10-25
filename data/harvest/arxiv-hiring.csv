@@ -1,0 +1,47 @@
+arxiv_id,title,listed_date,id_yyyymm,latest_version,date_conflict
+2609.22188,Fairness Beyond Anonymization? Demographic Leakage in German LLM-Generated Resumes,2026-08-28,2026-09,1,yes
+2609.20188,ResumeShield: Channel Separation and an Open Benchmark for Indirect Prompt Injection in AI Resume Screening,2026-07-24,2026-09,1,yes
+2609.16517,Competence-Preserving Resume Perturbations Expose Presentation Sensitivity in LLM Screening,2026-09-15,2026-09,1,no
+2608.29478,"Applications of Risk Science to AI Fairness Evaluation: Principles, Challenges, and Best Practices",2026-08-30,2026-08,1,no
+2608.28411,LongPIBench: A Long-Context Benchmark for Prompt Injection,2026-08-28,2026-08,1,no
+2608.26108,Agentic AI Containment Architecture for Security Hardening,2026-05-12,2026-08,1,yes
+2608.25798,TacForcing: Streaming Action Generation with Execution-Time Tactile Feedback,2026-08-26,2026-08,2,no
+2608.07152,Exact Adaptive Hybrid Retrieval Without Fixed Top-L Cutoffs,2026-08-07,2026-08,1,no
+2607.04415,GORIO: GPU-Centered Remote I/O for Graph ANNS over NVMe-oF,2026-07-05,2026-07,2,no
+2606.28978,Can LLMs Hire Fairly? Racial Bias in Resume Screening,2026-06-27,2026-06,1,no
+2606.22213,"Resume Screening, Fast and Slow: (Biased) AI Recommendations' Influence on Human Decision Making",2026-06-20,2026-06,1,no
+2606.13861,Temporal Backtracking Search for Test-time Generative Video Reasoning,2026-06-11,2026-06,1,no
+2605.28999,Measuring Real-World Prompt Injection Attacks in LLM-based Resume Screening,2026-05-27,2026-05,1,no
+2605.05257,Career-Aware Resume Tailoring via Multi-Source Retrieval-Augmented Generation with Provenance Tracking: A Case,2026-05-06,2026-05,1,no
+2604.09620,LLM Nepotism in Organizational Governance,2026-03-18,2026-04,1,yes
+2604.02539,Synapse: Evolving Job-Person Fit with Explainable Two-phase Retrieval and LLM-guided Genetic Resume Optimizati,2026-04-02,2026-04,1,no
+2603.22784,Caterpillar of Thoughts: The Optimal Test-Time Algorithm for Large Language Models,2026-03-24,2026-03,1,no
+2603.22714,PopResume: Causal Fairness Evaluation of LLM/VLM Resume Screeners with Population-Representative Dataset,2026-03-24,2026-03,2,no
+2603.18390,AutoScreen-FW: An LLM-based Framework for Resume Screening,2026-03-19,2026-03,1,no
+2603.05189,"Small Changes, Big Impact: Demographic Bias in LLM-Based Hiring Through Subtle Sociocultural Markers in Anonym",2026-03-05,2026-03,3,no
+2602.22424,Causality $\neq$ Invariance: Function and Concept Vectors in LLMs,2026-02-25,2026-02,1,no
+2602.18550,Measuring Validity in LLM-based Resume Screening,2026-02-20,2026-02,1,no
+2602.04087,Quantifying Algorithmic Friction in Automated Resume Screening Systems,2026-02-03,2026-02,1,no
+2601.01522,Bayesian Orchestration of Multi-LLM Agents for Cost-Aware Sequential Decision-Making,2026-01-04,2026-01,1,no
+2512.20652,AI-Driven Decision-Making System for Hiring Process,2025-12-17,2025-12,1,no
+2512.20164,AI Security Beyond Core Domains: Resume Screening as a Case Study of Adversarial Vulnerabilities in Specialize,2025-12-23,2025-12,2,no
+2512.04109,"ChatGPT-5 in Secondary Education: A Mixed-Methods Analysis of Student Attitudes, AI Anxiety, and Hallucination",2025-11-30,2025-12,1,yes
+2511.21415,DiverseVAR: Balancing Diversity and Quality of Next-Scale Visual Autoregressive Models,2025-11-26,2025-11,2,no
+2511.08343,JobSphere: An AI-Powered Multilingual Career Copilot for Government Employment Platforms,2025-11-11,2025-11,2,no
+2510.04437,Smart Hiring Redefined: An Intelligent Recruitment Management Platform,2025-10-06,2025-10,5,no
+2509.04404,No Thoughts Just AI: Biased LLM Hiring Recommendations Alter Human Decision Making and Limit Human Autonomy,2025-09-04,2025-09,2,no
+2509.00462,AI Self-preferencing in Algorithmic Hiring: Empirical Evidence and Insights,2025-08-30,2025-09,4,yes
+2508.11873,SimInterview: Transforming Business Education through Large Language Model-Based Simulated Multilingual Interv,2025-08-16,2025-08,1,no
+2507.11548,Fairness Is Not Enough: Auditing Competence and Intersectional Bias in AI-powered Resume Screening,2025-07-11,2025-07,3,no
+2507.10472,MLAR: Multi-layer Large Language Model-based Robotic Process Automation Applicant Tracking,2025-07-14,2025-07,1,no
+2507.08019,Signal or Noise? Evaluating Large Language Models in Resume Screening Across Contextual Variations and Human E,2025-07-08,2025-07,1,no
+2506.07962,Correlated Errors in Large Language Models,2025-06-09,2025-06,1,no
+2504.06387,Towards Evidence-Based Tech Hiring Pipelines,2025-04-08,2025-04,1,no
+2504.02870,AI Hiring with LLMs: A Context-Aware and Explainable Multi-Agent Framework for Resume Screening,2025-04-01,2025-04,2,no
+2502.13221,Two Tickets are Better than One: Fair and Accurate Hiring Under Strategic LLM Manipulations,2025-02-18,2025-02,1,no
+2502.12361,ConFit v2: Improving Resume-Job Matching using Hypothetical Resume Embedding and Runner-Up Hard-Negative Minin,2025-02-17,2025-02,3,no
+2411.03616,Hiring as Exploration,2024-11-06,2024-11,1,no
+2410.22990,Generalized many-body perturbation theory for the electron correlation energy: multi-reference random phase ap,2024-10-30,2024-10,2,no
+2410.19803,First-Person Fairness in Chatbots,2024-10-16,2024-10,2,no
+2410.12499,With a Grain of SALT: Are LLMs Fair Across Social Dimensions?,2024-10-16,2024-10,2,no
+2407.20371,"Gender, Race, and Intersectional Bias in Resume Screening via Language Model Retrieval",2024-07-29,2024-07,3,no

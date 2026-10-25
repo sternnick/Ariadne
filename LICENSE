@@ -1,0 +1,33 @@
+MIT License
+
+Copyright (c) 2026 Ariadne project contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The Software is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the fitness for a particular purpose,
+merchantability or non-infringement. In no event shall the authors be liable
+for any claim, damages or other liability arising from, out of or in connection
+with the Software or the use of the Software.
+
+The documentation published in this repository (under docs/ and .work/lanes/) is
+additionally licensed CC BY 4.0 so that research findings may be reused with attribution.
+
+NOTICE: This project studies and approximates public, third-party systems. It
+is not affiliated with, endorsed by, or a replacement for any applicant tracking
+system or vendor. Nothing here should be used to deceive a hiring organisation
+or to discriminate against any candidate.
+
+As of 2026-10-25 there is no legal analysis in this repository: statute and case references
+reached us only as search snippets and the primary sources were unreachable (see
+docs/00-audit.md sections B and C). Do not read this notice as compliance advice, and do
+not cite a jurisdictional claim from this repository until AGENT_CONTRACT C6 is satisfied
+for it.

@@ -1,0 +1,31 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# local / private — this is a public research repo, never commit a real CV
+*.pdf
+*.docx
+*.doc
+!examples/**/*.docx
+/private/
+/personal/
+/data/local/
+/cache/
+*.log
+.DS_Store
+# Scratch, tooling noise and raw research transcripts stay out of the public tree.
+/.work/*
+# EXCEPT the distilled lane reports: docs/ cites them as primary evidence, and AGENT_CONTRACT
+# C1.1(e) requires an agent to be able to read them from a clone. Ignoring them would make
+# every citation in docs/ unresolvable (measured: 9 files, 51 KB, untracked until now).
+!/.work/lanes/
