@@ -42,7 +42,7 @@ V-1 is the item that most limits the product: without it we cannot say which for
 | id | Unknown | Why it blocks | Probe |
 |---|---|---|---|
 | M-1 | field-level parse quality of our own parser | we cannot claim anything about parsing | hand-annotate 20 synthetic résumés (employer, title, dates, skills); score exact-match/F1 (doc 02 §2.6) |
-| M-2 | score stability under competence-preserving perturbation | a point estimate is unjustifiable without it (29.6 % baseline, [EV-02]) | five fixtures × {reorder sections, rephrase bullets, change template}; measure inversion rate (doc 05 §5.1) |
+| M-2 | score stability under competence-preserving perturbation | a point estimate is unjustifiable without it (29.6 % baseline, [EV-02]). **Substrate exists (A1):** `perturb.TRANSFORMS` + `Ledger.delta()` prove “same competence, different surface” today; the *measurement* is still absent | A2: five fixtures × the four transforms, measure score/ranking inversion rate (doc 05 §5.1) |
 | M-3 | false-negative rate for skill matching | friction is the harm ([EV-04]) | 40 hand-labelled requirement/evidence pairs; compare TF-IDF vs lexicon vs both |
 | M-4 | abstention rate, and whether users experience it as failure | doc 04 §4.7 ships abstention as a success value | instrument abstentions and follow-up completion in A3 |
 | M-5 | whether better-parsing artefacts are preferred over higher-scoring ones | the core product bet ([HYPOTHESIS] in doc 01 §1.7) | A/B two rendered CVs; measure which users keep |
@@ -74,6 +74,34 @@ V-1 is the item that most limits the product: without it we cannot say which for
 | X-2 | whether our `[HYPOTHESIS]` about layout→field-recovery holds | testable now (M-1); it is the cheapest experiment in the repository |
 | X-3 | the reversal-rate tolerance we should declare | a **decision**, not a fact: publish the measurement, then set the threshold in `DECISIONS.md` |
 
+
+## 8.8 Debt register — what would make the thin documents strong
+
+The review accepted four documents as thin (`01`, `05`, `06`, and this one by design). Thinness is a
+debt only if it is unnamed. Each row here is the *specific* probe that closes it, the document that
+owns the gap, and the artefact that would prove closure. This table is the single place to look for
+"what is the cheapest thing that would make us materially stronger".
+
+| # | Owned by | Gap | Probe (exact) | Artefact that proves closure |
+|---|---|---|---|---|
+| DR-1 | `01` §1.5 | formats / size limits / parser vendor, 7 of 8 engines | browser rung on `support.greenhouse.io`, `help.lever.co`, `help.smartrecruiters.com`, `developers.ashbyhq.com`, `help.teamtailor.com`, `docs.oracle.com` (Fusion HCM → Resume Parsing); then Textkernel + Daxtra partner pages | `docs/01` §1.5 table with quoted sentences + access dates, grades moved off `U` |
+| DR-2 | `01` §1.3 | adoption measured only by vendor telemetry | DNS/HTTP census of `careers.<company>` across a fixed 100-company sample | a method paragraph + the sample + the number, in `docs/01` |
+| DR-3 | `01` §1.4 | "75 % auto-rejected" rests on one sceptical blog | trace the statistic to its earliest citation, or record that none exists | a paragraph saying "no origin found", with the searches listed |
+| DR-4 | `05` §5.1 | no stability number of our own (**M-2**) | the stability test (not yet written): 5 fixtures × 3 competence-preserving perturbations, declared tolerance | the test + a published inversion rate, in `docs/05` |
+| DR-5 | `05` §5.2 | fairness is an absence of claims | 40 synthetic CVs differing only in name signal; publish the output delta, or record that measuring it would require a capability C9 forbids | a paragraph either way — both outcomes are publishable |
+| DR-6 | `05` §5.4 | no field-level parse quality (**M-1**) | 20 synthetic résumés hand-annotated (employer, title, dates, skills) | per-field confusion table, in `docs/02`/`05` |
+| DR-7 | `05` §5.3 | provider retention terms unread (**X-1**) | read the DPA/terms of the single provider we would call; quote the retention sentence | `docs/09` §3 row + a `DECISIONS` entry |
+| DR-8 | `06` §6.3 | no maintenance signal; star counts untrusted | per project: `/repos`, `/releases`, `/contributors?per_page=100`, 90-day commit histogram, stargazer timestamps | maintenance table in `docs/06`, star counts either vindicated or annotated |
+| DR-9 | `06` §6.2 | two licences unread | `GET /repos/{o}/{r}/contents/LICENSE` for `sinaatalay/avicv`, `BPMSoftwareSolutions/agentic-resume-tailor` | quoted first line per project |
+| DR-10 | `06` §6.2 | "no vector DB anywhere" is an absence of mention | code search per repo for `chromadb|qdrant|pgvector|faiss|pinecone` | hits, or "absence-of-use confirmed" |
+| DR-11 | `08` §8.2 | every vendor `U` | as DR-1 | as DR-1 |
+| DR-12 | `08` §8.4 | no corpus with ground-truth superiority (**D-4**) | synthetic pairs per the M-2 method; request PopResume access ([EV-14]) | a corpus path + a licence note, or a recorded refusal |
+| DR-13 | `05`/`09` | branch protection absent (plan-gated) — **see D-021** | make the repository public, or upgrade the account to a plan offering rulesets on private repos | `gh api repos/sternnick/Ariadne/branches/main/protection` returning the six contexts |
+
+**Priority.** DR-4 is first: it is the cheapest, it closes the highest-value unknown, and it is A2's
+acceptance criterion. DR-1 is second: it is the only gap that limits what the product may *say* about
+compatibility. DR-13 is third because it is a purchase/visibility decision, not an engineering one.
+
 ## 8.7 How this file is maintained
 
 * An item is added when a doc records `[OPEN]` or a probe returns `U`.
@@ -81,3 +109,10 @@ V-1 is the item that most limits the product: without it we cannot say which for
   not by adding a "resolved" note (that is how this file would rot into a changelog).
 * `scripts/fresh.py` puts this file on the **30-day** clock, because most of its rows are about live
   external surfaces: a stale unknown is an unknown that may already have been answered.
+
+## What would make this strong
+
+This file is thin **by design** — it is a schedule, not an argument. It becomes strong when rows
+leave it: each closure must delete its row here *and* land the resolved claim in the owning doc (8.7).
+Its weakness is that it can quietly become a museum of stale unknowns, which is why it sits on the
+**30-day** clock: an unfreshened unknown is an unknown that may already have been answered.

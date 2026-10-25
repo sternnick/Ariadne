@@ -68,6 +68,103 @@ D-014-style future audits.
 **Rejected:** deleting it (it is accurate as a metaphor and carries no legal claim); keeping it
 unqualified (a metaphor next to a score is read as a promise).
 
+## D-025 · 2026-10-25 · A1 also fixed audit P1–P5 and deleted the superseded helpers
+A1 could have added `layout.py`/`segment.py` beside the defective `textutil` helpers. That would have
+left two contradictory implementations of the same idea — the "ghost" C2.4 bans. So:
+* **P1 fixed**: `TOKEN_RE` is Unicode (`re.ASCII` removed). `Développeur` no longer becomes
+  `['d','veloppeur']`; `c++`, `c#`, `.net`, `ci/cd` survive as tokens.
+* **P2 fixed**: the single-character rule is now *kind-based* (a single **letter** survives), so the
+  skill **C** is visible to the lexical layer.
+* **P3 fixed by replacement, not repair**: `looks_multicolumn` is **deleted**; `layout.analyze()` reads
+  the raw extraction, where tabs still exist.
+* **P4/P5 fixed**: `bullets_of`/`detect_sections`/`heading_of` are **deleted**; `segment.bullets()`
+  accepts an achievement shape, and `segment.segment()` keeps every heading occurrence.
+**A defect found by the new test, not by inspection:** adding `qualifications` to the JD requirement
+vocabulary made `QUALIFICATIONS` resolve to *requirements* instead of *education*, and the education
+year silently disappeared — `facts 15 → 14`. The perturbation test caught it because a "competence-
+preserving" transform changed competence. That is exactly the class of silent loss A1 exists to make
+impossible, and it validates the Guard-2 design.
+
+## D-024 · 2026-10-25 · Schemas: JSON Resume 1.7.0 extended under `custom`; JD schema is ours
+`schemas/resume.schema.json` extends the JSON Resume 1.7.0 document shape and puts every citation-
+relevant artefact (fact id, span, confidence, both hashes, layout report, issues) under
+`custom["ariadne.provenance"]`. `custom` is the spec's designated, preserved extension point
+([EV-16], [EV-31]), so the document stays valid for other tools while carrying our provenance.
+`schemas/jd.schema.json` is **ours**, not a standard: the research found no public JD document schema
+at grade B ([EV-31] covers ESCO/O*NET *taxonomy* APIs, which enumerate skills and occupations, not a
+job advert). Saying so in the schema's `$comment` is cheaper than implying an authority we do not have.
+**Validation without a dependency:** `tests/test_schemas.py` implements the small draft-07 subset the
+schemas use, and includes a test that a deliberately broken document is rejected — a validator that
+cannot fail is decoration.
+
+## D-023 · 2026-10-25 · A1 design: how the evidence model makes M-2 measurable (Guard 2)
+**The problem.** A2 must answer "does the score move when only the presentation moves?" ([EV-02]:
+29.6 % matched-pair reversals). To measure that, the model must be able to state *mechanically* that
+two documents carry the same competence and different surfaces. An assertion in a test would not
+survive a refactor; a property of the model does.
+**The design.** Every `Ledger` carries two digests:
+* `surface_hash` = sha256 of the **raw** text as it arrived (order, headings, markers, whitespace, and
+  glyph damage all count);
+* `competence_hash` = sha256 over the **sorted set of (kind, normalised value)** facts — order- and
+  span-insensitive.
+`Ledger.delta(other)` then reports `surface_changed` / `competence_changed` plus the fact ids added,
+removed or changed. A competence-preserving perturbation is therefore *defined* as
+`surface_changed and not competence_changed`, not asserted in prose.
+**Why raw text for the surface hash:** the first implementation hashed the *normalised* text, and the
+typographic-damage transform was invisible to it (ligatures are folded by `normalize()`). "What
+arrived" and "what it means" are different questions; hashing the repaired text cannot tell a clean
+document from a damaged one that repaired cleanly. Caught by the test, not by review.
+**What this buys A2.** The stability test becomes: for each fixture and each transform, `delta` says
+competence preserved → any score movement is attributable to presentation. If a transform changes
+competence, the *fixture* is broken and says so loudly, instead of producing a wrong number that looks
+like a stability result.
+**Recorded limit.** `competence_hash` is only as good as the fact extractor. A fact the parser never
+extracted cannot make competence "change", so M-2 is a test of the *scorer given this model*, never a
+test of whether the model captured everything. That residual is `docs/08` M-1.
+
+## D-022 · 2026-10-25 · Gate-bug class: configuration-as-signal, not logic
+The `fresh.py` bug (`Live surfaces: none` being read as an opt-in to the 30-day clock) is a specific
+recurring class worth naming: **presence-of-configuration treated as intent**. The code was logically
+correct; the *interpretation* of an empty-but-present field was wrong.
+Why the class matters here — the same shape appears in three other places, and they must be audited
+before trusting any gate:
+1. `provenance.py` — a source row that exists but is never cited ≠ a source that is fine (it fails, correctly).
+2. `check-sources.py` — a manifest line with no row ≠ nothing to check (it fails, correctly, after the fix).
+3. `fresh.py` — `Live surfaces:` with no value ≠ a live surface (fixed).
+4. **Not yet audited**: `check-links.py` treats `Missing artifact:` on the same line as an exemption —
+   meaning a genuine broken link on a line that mentions a missing artifact would be skipped. That is
+   the same class, one level deeper (a *marker* is configuration-as-signal).
+**Rule for future gates:** every field that can be present-but-empty needs an explicit "absent" value
+and a test for it. a gate self-test belongs in `tests/` (not written yet; D-022 lists it) and is tracked in
+`docs/08` §8.8.
+
+## D-021 · 2026-10-25 · Branch protection is BLOCKED by plan; substitute installed, decision escalated
+**What happened.** Both APIs refuse on this repository:
+```
+PUT /repos/sternnick/Ariadne/branches/main/protection
+POST /repos/sternnick/Ariadne/rulesets
+→ 403 "Upgrade to GitHub Pro or make this repository public to enable this feature."
+```
+`gh api user` reports no `plan` object at all. So the requirement "branch protection active with six
+required checks" **cannot be satisfied today**, and the honest status is **not active**.
+**What was done instead** (not a substitute in kind — a guard rail):
+* CI runs six separate jobs, so each gate is its own status check (`fresh`, `provenance`, `sources`,
+  `links`, `compile`, `pytest`) — proven green on `main` at `c85c86d`.
+* `.githooks/pre-push` runs the same six locally and **refuses** the push; wired with
+  `git config core.hooksPath .githooks`. Tested both ways: exit 1 on a red tree, exit 0 when clean.
+* Its limits are written into the hook itself: it runs on the pushing machine, `--no-verify` bypasses
+  it, and a fresh clone has no hook until it runs the config command. It is **advisory**.
+**Options, with cost:**
+| Option | Cost | Consequence |
+|---|---|---|
+| A. Make the repository public | free; reverses G8 (private until A2) | protection works immediately; the research becomes public before A2 validation |
+| B. GitHub Pro | paid subscription | protection works, repo stays private |
+| C. Accept hook + CI (current) | free | a direct push to `main` that bypasses the hook is possible; the CI run would still go red, but after the fact |
+**Recommendation: A, only when the owner is ready to publish** — because `docs/09` §8 and the README's
+C8 pass make public exposure defensible now, while A2 is the increment that adds a score (and with it
+the claims that need validation). Otherwise **B**. Until either, this is recorded as debt **DR-13** in
+`docs/08` §8.8 and must not be reported as "protected".
+
 ## D-020 · 2026-10-25 · A0 documents written; two sources registered late by design
 All eight A0 docs exist (`docs/01`…`docs/08`) plus `docs/09` and `docs/SOURCES.md`.
 **One process note worth keeping:** `EV-27`…`EV-31` (the lane reports) were registered in

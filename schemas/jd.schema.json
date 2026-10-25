@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ariadne.local/schemas/jd.schema.json",
+  "title": "Ariadne job-description document",
+  "$comment": "Not based on an external schema: no public JD schema reached grade B in our research (EV-31 records what ESCO/O*NET actually expose, which is taxonomy, not a JD document). Deliberately minimal: a requirement list with spans, so A3 can map evidence to asks instead of diffing blobs.",
+  "type": "object",
+  "required": ["requirements", "custom"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "title": { "type": "string" },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text", "weight", "span", "confidence"],
+        "properties": {
+          "id": { "type": "string", "minLength": 6 },
+          "text": { "type": "string", "minLength": 1 },
+          "weight": { "enum": ["must", "nice", "unknown"] },
+          "section": { "type": "string" },
+          "span": {
+            "type": "object",
+            "required": ["start", "end"],
+            "properties": {
+              "start": { "type": "integer", "minimum": 0 },
+              "end": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "confidence": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "custom": {
+      "type": "object",
+      "required": ["ariadne.provenance"],
+      "properties": {
+        "ariadne.provenance": {
+          "type": "object",
+          "required": ["schemaVersion", "surfaceHash", "counts", "issues"],
+          "properties": {
+            "schemaVersion": { "type": "string" },
+            "source": { "type": "string" },
+            "surfaceHash": { "type": "string" },
+            "counts": {
+              "type": "object",
+              "required": ["must", "nice", "unknown"],
+              "properties": {
+                "must": { "type": "integer", "minimum": 0 },
+                "nice": { "type": "integer", "minimum": 0 },
+                "unknown": { "type": "integer", "minimum": 0 }
+              }
+            },
+            "issues": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    }
+  }
+}

@@ -79,3 +79,14 @@ the five projects we cite, if we ever depend on one.
 larger than the ATS vendor market implies) or artefacts (coordinated starring, or a very different
 audience). Probe: read the repositories' contributor graphs and issue quality; do not repeat the
 numbers as adoption evidence meanwhile.
+
+## What would make this strong
+
+| Gap | Probe that closes it (exact) |
+|---|---|
+| Only READMEs + API metadata; no maintenance signal | For the five cited projects: `GET /repos/{o}/{r}` (`open_issues_count`, `pushed_at`), `/releases`, `/contributors?per_page=100`, and a 90-day commit histogram. Publish median time-to-close for issues. |
+| Star counts untrusted (§6.3) | Same probe as above plus `stargazers` growth over time (`/stargazers?per_page=100` timestamps): organic growth is smooth, coordinated starring is a step. Report a verdict per project, or report that the data cannot distinguish them. |
+| No licence file read for two projects (§6.2) | `GET /repos/sinaatalay/avicv/contents/LICENSE` and the same for `BPMSoftwareSolutions/agentic-resume-tailor`; quote the first line. Until then both stay "no licence granted". |
+| No vector-DB evidence anywhere (`[NOT-IN-FILE]`) | Grep each repository tree via the API for `chromadb|qdrant|pgvector|faiss|pinecone` (code search) and record hits. That turns an absence-of-mention into an absence-of-use. |
+| `career-ops` 77k stars implausible | Contributor graph + issue quality, as above. If it is real, the category is far larger than the vendor market implies — a finding worth having. |
+

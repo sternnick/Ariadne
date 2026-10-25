@@ -1,0 +1,17 @@
+JANE DOE	Berlin
+jane.doe@example.com	github.com/example
+
+SUMMARY
+Backend engineer with 8 years in payments.
+
+EXPERIENCE
+- Led migration of 40 services to Kubernetes	cutting p99 latency by 35%
+- Reduced cloud spend by 1.2M EUR annually	across three teams
+- Designed the ledger service	4M transactions per day
+
+SKILLS
+python, kubernetes	postgresql, terraform
+kafka, redis	go, rust
+
+EDUCATION
+BSc Computer Science	2016

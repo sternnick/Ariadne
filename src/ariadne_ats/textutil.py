@@ -21,12 +21,25 @@ _LIGATURES = {
 }
 _TRANS = {ord(k): v for k, v in _LIGATURES.items()}
 
-TOKEN_RE = re.compile(r"[a-z0-9][a-z0-9.+#/-]*[a-z0-9]|[a-z0-9]", re.ASCII)
+# Unicode-aware. The earlier pattern used re.ASCII, so "Développeur" tokenised as ['d','veloppeur']
+# and any non-English CV was shredded (audit P1). A token may contain dots, plus signs, hashes and
+# slashes (c++, c#, .net, ci/cd) and may END in + or # for exactly those cases.
+TOKEN_RE = re.compile(r"[^\W_](?:[\w.+#/-]*[^\W_+#])?", re.UNICODE)
 _WS_RE = re.compile(r"[ \t\u00a0]+")
 _NL_RE = re.compile(r"\n{3,}")
 _SENT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9])")
 
 SECTION_HEADINGS = {
+    # Job-description sections (A1). A JD is a list of asks; these heading names let the segmenter
+    # find them. They are vocabulary, not a model of the employer.
+    # Deliberately NOT "qualifications": on a CV that heading means education, and the segmenter
+    # resolves a line to exactly one kind. Version 1 of this vocabulary mapped QUALIFICATIONS to
+    # requirements and silently swallowed the EDUCATION block (caught by the perturbation test:
+    # facts 15 -> 14, the graduation year vanished).
+    "requirements": ["requirements", "must have", "required", "about you", "who you are",
+                     "what you bring"],
+    "responsibilities": ["responsibilities", "what you will do", "the role", "your role", "duties",
+                         "day to day"],
     "contact": ["contact", "contact information", "personal details", "personal information"],
     "summary": ["summary", "professional summary", "profile", "about me", "objective",
                 "career objective", "career summary", "highlight of qualifications"],
@@ -57,28 +70,31 @@ def normalize(text: str) -> str:
 
 
 def tokenize(text: str) -> list[str]:
-    """Lowercase word tokens.
+    """Lowercase word tokens, Unicode-aware.
 
-    LIMITATION (measured 2026-10-25): TOKEN_RE is compiled with re.ASCII, so non-ASCII
-    letters are separators, not letters. "Développeur" tokenises as ['d', 'veloppeur'].
-    Any non-English resume is shredded by this. Fixing it is increment A1; until then
-    this module is English-only, which contradicts the multilingual evidence in the
-    research corpus (German resumes arXiv 2609.22188, French pipeline in JobScout,
-    5-language JobResQA arXiv 2601.23183).
+    Fixed in A1 (2026-10-25): the previous pattern was compiled with `re.ASCII`, which made every
+    non-ASCII letter a separator ("Développeur" -> ['d', 'veloppeur']). Multilingual input is a stated
+    requirement (docs/02 §2.6), so this is a correctness fix, not a nicety.
     """
-    return TOKEN_RE.findall(text.lower())
+    return [t.lower() for t in TOKEN_RE.findall(text)]
 
 
 def content_words(text: str, stop: set[str] | None = None) -> list[str]:
-    """Tokens minus stopwords and minus single characters.
+    """Tokens minus stopwords, minus punctuation, and minus non-letter single characters.
 
-    LIMITATION (measured): dropping len==1 tokens makes the skill "C" invisible to the
-    whole lexical layer -- content_words("C, Python, Go") has no 'c'. A skill list is
-    exactly where single-character tokens are meaningful, so this must become a
-    stopword-list decision, not a length rule. Increment A1.
+    Fixed in A1 (2026-10-25): the previous rule dropped every `len == 1` token, which made the skill
+    "C" invisible to the whole lexical layer (audit P2). The rule is now about *kind*, not length: a
+    single **letter** survives, a single digit or symbol does not.
     """
     stop = stop or set()
-    return [t for t in tokenize(text) if t not in stop and len(t) > 1]
+    out: list[str] = []
+    for t in tokenize(text):
+        if t in stop:
+            continue
+        if len(t) == 1 and not t.isalpha():
+            continue
+        out.append(t)
+    return out
 
 
 def sentences(text: str) -> list[str]:
@@ -97,96 +113,6 @@ def ngrams(tokens: list[str], n: int) -> list[str]:
     if len(tokens) < n:
         return [" ".join(tokens)] if tokens else []
     return [" ".join(tokens[i:i + n]) for i in range(len(tokens) - n + 1)]
-
-
-def bullets_of(text: str) -> list[str]:
-    """Marker-prefixed lines only (*, -, bullet glyphs) longer than 12 characters.
-
-    LIMITATION (measured): a real achievement written as a plain line --
-    "Led a team of nine engineers to ship the platform" -- returns []. Resumes rendered
-    from CSS list-styling or a table layout lose their markers during PDF extraction,
-    which is precisely the damage this module is supposed to survive. Increment A1.
-    """
-    out = []
-    for line in text.split("\n"):
-        s = line.strip()
-        if not s:
-            continue
-        if s.startswith(("*", "-", "\u2022", "\u25cf", "\u00b7")):
-            body = s.lstrip("*-\u2022\u25cf\u00b7 ").strip()
-            if len(body) > 12:
-                out.append(body)
-    return out
-
-
-def detect_sections(text: str) -> dict[str, str]:
-    """Split a flat resume stream into named sections using heading vocabulary.
-
-    LIMITATION (measured): the first heading of each kind wins and later ones are
-    discarded -- "SUMMARY / EXPERIENCE / SUMMARY" yields only ['summary', 'experience'],
-    silently dropping the second summary block. Section bodies are also sliced by line
-    order, so a two-column resume whose headings interleave with content will be cut at
-    the wrong place. Increment A1.
-    """
-    lines = [ln for ln in text.split("\n")]
-    idx: list[tuple[str, int]] = []
-    for i, ln in enumerate(lines):
-        key = heading_of(ln)
-        if key and not any(key == k for k, _ in idx):
-            idx.append((key, i))
-    if not idx:
-        return {"unstructured": text}
-    out: dict[str, str] = {}
-    for n, (key, i) in enumerate(idx):
-        end = idx[n + 1][1] if n + 1 < len(idx) else len(lines)
-        body = "\n".join(lines[i + 1:end]).strip()
-        out[key] = body if body else out.get(key, "")
-    return out
-
-
-def heading_of(line: str) -> str | None:
-    """Exact heading match, else a fuzzy match on any short ALL-CAPS/Title line that
-    contains a heading word longer than 5 characters. The fuzzy branch is why
-    'Selected Publications' maps to `projects` and why an over-eager match is possible;
-    no source measures heading-recognition accuracy, so this is [HYPOTHESIS]-grade
-    engineering, not a validated parser."""
-    s = line.strip()
-    if not s or len(s) > 46 or s.endswith((".", ";", ",", ":")) and len(s.split()) > 4:
-        return None
-    plain = s.strip(" :#*_-\t").lower()
-    if not plain or len(plain.split()) > 4:
-        return None
-    for key, names in SECTION_HEADINGS.items():
-        if plain in names:
-            return key
-    # ALL CAPS / Title-ish short line containing a heading word
-    if len(plain.split()) <= 3 and s[:1].isupper():
-        for key, names in SECTION_HEADINGS.items():
-            if any(w in plain for w in names if len(w) > 5):
-                return key
-    return None
-
-
-def looks_multicolumn(text: str) -> bool:
-    """Heuristic: many lines carry two aligned text runs.
-
-    PRECONDITION AND DEFECT (measured 2026-10-25): both detectors need a tab or a run of
-    >=4 spaces, and normalize() collapses tabs and multi-space runs to one space. On a
-    genuinely tab-separated two-column resume this returns False after normalize() and
-    even before it on the sample tested -- i.e. as wired it is a dead feature that will
-    always report "single column". The fix (A1) is to run this on the raw extraction and
-    keep the raw text available, not to tune the 0.30 threshold, which is unsourced.
-    """
-    lines = [ln for ln in text.split("\n") if ln.strip()]
-    if len(lines) < 8:
-        return False
-    hits = 0
-    for ln in lines:
-        runs = re.findall(r"\S[^\t]{0,40}\t[^\t]+", ln)
-        wide = re.findall(r"\S{2,}\s{4,}\S{2,}", ln)
-        if runs or (len(wide) >= 1 and len(ln) > 45 and len(ln.split()) >= 5):
-            hits += 1
-    return hits / max(1, len(lines)) > 0.30
 
 
 def term_frequencies(tokens: list[str]) -> Counter:

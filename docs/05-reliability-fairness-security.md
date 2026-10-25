@@ -92,3 +92,14 @@ document ordering, because our section detector currently drops the second occur
 heading (audit P5) — i.e. the reliability defect may be a *parser* defect, not a scoring defect.
 Probe: run the perturbation test against the A1 parser before wiring any scorer to it, so the
 attribution is unambiguous.
+
+## What would make this strong
+
+| Gap | Probe that closes it (exact) |
+|---|---|
+| No stability number of our own (§5.1, M-2) | the stability test (not yet written): five fixtures × three competence-preserving perturbations (reorder sections, rephrase bullets without changing claims, swap template); assert ranking/score delta within a declared tolerance. **This is A2's acceptance criterion**, not A1's — A1 builds the substrate. |
+| Fairness is an absence of claims, not a measurement (§5.2) | A perturbation audit of *our own* output: take 40 synthetic CVs differing only in name signal (a published name list is enough for the *test*, not for a product claim), run the pipeline, and publish the delta. If we cannot run it without ingesting demographic signal, that itself is the finding — and C9 says we do not build that capability. |
+| No field-level parse quality (§5.4) | 20 synthetic résumés hand-annotated for employer/title/dates/skills; score exact-match and F1 per field. Publish the confusion per field, not one aggregate. |
+| Provider retention/training terms are unread (X-1) | Read the data-processing terms of the one provider we would use, quote the retention sentence, and record the date. Until then the baseline stays local-only (`D-016`). |
+| Prompt-injection prevalence unknown (§5.3) | Run the public ResumeShield / LongPIBench prompt sets through the A1 parser, count how many survive normalisation unchanged, and store them as a regression corpus. |
+

@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# pre-push gate — the substitute for branch protection while the repository is private on a plan
+# that does not offer it (see DECISIONS D-021).
+#
+# HONEST SCOPE: this is NOT branch protection. It runs on the machine doing the push, it can be
+# bypassed with `git push --no-verify`, and it does not exist for anyone who clones without running
+# `git config core.hooksPath .githooks`. It is a guard rail, not an enforcement mechanism.
+#
+# It runs the same six gates CI runs, locally, so a red push is caught before it leaves the machine.
+set -u
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+fail=0
+run() {
+  local name="$1"; shift
+  if "$@" >/tmp/ariadne-gate.log 2>&1; then
+    printf '  ok   %s\n' "$name"
+  else
+    printf '  FAIL %s\n' "$name"
+    sed 's/^/       /' /tmp/ariadne-gate.log | tail -12
+    fail=1
+  fi
+}
+
+printf 'pre-push gates (AGENT_CONTRACT C4):\n'
+run fresh       python3 scripts/fresh.py --quiet
+run provenance  python3 scripts/provenance.py --quiet
+run sources     python3 scripts/check-sources.py
+run links       python3 scripts/check-links.py
+run compile     python3 -m compileall -q src
+run pytest      python3 -m pytest tests -q
+
+if [ "$fail" -ne 0 ]; then
+  printf '\nREFUSED: a gate failed. Fix it, or state in the PR why the gate is wrong.\n' >&2
+  printf '(--no-verify bypasses this hook; that is a review offence, not a technique.)\n' >&2
+  exit 1
+fi
+printf 'all gates passed.\n'

@@ -16,8 +16,12 @@ import sys
 from pathlib import Path
 
 from . import __version__
+from .evidence import build_ledger
+from .jd import build_jd
 from .lexical import Tfidf
-from .textutil import detect_sections, looks_multicolumn, normalize, tokenize
+from .layout import analyze as analyze_layout
+from .segment import segment as segment_sections
+from .textutil import normalize, tokenize
 
 # CLI-level stop list. NOT a claim about what an ATS filters: it exists so that `compare` does not
 # answer with "the / is / and". Any real stop list is corpus-dependent and belongs to A1.
@@ -36,21 +40,47 @@ def _read(path: str) -> str:
 def cmd_inspect(args: argparse.Namespace) -> int:
     raw = _read(args.file)
     text = normalize(raw)
-    sections = detect_sections(text)
+    sections_list = segment_sections(text, analyze_layout(raw)[1])
+    sections = {s.kind: s.body for s in sections_list}
     out = {
         "file": args.file,
         "characters": len(text),
         "tokens": len(tokenize(text)),
         "sections": {k: len(v.splitlines()) for k, v in sections.items()},
         "heads": sorted(sections),
-        "looks_multicolumn": looks_multicolumn(raw),
+        "columns_suspected": analyze_layout(raw)[0].columns_suspected,
         "note": (
-            "looks_multicolumn is a heuristic over tabs / runs of 4+ spaces in the RAW text; "
-            "normalize() collapses both, so this number is only meaningful on raw extraction. "
-            "See src/ariadne_ats/textutil.py (P3 in docs/00-audit.md)."
+            "columns_suspected comes from ariadne_ats.layout on the RAW extraction: tabs and runs "
+            "of 3+ spaces are the signal, and normalize() destroys both, which is why the detector "
+            "runs first (audit P3)."
         ),
     }
     print(json.dumps(out, indent=2))
+    return 0
+
+
+def cmd_parse(args: argparse.Namespace) -> int:
+    """Extract, detect layout damage, segment, and emit the evidence ledger."""
+    led = build_ledger(args.file)
+    if args.json:
+        import json as _json
+
+        print(_json.dumps(led.to_resume_json(), indent=2))
+        return 0
+    print(json_summary(led.summary()))
+    return 0
+
+
+def json_summary(d: dict) -> str:
+    import json as _json
+
+    return _json.dumps(d, indent=2)
+
+
+def cmd_jd(args: argparse.Namespace) -> int:
+    text = _read(args.file)
+    doc = build_jd(text, source=Path(args.file).name).to_jd_json()
+    print(json_summary(doc) if args.json else json_summary(doc["custom"]["ariadne.provenance"]))
     return 0
 
 
@@ -78,6 +108,16 @@ def build_parser() -> argparse.ArgumentParser:
     i = sub.add_parser("inspect", help="normalise a document and report tokens and sections")
     i.add_argument("file")
     i.set_defaults(func=cmd_inspect)
+
+    p2 = sub.add_parser("parse", help="parse a document into the evidence ledger")
+    p2.add_argument("file")
+    p2.add_argument("--json", action="store_true", help="emit the full JSON Resume document")
+    p2.set_defaults(func=cmd_parse)
+
+    j = sub.add_parser("jd", help="extract requirements from a job description")
+    j.add_argument("file")
+    j.add_argument("--json", action="store_true", help="emit the full jd.json document")
+    j.set_defaults(func=cmd_jd)
 
     c = sub.add_parser("compare", help="TF-IDF cosine similarity between two documents, with evidence")
     c.add_argument("a")

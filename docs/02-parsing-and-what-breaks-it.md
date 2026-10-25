@@ -62,11 +62,11 @@ From the audit's twelve probes, all reproducible:
 
 | Probe | Result | Consequence |
 |---|---|---|
-| `tokenize("Développeur Full-Stack mit C++ und C")` | `['d','veloppeur','full-stack','mit','c','und','c']` | `re.ASCII` makes non-ASCII letters separators: **the tokenizer is English-only** |
-| `content_words("C, Python, Go")` | no `'c'` | the skill **C** is invisible to every lexical feature |
-| `looks_multicolumn(tab-separated text)` | `False`, before *and* after `normalize()` | its only signals (`\t`, 4+ spaces) are destroyed by normalisation → **dead feature** |
-| `bullets_of("Led a team of nine engineers…")` | `[]` | unmarked achievements score zero |
-| `detect_sections("SUMMARY/A/EXPERIENCE/B/SUMMARY/C")` | `['summary','experience']` | the second block of a repeated heading is silently dropped |
+| `tokenize("Développeur Full-Stack mit C++ und C")` | was `['d','veloppeur',…]`; **now** `['développeur','full-stack','mit','c','und','c']` | `re.ASCII` was shredding non-English text — **fixed in A1**, asserted by the multilingual token test |
+| `content_words("C, Python, Go")` | was no `'c'`; **now** `['c','python','go']` | the skill **C** was invisible — **fixed in A1** (kind-based rule, not length) |
+| multi-column detection | was dead (signals destroyed by `normalize()`); **now** `layout.analyze()` runs on raw text and returns `MULTICOLUMN_FLATTENED` + a ratio | the detector must run before normalisation — **fixed in A1** |
+| unmarked achievement → bullet | was `[]`; **now** recognised by achievement shape | markers vanish when a layout flattens — **fixed in A1** |
+| repeated heading | was dropped; **now** two segments + `SECTION_REPEATED` | **fixed in A1** |
 | `normalize(normalize(x)) == normalize(x)` | `True` | idempotence holds — this one is fine |
 
 These are **A** by construction (we ran them). They are also the reason A1 is not "add a parser" but

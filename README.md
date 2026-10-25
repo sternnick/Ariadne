@@ -20,8 +20,13 @@ Two outputs:
    freshness date on every page, and a register (`docs/SOURCES.md`) that CI checks in both
    directions: no dangling citation, no uncited source.
 2. **`src/ariadne_ats/`** — a deterministic implementation of the parts that can be implemented
-   without a model: text normalisation, layout-damage detection, section segmentation, a fact ledger,
-   and TF-IDF comparison that shows the terms behind the number.
+   without a model: text normalisation, layout-damage detection with named failure codes, section
+   segmentation with per-section confidence, a fact ledger (id, span, confidence, two hashes), a JD
+   requirement extractor, and TF-IDF comparison that shows the terms behind the number.
+
+`ariadne parse` reports what the extraction **lost**, not just what it found. A document that cannot be
+read produces a typed failure (`PDF_BACKEND_MISSING`, `NO_TEXT_LAYER`, `CORRUPT_DOCUMENT`,
+`UNSUPPORTED_FORMAT`) rather than a plausible-looking empty result.
 
 ## What this is not
 
@@ -39,6 +44,9 @@ Two outputs:
 ```bash
 python -m pip install -e ".[dev]"     # runtime dependencies: none
 ariadne --version
+ariadne parse  path/to/cv.docx        # evidence ledger: facts, spans, confidence, both hashes
+ariadne parse  path/to/cv.txt --json  # full JSON Resume 1.7.0 document with provenance
+ariadne jd     path/to/job.txt        # requirement list with weights and spans
 ariadne inspect path/to/cv.txt        # tokens, sections, layout heuristic
 ariadne compare cv.txt job.txt        # cosine + the terms that produced it
 ```

@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ariadne.local/schemas/resume.schema.json",
+  "title": "Ariadne resume document",
+  "$comment": "Extends JSON Resume 1.7.0 (whose own $schema is in the instance) with provenance under `custom`, which that spec designates as the preserved extension point (EV-16, EV-31). Graded A for the base spec, B for this extension.",
+  "type": "object",
+  "required": ["basics", "work", "skills", "custom"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "basics": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "label": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "url": { "type": "string" },
+        "summary": { "type": "string" },
+        "location": { "type": "object" },
+        "profiles": { "type": "array", "items": { "type": "object" } },
+        "custom": { "type": "object" }
+      }
+    },
+    "work": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "position": { "type": "string" },
+          "url": { "type": "string" },
+          "startDate": { "type": "string" },
+          "endDate": { "type": "string" },
+          "summary": { "type": "string" },
+          "highlights": { "type": "array", "items": { "type": "string" } },
+          "keywords": { "type": "array", "items": { "type": "string" } },
+          "custom": { "type": "object" }
+        }
+      }
+    },
+    "education": { "type": "array", "items": { "type": "object" } },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "level": { "type": "string" },
+          "keywords": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "languages": { "type": "array", "items": { "type": "object" } },
+    "projects": { "type": "array", "items": { "type": "object" } },
+    "custom": {
+      "type": "object",
+      "required": ["ariadne.provenance"],
+      "properties": {
+        "ariadne.provenance": {
+          "type": "object",
+          "required": ["schemaVersion", "surfaceHash", "competenceHash", "facts", "issues"],
+          "properties": {
+            "schemaVersion": { "type": "string" },
+            "source": { "type": "string" },
+            "method": { "type": "string" },
+            "surfaceHash": { "type": "string" },
+            "competenceHash": { "type": "string" },
+            "perturbationOf": { "type": ["string", "null"] },
+            "layout": { "type": "object" },
+            "sections": { "type": "array", "items": { "type": "object" } },
+            "issues": { "type": "array", "items": { "type": "object" } },
+            "facts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "kind", "value", "section", "span", "confidence"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "kind": { "enum": ["contact", "summary", "skill", "role", "date", "bullet", "education", "language", "other"] },
+                  "value": { "type": "string" },
+                  "section": { "type": "string" },
+                  "span": {
+                    "type": "object",
+                    "required": ["start", "end"],
+                    "properties": { "start": { "type": "integer", "minimum": 0 }, "end": { "type": "integer", "minimum": 0 } }
+                  },
+                  "confidence": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+                  "derived_from": { "type": "string" },
+                  "numbers": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

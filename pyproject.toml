@@ -41,3 +41,6 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+# Allows `pytest` to run from a clean checkout without an editable install (CI does install, but a
+# contributor running the gates locally should not have to).
+pythonpath = ["src"]

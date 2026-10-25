@@ -17,21 +17,26 @@ exist made `import ats_research` (now `ariadne_ats`) raise (fixed 2026-10-25, se
 Known limitations of what is here are stated in each module's docstrings, and are
 itemised with measurements in docs/00-audit.md section A.
 """
-from . import lexical, textutil
+from . import errors, evidence, extract, jd, layout, lexical, perturb, segment, textutil
+from .errors import Code, ParseFailure, ParseIssue, ParseReport, Severity
+from .evidence import Fact, Ledger, LedgerDelta, build_ledger
+from .extract import Extraction, extract as extract_text
+from .jd import JobDescription, Requirement, build_jd
+from .layout import LayoutReport, analyze as analyze_layout
 from .lexical import Tfidf, jaccard, overlap_coefficient
-from .textutil import (
-    bullets_of, content_words, detect_sections, heading_of, looks_multicolumn,
-    ngrams, normalize, sentences, term_frequencies, tokenize,
-)
+from .segment import Section, segment as segment_sections
+from .textutil import content_words, ngrams, normalize, sentences, term_frequencies, tokenize
 
 __all__ = [
-    "textutil", "lexical",
+    "textutil", "lexical", "extract", "layout", "segment", "evidence", "jd", "perturb", "errors",
     "Tfidf", "jaccard", "overlap_coefficient",
-    "normalize", "tokenize", "content_words", "sentences", "ngrams",
-    "bullets_of", "detect_sections", "heading_of", "looks_multicolumn",
-    "term_frequencies",
+    "Code", "Severity", "ParseIssue", "ParseFailure", "ParseReport",
+    "Fact", "Ledger", "LedgerDelta", "build_ledger",
+    "Extraction", "extract_text", "LayoutReport", "analyze_layout",
+    "Section", "segment_sections", "JobDescription", "Requirement", "build_jd",
+    "normalize", "tokenize", "content_words", "sentences", "ngrams", "term_frequencies",
 ]
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 # `cli` is importable but not imported here, so `import ariadne_ats` stays free of argparse.
 # The console entry point resolves it directly: ariadne_ats.cli:main.

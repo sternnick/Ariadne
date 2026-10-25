@@ -114,3 +114,14 @@ or the better-parsing artefact.
 **[OPEN]** No measurement exists of *time-to-first-human-view* or of how often a recruiter reads the
 parsed record rather than the PDF. Every adoption figure in 1.3 is a proxy. Probe: vendor
 documentation on "candidate profile view" (not attempted — the same walls as 1.5).
+
+## What would make this strong
+
+| Gap | Probe that closes it (exact) |
+|---|---|
+| Formats, size limits, parser vendors for 7 of 8 engines (**U**, §1.5) | `browser_navigate` → `browser_content` on each of: `support.greenhouse.io`, `help.lever.co`, `help.smartrecruiters.com`, `developers.ashbyhq.com`, `help.teamtailor.com`, `docs.oracle.com` (Fusion HCM → "Resume Parsing"). Record the exact article URL and quote the sentence. Then Textkernel's and Daxtra's own partner/"works with" pages for vendor attribution. |
+| Market adoption is vendor telemetry (`B⁻`) | One independent measurement: a registrar/DNS census of career subdomains (`jobs.*`, `careers.*`) per Fortune 500 list, or the HTTP headers of `careers.<company>` on a fixed sample of 100 companies. Publish the method and the sample. |
+| No time-to-first-human-view data (§1.7 `[OPEN]`) | Vendor documentation naming the "candidate profile" vs "résumé attachment" view; if none exists, state that the metric is unavailable rather than proxying it with adoption. |
+| The 75 % auto-reject claim rests on one sceptical blog | Trace the statistic to its origin (the earliest citation), or record that no origin exists. A negative finding, published, is stronger than another secondary. |
+| Jobsuit workflow is unverified transcript (`B`) | The video URL, or an account of the same flow with screenshots and dates. Without one of those, the grade stays `B` and the numbers stay non-citable. |
+

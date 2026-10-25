@@ -65,10 +65,10 @@ resolvable by id**. `scripts/` — none, so C3/C4 are unenforced. CI — none. `
 | # | Probe result | Where | Consequence |
 |---|---|---|---|
 | P1 | `tokenize("Développeur … mit C++ und C")` → `['d','veloppeur','full-stack','mit','c','und','c']` | `textutil.py:24` `re.ASCII` | **any non-English résumé is shredded.** Directly contradicts evidence in our own corpus (German resumes arXiv 2609.22188 [EV-12]; French pipeline JobScout; 5-language JobResQA 2601.23183 [EV-13]) |
-| P2 | `content_words("C, Python, Go")` has **no `'c'`** | `content_words` `len(t)>1` | the skill **C** is invisible to every lexical feature. A toy test `compare('a b','b c')` returns cosine **0.0** for exactly this reason |
-| P3 | `looks_multicolumn(tab-separated 2-column text)` → `False`, both before and after `normalize()` | `looks_multicolumn` | its only two signals are `\t` and ≥4 spaces, and `normalize()` collapses both → **a dead feature that always says "single column"** |
-| P4 | `bullets_of("Led a team of nine engineers to ship the platform")` → `[]` | `bullets_of` | CSS-list or table-layout resumes lose markers on extraction → the whole achievement-quantification feature family silently scores 0 |
-| P5 | `detect_sections("SUMMARY/experience/SUMMARY")` → `['summary','experience']` | first-heading-wins | second block of a repeated heading dropped **silently** |
+| P2 | `content_words("C, Python, Go")` had **no `'c'`** | `content_words` `len(t)>1` | **FIXED in A1**: the rule is now kind-based (a single *letter* survives; a single digit/symbol does not), so the skill **C** is visible. |
+| P3 | `looks_multicolumn(...)` → `False` on tab-separated input | old `looks_multicolumn` | **FIXED in A1 by replacement, not repair**: the helper is deleted; `layout.analyze()` runs on the **raw** extraction (where tabs still exist) and reports `MULTICOLUMN_FLATTENED` with a ratio. Proven by `tests/test_parser.py::test_two_column_fixture_is_flagged…` |
+| P4 | `bullets_of("Led a team of nine engineers…")` → `[]` | old `bullets_of` | **FIXED in A1**: `segment.bullets()` accepts a marker **or** an achievement shape; the marker-only helper is deleted. |
+| P5 | `detect_sections("SUMMARY/experience/SUMMARY")` → 2 keys | first-heading-wins | **FIXED in A1**: `segment.segment()` emits one segment per heading occurrence, flags `SECTION_REPEATED`, and keeps both bodies. |
 | P6 | `normalize` idempotent → `True` | — | this one claim was true |
 | P7 | `Tfidf(['a b c','b c']).idf('kubernetes')=2.099` vs `idf('fox')=1.405` with n_docs=2 | — | unseen terms outrank seen ones; with a 2-doc "corpus" IDF carries no market signal. Needs a real corpus (we have none) |
 | P8 | `import ats_research` → ok now, `0.0.1`, 15 exports | — | the only green probe that mattered 20 minutes ago |
