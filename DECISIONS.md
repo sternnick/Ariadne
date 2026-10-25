@@ -68,6 +68,20 @@ D-014-style future audits.
 **Rejected:** deleting it (it is accurate as a metaphor and carries no legal claim); keeping it
 unqualified (a metaphor next to a score is read as a promise).
 
+## D-034 · 2026-10-25 · Health-check cadence reduced (owner decision): weekly probe, monthly freshness
+Was: one daily job running all three gates. Is: two crons with per-step `if` gating —
+`0 3 * * 0` (Sundays 03:00 UTC) runs the **live source probe** only; `0 4 1 * *` (1st of month,
+04:00 UTC) runs **freshness + provenance**; `workflow_dispatch` runs all three.
+**Reason:** alert fatigue. Freshness decays on a 30/90-day clock, so a daily check could only repeat
+the same verdict ~29 times; external links do not change hour to hour. A gate that fires constantly is
+a gate that gets muted, and a muted gate is worse than a rare one that is believed.
+**Implementation note:** one job, per-step conditions, and the verdict still derives from step
+`outcome` — a skipped step is neither a pass nor a failure, so a weekly run cannot silently claim the
+freshness gates were checked. The report line now prints the trigger, so an issue body always says
+*which* cadence produced it.
+**Unchanged:** the issue is still deduplicated by label (one open `health-check` issue, commented on
+repeat failure, commented and closed on recovery), and the run still exits non-zero after filing.
+
 ## D-033 · 2026-10-25 · Post-flip verification: what was actually observed
 Every claim below is an observation, with the artifact that shows it.
 
