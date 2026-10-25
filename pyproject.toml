@@ -1,0 +1,43 @@
+# Ariadne — dependency-free measurement of how an ATS parser reads a CV.
+#
+# DEPENDENCY POLICY (AGENT_CONTRACT C7.2): the runtime set is EMPTY and stays empty unless a
+# DECISIONS.md entry names the user problem, the evidence, and the cost. Every claim in this
+# package is computable with the standard library; that is a product property (reproducibility,
+# no supply-chain surface for a document containing personal data), not an accident.
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ariadne-ats"
+version = "0.0.1"
+description = "Transparent, dependency-free measurement of how an ATS parser reads a CV."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Ariadne project contributors" }]
+keywords = ["ats", "resume", "cv", "parsing", "tf-idf"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+# Runtime dependencies: NONE, deliberately (see the note above and DECISIONS.md D-016).
+dependencies = []
+
+[project.optional-dependencies]
+# Dev-only. Kept out of `dependencies` so that `pip install ariadne-ats` installs no test stack.
+dev = ["pytest>=8"]
+
+[project.scripts]
+ariadne = "ariadne_ats.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

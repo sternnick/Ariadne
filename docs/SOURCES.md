@@ -76,6 +76,13 @@ CELEX id. Both are official. Where a datastream did not exist, the record says s
 | EV-21 | rezi.ai/pricing (page body) | Free $0 / Pro $29/mo / Lifetime $149 / Enterprise $99 per 200 users; "62 % of users land an interview" = marketing | A (page) / C (claim) | 2026-10-25 | unprobed |
 | EV-22 | `data/sources/2026-10-25-jobSuit-ai-demo-transcript.md` (this repo) | Jobsuit workflow: autofix → score → keyword proposal with accept/reject → categories modification/contextual match/not applicable. **Unverified transcript; workflow only, no names or numbers** | B | 2026-10-25 | ok |
 | EV-23 | `.work/lanes/parsing.md` (this repo, distilled research) | parser pipeline stages; the "~95 % accuracy" claim is marketing; no public leaderboard found | B | 2026-10-25 | ok |
+| EV-25 | `.work/lanes/fundamentals.md` (this repo) | ATS definition, nine modules, F500 adoption, the unsupported "75 % auto-reject" claim | B | 2026-10-25 | ok |
+| EV-29 | `.work/lanes/commercial.md` (this repo) | Rezi/Enhancv pricing read from page bodies; Teal/Kickresume snippet-only; Jobscan walled | B | 2026-10-25 | ok |
+| EV-28 | `.work/lanes/opensource.md` (this repo) | JobScout/AviCV/Resume-Scanner/career-ops mechanisms with PROVEN/SNIPPET-ONLY labels | B | 2026-10-25 | ok |
+| EV-31 | `.work/lanes/data.md` (this repo) | JSON Resume v1.7.0 field list; ESCO/O*NET/Lightcast state of knowledge | B | 2026-10-25 | ok |
+| EV-27 | `.work/lanes/scoring.md` (this repo) | TF-IDF/cosine as the implemented baseline; SBERT defaults; ANN + re-rank | B | 2026-10-25 | ok |
+| EV-30 | `.work/lanes/papers.md` (this repo) | the 2024-2026 tailoring + fairness literature index | B | 2026-10-25 | ok |
+| EV-26 | `.work/lanes/engines.md` (this repo) | what vendor documentation actually says about formats/limits — and the six documented fetch failures | C | 2026-10-25 | ok |
 | EV-24 | `.work/lanes/legal.md` (this repo, distilled research) | the record of what *failed* — LL144 page, ilga.gov timeout, snippet-only case law. Retained as a **negative** result, not authority | C/U | 2026-10-25 | ok |
 
 ---
@@ -141,4 +148,11 @@ EV-21 https://www.rezi.ai/pricing
 EV-22 local:data/sources/2026-10-25-jobSuit-ai-demo-transcript.md
 EV-23 local:.work/lanes/parsing.md
 EV-24 local:.work/lanes/legal.md
+EV-25 local:.work/lanes/fundamentals.md
+EV-26 local:.work/lanes/engines.md
+EV-27 local:.work/lanes/scoring.md
+EV-30 local:.work/lanes/papers.md
+EV-28 local:.work/lanes/opensource.md
+EV-29 local:.work/lanes/commercial.md
+EV-31 local:.work/lanes/data.md
 ```

@@ -68,6 +68,90 @@ D-014-style future audits.
 **Rejected:** deleting it (it is accurate as a metaphor and carries no legal claim); keeping it
 unqualified (a metaphor next to a score is read as a promise).
 
+## D-020 · 2026-10-25 · A0 documents written; two sources registered late by design
+All eight A0 docs exist (`docs/01`…`docs/08`) plus `docs/09` and `docs/SOURCES.md`.
+**One process note worth keeping:** `EV-27`…`EV-31` (the lane reports) were registered in
+`SOURCES.md` **only when the doc that cites them was written**, not up front. Registering them early
+made `scripts/provenance.py` fail on "registered but never cited" for every intermediate step — a true
+finding, but about our bookkeeping rather than the evidence. Deferring registration keeps the gate
+strict at every commit instead of loosening it to accommodate a plan.
+**Bug found and fixed by the gate itself:** `fresh.py` treated any `Live surfaces:` line as opting into
+the 30-day clock, including `Live surfaces: none` — so every methods doc would have gone stale in a
+month for no reason. A noisy gate is an ignored gate; the rule is now "non-`none` value ⇒ live clock".
+**Not claimed:** the docs do not assert parser accuracy, ATS compatibility, or fairness. Those are
+`[OPEN]` in `docs/08` §8.3 (M-1…M-5) because the measurements do not exist.
+
+## D-019 · 2026-10-25 · C9 rationale: why no-profiling is policy *and* architecture
+WP251rev.01 (Art. 29 WP, EDPB-endorsed) settles the tempting argument. Two findings decide it:
+
+1. **"Profiling has to involve some form of automated processing – although human involvement does
+   not necessarily take the activity out of the definition."** (§II.) A human reviewer does not
+   convert a profile into "not a profile".
+2. For Art. 22, involvement must be real: *"The controller cannot avoid the Article 22 provisions by
+   fabricating human involvement … any oversight of the decision is meaningful, rather than just a
+   token gesture … carried out by someone who has the authority and competence to change the
+   decision."* (§III.A.)
+
+Combined with Reg. (EU) 2024/1689 Art. 6(3) — an Annex III system "shall **always** be considered to
+be high-risk where the AI system performs profiling" — a procedural defence (review screens, approval
+steps, an "AI-assisted" label) is **not** a defence at all. The only durable one is structural: the
+system never derives an attribute of the person. That is what `tests/test_no_profiling.py` enforces,
+and why C9 says a conflicting requirement is rejected rather than negotiated.
+
+## D-018 · 2026-10-25 · Tagline must be re-reviewed before any public launch
+D-010's "PASS with qualifier" is accepted **for a private repository only**. Before any public
+launch, the tagline and every user-facing string are re-reviewed against C8 and `docs/09` §8 — the
+qualifier sentence is **mandatory wherever the tagline appears**, and the review is recorded as a new
+DECISIONS entry, not assumed to have carried over. Reason: Art. 3(12) makes promotional statements
+part of the intended purpose, so copy that is harmless in private becomes a classification input at
+launch.
+**Trigger:** any change of repository visibility, any landing page, any app-store listing.
+
+## D-017 · 2026-10-25 · CI is the enforcement mechanism for C4's intent
+`.github/workflows/ci.yml` runs six gates: `fresh.py`, `provenance.py`, `check-sources.py` (offline),
+`check-links.py`, `compileall`, and `pytest` (including the C9 no-profiling gate), plus a CLI smoke
+test of the declared entry point.
+**Branch protection is part of the decision, not an optional extra**: `main` must require the `gates`
+check to pass. The rule that makes it real:
+```
+gh api -X PUT repos/sternnick/Ariadne/branches/main/protection \
+  -F required_status_checks.strict=true \
+  -F required_status_checks.contexts[]='contract gates' \
+  -F enforce_admins=true \
+  -F required_pull_request_reviews.required_approving_review_count=0 \
+  -F restrictions=
+```
+**Status, honestly:** the workflow file exists and every gate runs locally; protection **cannot be
+applied until the first branch exists on the remote** (the GitHub repo is empty and this tree has no
+remote configured). Recorded as a debt to execute immediately after the first push — a CI file with
+no protection is advisory, which is exactly the "prose not enforcement" failure C4 exists to end.
+**Rejected:** putting `check-sources.py --probe` in CI (third-party dependency on the push path);
+running only the tests named in the last commit (a gate that can be dodged by not naming a file).
+
+## D-016 · 2026-10-25 · `pyproject.toml`: zero runtime dependencies, pytest dev-only
+`dependencies = []` is a **product property**, not laziness: the package must compute its claims with
+the standard library so that (a) a CV never has to leave the machine to be measured, (b) results are
+reproducible for a reader who installs nothing, and (c) there is no supply-chain surface behind a
+document containing personal data. `pytest>=8` sits in `[project.optional-dependencies].dev` so
+`pip install ariadne-ats` installs no test stack.
+**Consequence accepted:** no `sentence-transformers`, no `scikit-learn`, no `chromadb` in the
+baseline. A semantic embedder, when A2 needs one, arrives as an *optional* extra with its own
+DECISIONS entry — and the baseline keeps working without it (measured 2026-10-25: `sklearn`,
+`sentence-transformers`, `chromadb` are all absent from this machine anyway).
+
+## D-015 · 2026-10-25 · G1 executed: package renamed `ats_research` -> `ariadne_ats`, CLI added
+The rename was forced by the approved `[project.scripts] ariadne = "ariadne_ats.cli:main"`, and it
+was the right time: before the first tag, the first PyPI name, or the first citation.
+**What moved:** `src/ats_research/` -> `src/ariadne_ats/` (via `git mv`, so blame survives), imports
+updated in `tests/test_no_profiling.py`, and every stale `src/ats_research/...` reference in
+`docs/00-audit.md` corrected in place (the dead-link gate found all of them — see D-017).
+**`cli.py` is real, not a stub** (C7.7): `ariadne inspect` reports tokens, sections and the
+multicolumn heuristic; `ariadne compare` prints cosine plus the terms that produced it. There is no
+"score my CV" command, because no score exists yet, and a flag that pretended otherwise would be a
+user-facing claim under C8. The CLI carries a stop list *of its own* (a display choice, not a model
+of ATS filtering) so output is not "the / is / and".
+**Behaviour of existing modules: unchanged** (`textutil`, `lexical` untouched in this step).
+
 ## D-014 · 2026-10-25 · OJ-1/2/3 closed — and what each closure changed
 Recorded because in all three cases **the answer was not the one we had been working from**:
 * **OJ-1** — I had framed the question as "Section 4 (2 Aug 2025) or Section 2 (2 Dec 2027)". The

@@ -22,9 +22,9 @@ Method:        full tree read, git status, all 9 lane reports read, all 3 src mo
 | `.gitignore` | keeps scratch/raw out; now un-ignores `.work/lanes/` | committed `c45ed02` | yes |
 | `data/sources/2026-10-25-jobSuit-ai-demo-transcript.md` | 351-line primary source: Jobsuit demo, verbatim + provenance header | committed | yes — its own header states `verified against audio: NO`, names/numbers non-citable |
 | `data/harvest/arxiv-hiring.csv` | 46 rows of hiring-AI papers harvested from the arXiv API | committed | yes after this turn — `date_conflict` column added (6/46 rows conflict; cause unresolved, D-006) |
-| `src/ats_research/__init__.py` | package surface | committed, **corrected this turn** | now honest (`0.0.1`, 15 exports, all real) |
-| `src/ats_research/textutil.py` | normalisation, tokenising, section/bullet detection (151→~190 lines w/ limitation notes) | committed | **behaviour stale** — 4 measured defects, deferred to A1 by the no-code rule |
-| `src/ats_research/lexical.py` | TF-IDF + cosine, pure Python (100 lines) | committed, docstring corrected | behaviour fine for English; **no background corpus exists** → IDF is meaningless in the 2-document case |
+| `src/ariadne_ats/__init__.py` | package surface | committed, **corrected this turn** | now honest (`0.0.1`, 15 exports, all real) |
+| `src/ariadne_ats/textutil.py` | normalisation, tokenising, section/bullet detection (151→~190 lines w/ limitation notes) | committed | **behaviour stale** — 4 measured defects, deferred to A1 by the no-code rule |
+| `src/ariadne_ats/lexical.py` | TF-IDF + cosine, pure Python (100 lines) | committed, docstring corrected | behaviour fine for English; **no background corpus exists** → IDF is meaningless in the 2-document case |
 | `.work/lanes/*.md` (9) | the distilled research reports — this repo's only evidence corpus: 393 lines, **98 unique URLs, 18 arXiv ids** | **now tracked** (were untracked; D-003) | yes, as of 15:2x today |
 
 ### A.2 Present but intentionally untracked
@@ -45,13 +45,13 @@ resolvable by id**. `scripts/` — none, so C3/C4 are unenforced. CI — none. `
 
 1. **Deleted** 5 files / 41 KB: `.work/rescue/{18ea5316,1a28a27e,4acf9ebf,d792319c,d7c8d8de}.md`
    — each a timeout stub whose content was a `git diff --no-index` usage dump, not findings.
-2. **`src/ats_research/__init__.py:10`** read `from .resume import parse_resume, Resume, Role`.
+2. **`src/ariadne_ats/__init__.py:10`** read `from .resume import parse_resume, Resume, Role`.
    Five of its seven imports named files that do not exist; `import ats_research` raised
    `ModuleNotFoundError: No module named 'ats_research.resume'`. Surface trimmed to the 15
    real names, version `0.1.0 → 0.0.1` (0.1.0 advertised an API that did not exist).
 3. **`lexical.py`** docstring promised *"the helper `idf_from_background` exists to supply a
    corpus"* — `hasattr(module,'idf_from_background') == False`. Claim deleted. Its pointer to
-   `docs/04-matching-and-scoring.md` was dead (docs/ empty) → retargeted to `.work/lanes/scoring.md`.
+   `docs/03-matching-and-scoring.md` was dead (docs/ empty) → retargeted to `.work/lanes/scoring.md`.
    Dead import `tokenize` removed (0 uses).
 4. **`textutil.py`** — four false docstring claims replaced with measured limitations (below).
 5. **`LICENSE`** — dropped `See docs/10-legal-and-compliance.md` (never existed) and replaced
@@ -169,7 +169,7 @@ detail… Mark UNVERIFIED"). The map says UNKNOWN instead.
 `docs/SOURCES.md` · `01-what-an-ats-is.md` · `02-parsing-and-what-breaks-it.md` ·
 `03-matching-and-scoring.md` · `04-generation-rag-and-provenance.md` ·
 `05-reliability-fairness-security.md` · `06-open-source-landscape.md` ·
-`07-product-workflow-teardown.md` · `08-known-unknowns.md` · `docs/DECISIONS.md` *(placed at
+`07-product-workflow-teardown.md` · `08-known-unknowns.md` · `DECISIONS.md` *(placed at
 repo root as `DECISIONS.md` instead — D-001 reasoning; if you want it under `docs/`, say so and
 I move it with history)*.
 **Status updated 2026-10-25: 2 of 10 written** — `docs/09-eu-legal-compliance.md` (owner-mandated EU
@@ -178,7 +178,7 @@ they are raw reports, not docs — no `Last verified:` header, no source ids, mi
 
 ### C.3 Infrastructure
 
-1. ~~`scripts/check-sources.mjs`~~ **DONE 2026-10-25** — `scripts/check-sources.py`: 39-source probe
+1. ~~`scripts/check-sources.py`~~ **DONE 2026-10-25** — `scripts/check-sources.py`: 39-source probe
    manifest, `ok/walled/dead/unreachable` classification, content-length + hash delta, `--probe`
    manual only, fails on a registered-but-unprobeable source.
 2. ~~`scripts/fresh.py`~~ **DONE** — 90-day general clock + 30-day `Live surfaces:` clock, exits 1 on

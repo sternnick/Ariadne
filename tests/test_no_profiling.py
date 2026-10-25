@@ -55,7 +55,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "src" / "ats_research"
+SRC = ROOT / "src" / "ariadne_ats"
 LEGAL = ROOT / "docs" / "09-eu-legal-compliance.md"
 
 # Tokens that would indicate person-level inference rather than document measurement. Kept as
@@ -127,7 +127,7 @@ def test_scoring_surface_is_text_similarity_only():
     import sys
 
     sys.path.insert(0, str(ROOT / "src"))
-    from ats_research.lexical import Tfidf  # noqa: PLC0415 - intentional: import under test
+    from ariadne_ats.lexical import Tfidf  # noqa: PLC0415 - intentional: import under test
 
     tf = Tfidf(["machine learning python docker", "docker kubernetes pipelines data"])
     result = tf.compare("python docker pipelines", "machine learning kubernetes")

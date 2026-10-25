@@ -88,7 +88,7 @@ All three live in `scripts/`, run from a clean checkout, exit non-zero on failur
 
 | Script | Contract |
 |---|---|
-| `scripts/check-sources.mjs` *(or `.py`)* | Re-probes every URL in `SOURCES.md`. Reports HTTP status, content-length delta and a body hash delta since the recorded check. A 404/timeout is recorded against the source id and forces its grade to `U` until re-resourced. Budget: never hammer a host — one request per URL per run, and a `403/401` is reported as *walled*, not as *absent*. |
+| `scripts/check-sources.py` *(or `.py`)* | Re-probes every URL in `SOURCES.md`. Reports HTTP status, content-length delta and a body hash delta since the recorded check. A 404/timeout is recorded against the source id and forces its grade to `U` until re-resourced. Budget: never hammer a host — one request per URL per run, and a `403/401` is reported as *walled*, not as *absent*. |
 | `scripts/fresh.py` | Walks `docs/`, prints `file, Last verified, age days, stale (90d), stale (30d claims)`. Non-zero exit if any doc lacks the header pair. |
 | `scripts/provenance.py` | Bidirectional: every `[Xn]` id cited in `docs/**` resolves to a `SOURCES.md` entry, and every `SOURCES.md` entry is cited by at least one doc. Uncited source = delete it or use it. Dangling id = hard fail. |
 
@@ -192,6 +192,28 @@ shown to the user that qualifies it. Recorded in `DECISIONS.md` (template: D-010
 and is a checklist item in the commit that introduces the string; a later automated scanner is a
 nice-to-have, not a substitute (a scanner cannot tell a metaphor from a promise).
 
+## C9 — NO-PROFILING IS A PERMANENT CONSTRAINT
+
+**9.1** `tests/test_no_profiling.py` is an **architectural gate**, not an incidental test. It asserts
+that the package contains no person-attribute inference, no person-level scoring callable, and no
+surface that evaluates a human rather than a document.
+
+**9.2** Any requirement that needs person-attribute inference, person-level scoring, or a profile of a
+natural person is **out of scope by construction**. It is **rejected**, not negotiated. The test is
+**not weakened** to accommodate it, and it is not skipped, marked xfail, or narrowed to a subset of
+files.
+
+**9.3** The rationale is legal *and* technical, and both are load-bearing: Reg. (EU) 2024/1689
+Art. 6(3) makes an Annex III system "**always** … high-risk where the AI system performs profiling of
+natural persons", and WP251rev.01 establishes that human review does not cure it — "human involvement
+does not necessarily take the activity out of the definition". A procedural defence therefore cannot
+be the answer; the only durable defence is that the system measures documents and never builds a
+profile. See `DECISIONS.md` D-019 and `docs/09-eu-legal-compliance.md` §1.2.
+
+**9.4** A pull request that deletes, disables or loosens this gate requires an owner decision recorded
+in `DECISIONS.md` with a new Art. 6(4) classification assessment attached. Reviewers must treat its
+absence as a blocking defect, in the same class as a deleted failing test.
+
 ---
 
 ## Compliance ledger (must be updated in the same change that changes status)
@@ -205,6 +227,7 @@ nice-to-have, not a substitute (a scanner cannot tell a metaphor from a promise)
 | C5 Labels + grades | **ENFORCED** | Grades used in `docs/00-audit.md` §B, including 5 retractions and 8 `U` items |
 | C6 Known-unknowns + probe | **PARTIAL — improving** | Three of six legal unknowns **closed at A/B** this turn (OJ-1/2/3, `docs/09` §7.1) with the primary evidence named; OJ-4/5/6 remain with probes. `docs/08-known-unknowns.md` is still an A0 artifact; the open three migrate into it verbatim |
 | C7 Product posture | **ENFORCED** | No dependency added (package still has zero runtime deps); `__init__.py` no longer advertises an API that does not exist. Test dependency: `pytest` (dev-only; declared when `pyproject.toml` lands in A0) |
+| C9 No-profiling gate | **ENFORCED** | `tests/test_no_profiling.py` (7 tests) runs in CI; clause added 2026-10-25 with the WP251 rationale in D-019 |
 | C8 User-facing strings | **ENFORCED (manual)** | Clause added 2026-10-25 with the Art. 3(12) rationale; first application recorded in `DECISIONS.md` D-010 (tagline verdict) |
 
 **Escalation rule:** if an agent cannot satisfy a clause it must stop and report the clause

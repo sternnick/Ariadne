@@ -74,14 +74,18 @@ def main() -> int:
             rows.append((rel, str(date or "—"), "—", "—", "NO HEADER", live or ""))
             continue
         age = (today - date).days
-        clock = LIVE_DAYS if live else GENERAL_DAYS
+        # "Live surfaces: none" is a declaration that only the general clock applies. Treating the
+        # mere presence of the line as opt-in to 30 days made every methods doc stale in a month,
+        # which is how a gate becomes noise and then becomes ignored.
+        has_live = bool(live) and not live.strip().lower().startswith("none")
+        clock = LIVE_DAYS if has_live else GENERAL_DAYS
         stale = age > clock
         near = (not stale) and age >= clock * NEAR
         if stale:
             bad.append((rel, f"stale: {age}d > {clock}d clock"))
         elif near and args.strict:
             bad.append((rel, f"near-stale: {age}d of {clock}d"))
-        rows.append((rel, date.isoformat(), str(age), f"{clock}d", "STALE" if stale else ("near" if near else "fresh"), live or ""))
+        rows.append((rel, date.isoformat(), str(age), f"{clock}d", "STALE" if stale else ("near" if near else "fresh"), (live or "")[:52]))
 
     if not args.quiet:
         w = [max(len(r[i]) for r in rows + [("file", "last verified", "age", "clock", "state", "live surfaces")]) for i in range(6)]
