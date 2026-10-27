@@ -100,46 +100,78 @@ compatibility.
    French (EV-19) and a 5-language benchmark (EV-13). The tokenizer used to fail P1 on exactly that
    input; it now passes, and 2.7 is the measurement that says so rather than the prose.
 
-## 2.7 Field-level accuracy, measured (M-1 closed 2026-10-27)
+## 2.7 Field-level accuracy, measured (M-1 closed 2026-10-27, re-measured the same day after four fixes)
 
-The probe named above was run: 24 synthetic CVs and 6 job descriptions, hand-labelled before any
-parser output was read (`data/gold/manifest.json` records the matching rule and every expected value).
-The scorer is `src/ariadne_ats/bench.py`, the gate is `scripts/bench.py --check`, and the artefact the
-numbers below were copied from is `data/gold/results.json`. Micro-averaged over the corpus:
+The probe named above was run: 26 synthetic CVs and 7 job advertisements, hand-labelled before any
+parser output was read (`data/gold/manifest.json` records the matching rule and every expected value:
+310 labelled field values, 12 forbidden values, 24 labelled requirement weights). The scorer is
+`src/ariadne_ats/bench.py`, the gate is `scripts/bench.py --check`, and the artefact these numbers were
+read from is `data/gold/results.json`. Micro-averaged over the corpus:
 
 | Field | precision | recall | f1 | fixtures exactly right | What the misses are |
 |---|---|---|---|---|---|
-| employer | 0.947 | 0.900 | 0.923 | 21/23 | employer-first role lines (cv-21), date on its own line (cv-22) |
-| title | 0.947 | 0.900 | 0.923 | 21/23 | the same two documents, swapped rather than missing |
-| date | 1.000 | 1.000 | 1.000 | 23/23 | a year is emitted only inside experience/education, so a year in prose stays out (cv-15 forbids it) |
-| skill | 0.989 | 0.919 | 0.953 | 20/22 | `* git and docker` is one item naming two tools (cv-13); a skills table yields one compound value per row (cv-23) |
-| contact | 1.000 | 1.000 | 1.000 | 24/24 | read from the contact block only, so a reference's email never becomes the candidate's (cv-19) |
-| name | 1.000 | 1.000 | 1.000 | 23/23 | abstains on a headline above the name (cv-24) instead of guessing |
+| employer | 0.977 | 0.977 | 0.977 | 25/26 | one employer-first line whose words carry no naming evidence keeps the title-first default and comes out transposed (cv-26) |
+| title | 0.977 | 1.000 | 0.988 | 25/26 | the same document, the same line |
+| date | 1.000 | 1.000 | 1.000 | 26/26 | a year is emitted only inside experience/education, so a year in a sentence stays out (cv-15 forbids it) |
+| skill | 0.981 | 1.000 | 0.990 | 25/26 | a table whose second column is a level ("Python\tAdvanced") yields two extra skill facts (cv-25) |
+| contact | 1.000 | 1.000 | 1.000 | 26/26 | read from the contact block only, so a reference's email never becomes the candidate's (cv-19) |
+| name | 1.000 | 1.000 | 1.000 | 26/26 | abstains on a headline above the name (cv-24) instead of guessing |
 
-Requirement weighting on the 6 JD fixtures: 5 of 6 exactly right. The sixth is German (`jd-06`) and
-writing the unit test made the limitation precise, in the worse direction: it is not that a German
-advertisement gets the wrong weight, it is that it gets **no requirements at all**, because the
-heading vocabulary is as English as the cue vocabulary (`ANFORDERUNGEN` is not a section, so the
-bullets land nowhere and no cue rescues them). Aggregate cue accuracy 0.857, pinned by
-`tests/test_jd.py::test_german_advertising_text_yields_no_requirements_at_all`. The labelled ground truth there is what a reader of the advertisement would say, not what our
-rule finds, which is the only reason the number is below 1.
+**What moved the numbers since the first measurement**, each item traced to a fixture that was failing:
 
-**Forbidden emissions: 0.** Six values are labelled as "must never be emitted" (a reference's email, an
-employer named inside a bullet, a year inside a sentence, and so on). Emitting one is a different class
-of failure from missing a field, so it is counted separately and the build stops on it.
+* **cv-21, the transposition.** A role line was read as `title, employer` because title-first is the
+  convention. The two segments are now scored for evidence - a role word, or a legal/corporate suffix -
+  and the order follows the evidence. Where the evidence **conflicts** (two names that both read as
+  companies) the parser abstains with `ROLE_LINE_AMBIGUOUS`; where it is merely **silent** (a foreign
+  job title beside a company name the vocabulary has never seen) the documented default stands, because
+  silence is not evidence of an unfamiliar convention. The first version of that evidence list contained
+  "data", "security", "analytics" and "software", and it *broke three fixtures*, because those are what
+  employers are called (`Meridian Data`, `Norrsen Security`). The filter that produced the final list is
+  in the code comment, and it is a limit, not a role ontology.
+* **cv-22, the date on the next line.** A role line whose date sat alone underneath produced no role
+  fact at all while its years were still extracted as dates elsewhere - the combination that makes a
+  loss invisible from the JSON. The pairing refuses to reach past a bullet or a blank line, because
+  reaching is how a date gets attached to the wrong employer.
+* **cv-13 and cv-23, skills.** One fix and **one correction to this document**. The mechanism recorded
+  yesterday for cv-23 was wrong: the row was not being merged by the splitter, the line
+  `Languages\tpython, go` was being classified as a **`languages` heading** by the fuzzy heading rule,
+  so the row disappeared into a heading line. A fuzzy heading candidate may now contain no tab and no
+  list separator. Splitting itself moved into `textutil.skill_items`: bracket-aware (`spreadsheets
+  (excel, google sheets)` is one skill - and until today cv-06 carried two parser-shaped labels because
+  of it), label+list rows, and `X and Y` split only when both sides are single tokens.
+* **jd-06 and jd-07, non-English advertisements.** The heading vocabulary was English, so a German
+  advertisement produced **no requirements at all**. Headings and cues now cover de/fr/es, cues are
+  matched in the accent-insensitive form the headings already used (`souhaitée` does not contain the
+  bytes of "souhaite"), and `jd.py` trusts the segmenter's classification instead of keeping a second
+  heading list that had silently disagreed with it.
 
-Per-language rows in `data/gold/results.json` show 1.000 recall for de, el, es, fr, ga and nl. Do not
-read that as language support: **n = 1 document per language**, and the corpus has 15 English
-documents, so the English column is where the difficulty lives. What the non-English fixtures do prove
-is narrow and real: headings are recognised under capitalisation and accents (Greek is the hard case,
-because capitalising Greek deletes the accents), and the tokenizer no longer splits an accented word.
+Requirement weighting over the 7 advertisements: expected `{must 10, nice 6, unknown 8}`, measured
+`{must 7, nice 6, unknown 11}`; cue accuracy 0.750, 5 of 7 fixtures exactly right (0.857 before the
+non-English headings were recognised - the number went **down** because two documents that previously
+contributed nothing now contribute three labelled requirements each, two of which we cannot weight).
+
+**Two of the fixtures exist to fail.** cv-25 (a skill-level table) and cv-26 (an employer-first line
+with no naming evidence) were added *after* the fixes, are labelled as failures, and are left failing:
+passing them would need a level vocabulary and more role words, and adding vocabulary until the corpus
+stops complaining is tuning the measurement rather than improving the parser. The floors in
+`data/gold/thresholds.json` were raised in the same commit that grew the corpus, so the ratchet is not
+monotone by construction - and `tests/test_bench.py` mutates the parser twice to prove the gate still
+fails when it should.
+
+One annotation error of the same kind, named because it was measured rather than noticed: the two new
+fixtures omitted their education years, so the parser scored two false-positive dates that were the
+labels' fault, not the code's. Corrected against the convention cv-01 and cv-03 already follow.
+
+**Forbidden emissions: 0** (12 labelled "must never be emitted" values; the build stops on the first
+one, because emitting a reference's email address is a different class of failure from missing a field).
 
 Three things this corpus cannot tell anyone, stated because the table above invites the wrong
 inference:
 
-1. It is **author-written by the same session that wrote the extraction rules**. Five of the 24
-   documents (cv-21 to cv-24, jd-06) were added specifically to fail, which is the only reason the
-   headline numbers are not 1.000. These figures describe this corpus and no other. `[OPEN]` a real or
+1. It is **author-written by the same session that wrote the extraction rules**. Seven of the 33
+   documents (cv-21 to cv-26, jd-06 and jd-07) were added specifically to fail or to be labelled
+   partially, which is the only reason several headline numbers are not 1.000. These figures describe
+   this corpus and no other. `[OPEN]` a real or
    licensed corpus is G-8/D-4, still unresolved.
 2. 24 documents is a floor, not a distribution. A 0.947 with 38 true positives has a confidence
    interval roughly as wide as the gap between 0.947 and 1.000; no statistical claim is being made.

@@ -109,8 +109,22 @@ def test_image_only_pdf_never_returns_a_silent_empty_parse(fixtures):
 
 
 def test_pdf_with_text_layer_extracts(fixtures, tmp_path: Path):
-    """If a backend exists, a text PDF must extract. Skipped when no backend is installed."""
-    pymupdf = pytest.importorskip("pymupdf")
+    """If a backend exists, a text PDF must extract.
+
+    Two modes, because "skipped" is a word CI should only be able to say honestly:
+
+    * default: `importorskip`, since the runtime dependency list is empty by policy and a contributor
+      who has not installed the optional extra is not doing anything wrong;
+    * `ARIADNE_REQUIRE_PDF_BACKEND=1` (what the `pytest-pdf` job sets): the backend is *required* and
+      a missing one is a failure. Without that switch a broken optional import and a passing run look
+      identical in the log, which is how a permanent skip can masquerade as coverage.
+    """
+    import os
+
+    if os.environ.get("ARIADNE_REQUIRE_PDF_BACKEND") == "1":
+        import pymupdf  # noqa: F401  - ImportError is the failure this mode exists to surface
+    else:
+        pymupdf = pytest.importorskip("pymupdf")
     doc = pymupdf.open()
     page = doc.new_page()
     page.insert_text((72, 72), "JANE DOE\nSUMMARY\nBackend engineer")

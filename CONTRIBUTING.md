@@ -32,13 +32,52 @@ python scripts/check-sources.py # registry integrity (offline)
 python scripts/check-links.py   # dead relative links
 ```
 
-All six run in CI. Locally, `.githooks/pre-push` runs the same set — enable it once per clone:
+All four run in CI, alongside `compile`, `pytest` and `benchmark`: those seven context names are the required status checks on `main`. Locally, `.githooks/pre-push` runs the same set - enable it once per clone:
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
 `--no-verify` bypasses the hook. That is a review offence, not a technique.
+
+## Running what CI runs
+
+```bash
+python -m pip install -e ".[dev]"          # runtime dependencies: none
+python scripts/fresh.py                    # every dated claim inside its clock
+python scripts/provenance.py               # citations both ways
+python scripts/check-sources.py            # recorded source state (add --probe for the live read)
+python scripts/check-links.py              # no dead relative link
+                                              # and the pytest-pdf job proves it would pass
+python -m compileall -q src scripts tests  # what the `compile` job is
+python -m pytest                           # 112 tests; one skips without the optional PDF backend,
+python scripts/bench.py --check            # the parser-quality gate (exits 1 on a regression)
+```
+
+Two jobs exist to close a gap the list above cannot, and both are informational rather than required:
+
+```bash
+python -m pytest                                       # under 3.10 as well (CI: pytest-3.10)
+pip install -e ".[dev,pdf]" && ARIADNE_REQUIRE_PDF_BACKEND=1 python -m pytest -q   # CI: pytest-pdf
+```
+
+The second one matters more than it looks. `ariadne_ats.extract` uses PyMuPDF when the host has one and
+the dependency policy keeps the runtime list empty, so the default run skips one test. A skip that
+nobody ever runs is how a broken optional import survives forever: in the `pytest-pdf` job the same
+test *fails* if the backend is missing, so "it would have passed" is checked, not asserted.
+
+## Changing the benchmark
+
+* A fixture is a `.txt` file under `data/gold/` plus a labelled row in `manifest.json`. The scorer
+  refuses to run a manifest whose expected or forbidden value does not occur in its fixture, so a
+  transcription error fails the build instead of scoring quietly.
+* **Never widen a label or a vocabulary list to make a red run green.** If a change makes a fixture
+  pass that used to fail, say so in the PR; if it makes one pass that should not, the fixture is wrong.
+* Floors move **with** the measurement and in the same commit that explains the move
+  (`AGENT_CONTRACT` C2.4). Adding a fixture that fails and raising the floors in the same commit is the
+  expected shape of a good round: a ratchet that only ever rises has stopped measuring.
+* `tests/test_bench.py` mutates the parser twice on purpose (one rule stops firing, one invents a value)
+  and asserts the gate goes red. If you weaken a floor, that test is where you will be caught.
 
 ## What to send
 

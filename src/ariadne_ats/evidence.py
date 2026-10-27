@@ -42,6 +42,7 @@ from dataclasses import dataclass, field
 from typing import Iterable
 
 from . import fields as _fields
+from . import textutil as _textutil
 from .errors import Code, ParseReport, Severity
 from .segment import Section, segment
 from .textutil import normalize
@@ -194,14 +195,12 @@ class Ledger:
             for item in sec.bullets:
                 facts.append(cls._fact("bullet", item, sec.kind, norm, counts, cursor, sec.confidence))
             if sec.kind == "skills":
-                for item in re.split(r"[,;/|\t]|\n", sec.body):
-                    item = item.strip(" \t*-\u00b7\u2022")
-                    # The floor is about kind, not size: the skill "C" is one letter and has to
-                    # survive. Audit P2 (the invisible "C") had recurred here, in a second function,
-                    # and the gold set caught it on cv-10. A fragment with no letter in it is noise.
-                    if 1 <= len(item) <= 60 and any(ch.isalpha() for ch in item):
-                        facts.append(cls._fact("skill", item, sec.kind, norm, counts, cursor,
-                                               sec.confidence))
+                # Splitting is textutil's job, not a regex inlined here: the shapes a skills block
+                # arrives in (comma list, bullets, a flattened table) are a text-handling problem, and
+                # the rules are unit-tested in tests/test_fields.py against cv-13 and cv-23.
+                for item in _textutil.skill_items(sec.body):
+                    facts.append(cls._fact("skill", item, sec.kind, norm, counts, cursor,
+                                           sec.confidence))
             if sec.kind in ("experience", "education"):
                 for line in sec.body.split("\n"):
                     for y in _YEAR_RE.findall(line):

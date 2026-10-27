@@ -187,18 +187,6 @@ def contacts(text: str, confidence: float = 0.9) -> list[FieldHit]:
     return hits
 
 
-# Words that appear in a CV headline. A line made of these is a job title, not a name, and reading
-# one as a name puts the wrong string in `basics.name`: which is worse than abstaining. Same shape
-# of rule as the heading vocabulary: a list, measured against data/gold/cv-24, no claims beyond it.
-TITLE_WORDS = {"engineer", "engineering", "manager", "analyst", "developer", "architect",
-               "administrator", "consultant", "specialist", "director", "scientist", "technician",
-               "designer", "programmer", "officer", "associate", "assistant", "intern", "graduate",
-               "devops", "security", "software", "senior", "junior", "staff", "principal",
-               "platform", "backend", "frontend", "full-stack"}
-
-
-NAME_PARTICLES = {"de", "den", "der", "van", "von", "di", "da", "del", "della", "la", "le", "ten",
-                  "ter", "bin", "ibn", "al", "dos", "das", "af", "av"}
 _NAME_TOKEN_RE = re.compile(r"[^\W\d_]+(?:['.\u2019\u2019-][^\W\d_]+)*", re.UNICODE)
 
 
@@ -246,6 +234,67 @@ def person_name(text: str, confidence: float = 0.75) -> FieldHit | None:
 # --------------------------------------------------------------------------- role lines
 
 
+# --- role-line ordering: which segment is the employer -------------------------------------------
+# Two vocabularies do this job, and they are deliberately separate from TITLE_WORDS (which guards the
+# *name* rule, where a false positive puts the wrong string in `basics.name`). Here a wrong answer puts
+# the wrong employer in `work[].name`, and the alternative to deciding is abstaining.
+#   evidence that a segment is a job title
+# Words a *role* contains that a company name does not. That filter is the whole list, and it is
+# measured rather than intuited: "data", "security", "analytics", "software" and "platform" were in
+# the first version and each one broke a fixture, because they are what employers are called -
+# "Meridian Data", "Danubia Data", "Norrsen Security" all read as titles and the fields came out
+# transposed by the rule that was meant to stop transposing them.
+ROLE_TITLE_EVIDENCE = {"engineer", "engineering", "manager", "management", "analyst", "developer",
+                       "architect", "administrator", "consultant", "specialist", "director",
+                       "scientist", "technician", "designer", "programmer", "officer", "associate",
+                       "assistant", "intern", "graduate", "lead", "head", "team", "devops", "sre",
+                       "qa", "senior", "junior", "staff", "principal", "backend", "frontend",
+                       "full-stack", "scrum", "agile", "product", "project", "program"}
+#   evidence that a segment is a company: a legal form or a corporate noun. A company name is the only
+#   thing in a CV that says "AB", "GmbH", "Oyj" or "& Co".
+COMPANY_SUFFIX_RE = re.compile(
+    r"(?i)\b(ab|gmbh|kg| AG|sas|s.a.s.|sl|sl\.?|ltd|limited|inc|llc|plc|ag|oy|oyj|bv|nv|as|asa|"
+    r"co|corp|corporation|company|partners|holdings|group|bank|capital| Ventures|"
+    r"systems|technologies|digital|analytics|solutions|consulting|labs|works|media|finance|"
+    r"logistics|industries|electronic|electronics|energy|telecom|insurance)\b")
+
+
+def _title_score(segment: str) -> int:
+    """+1 if the segment looks like a job title, -1 if it looks like a company, 0 if it says neither."""
+    words = re.findall(r"[^\W\d_]+", segment.lower(), re.UNICODE)
+    score = 0
+    if any(w in ROLE_TITLE_EVIDENCE for w in words):
+        score += 1
+    if COMPANY_SUFFIX_RE.search(segment):
+        score -= 1
+    return score
+
+
+def _order_segments(segs: list[str]) -> tuple[str, str] | None:
+    """(title, employer), or None when the segments carry no evidence about their order.
+
+    cv-21 ("Norra Bank - Senior Engineer") made the old assumption - first segment is the title - cost
+    two false positives and two false negatives on one document, and the same class of document is the
+    most common reason a role line could be transposed. Rather than guess a second convention, the
+    segments are scored: the one that reads as a job title is the title, the one that reads as a
+    company is the employer. When the scores **conflict** - two company-looking names, or two
+    title-looking names - the answer is no facts, with a `ROLE_LINE_AMBIGUOUS` issue saying why. When
+    they are merely **silent** (no evidence on either side) the documented title-first default stands:
+    silence is not evidence of an unfamiliar convention, and abstaining there would be a new failure
+    invented in the name of caution.
+    """
+    a, b = _title_score(segs[0]), _title_score(segs[1])
+    if a == b == 0:
+        # Neither segment says anything either way, which is the common case for a non-English title
+        # beside a company name the vocabulary has never seen ("PrÃ­omhinnealtÃ³ir, Coho Networks").
+        # The documented default stands: title-first is the convention this corpus measures. Abstaining
+        # here would turn a convention into a new failure, and docs/08 M-6 records the gap.
+        return segs[0], segs[1]
+    if a == b:
+        return None                 # both read as titles, or both as companies: no answer
+    return (segs[0], segs[1]) if a > b else (segs[1], segs[0])
+
+
 def _strip_date(line: str) -> tuple[str, str, str]:
     """Return (line without its date span, start marker, end marker). End may be `present`-shaped."""
     m = _DATE_SPAN_RE.search(line)
@@ -278,6 +327,43 @@ def _labelled(residual: str) -> tuple[str, str] | None:
     return out["title"], out["employer"]
 
 
+_DATE_ONLY_LINE_RE = re.compile(
+    rf"^\s*(?:\b\d{{1,2}}/)?\b{_YEAR}\b[\s.\-/]{{0,5}}(?:(?:\b\d{{1,2}}/)?\b(?:{_YEAR}|{_PRESENT}))?\b[\s.,-]*$",
+    re.I,
+)
+
+
+def _dates_below(lines: list[str]) -> dict[int, tuple[str, str]]:
+    """Indices of role lines whose date sits on the *following* line, paired with that date.
+
+    cv-22 is the labelled case: the two-column and table-derived layouts that put the role on one line
+    and "2019 - 2024" alone underneath produced no role fact at all, because the rule required the date
+    and the fields to share a line - while the years themselves were still extracted as dates elsewhere,
+    which is the combination that makes the loss silent.
+
+    The pairing is deliberately unforgiving: the date line must contain a date and nothing else, and the
+    line above it must be a real line that is not a bullet and not an all-caps heading. A blank line or
+    a bullet above stops the search rather than reaching further back, because reaching further back is
+    how a date gets attached to the wrong employer.
+    """
+    out: dict[int, tuple[str, str]] = {}
+    for j, raw in enumerate(lines):
+        if not _DATE_ONLY_LINE_RE.match(raw):
+            continue
+        _, start, end = _strip_date(raw.strip())
+        if not start or not end:
+            continue
+        for i in range(j - 1, max(-1, j - 3), -1):
+            above = lines[i].strip()
+            if not above or above.startswith(("*", "-", "\u2022", "\u00b7")):
+                break                      # blank or bullet: do not reach past it
+            if above.isupper() and len(above.split()) <= 4:
+                break                      # a heading, not a role line
+            out[i] = (start, end)
+            break
+    return out
+
+
 def role_lines(body: str, report: ParseReport | None = None,
                confidence: float = 0.7) -> list[RoleHit]:
     """Every role line of one experience section, in document order.
@@ -289,13 +375,17 @@ def role_lines(body: str, report: ParseReport | None = None,
     report = report or ParseReport()
     hits: list[RoleHit] = []
     lines = body.split("\n")
+    below = _dates_below(lines)
     for i, raw in enumerate(lines):
         line = raw.strip()
         if len(line) < 10 or line.startswith(("*", "-", "\u2022", "\u00b7")):
             continue
         residual, start, end = _strip_date(line)
         if not (start or end):
-            continue
+            paired = below.get(i)
+            if not paired:
+                continue
+            residual, start, end = line, paired[0], paired[1]
         at = _AT_FORM_RE.match(residual.strip())
         if at:
             title, employer = at.group("title").strip(), at.group("employer").strip()
@@ -310,7 +400,13 @@ def role_lines(body: str, report: ParseReport | None = None,
                                f"'{line[:60]}' has a date but one field-shaped segment; no employer or "
                                "title extracted rather than a guess")
                     continue
-                title, employer = segs[0], segs[1]
+                ordered = _order_segments(segs[:2])
+                if ordered is None:
+                    report.add(Code.ROLE_LINE_AMBIGUOUS, Severity.DEGRADED,
+                               f"'{line[:60]}' names two segments but neither reads as a job title; "
+                               "employer and title left unextracted rather than ordered by guesswork")
+                    continue
+                title, employer = ordered
         if not title or not employer:
             report.add(Code.ROLE_LINE_AMBIGUOUS, Severity.DEGRADED,
                        f"'{line[:60]}' resolved to a partial role line; left unextracted")

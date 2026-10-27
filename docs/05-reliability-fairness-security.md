@@ -32,7 +32,7 @@ changes — same candidate, same content, reordered. Two consequences, both alre
 ### Our own number, measured 2026-10-27
 
 The test the paragraph above asked for now exists (`src/ariadne_ats/bench.py::stability`, gated by
-`scripts/bench.py --check`, artefact `data/gold/results.json`). Each of the 24 gold documents is
+`scripts/bench.py --check`, artefact `data/gold/results.json`). Each of the 26 gold documents is
 rebuilt through four competence-preserving transforms and compared against itself, and three separate
 things are reported instead of one blended score:
 
@@ -44,7 +44,7 @@ things are reported instead of one blended score:
 | inject ligature / soft hyphen | 11 | yes | 1.000 | 0.0000 | 0.0 % |
 
 The middle column is the honest one and the one a reader will otherwise ignore: it is how many of the
-24 documents the transform actually **changed**, and a transform that finds nothing to do measures
+26 documents the transform actually **changed**, and a transform that finds nothing to do measures
 nothing. `add_typographic_damage` needs five bullets or three commas to have a target, so it fired on
 11; `rename_headings` knows two English headings, so it fired on 16 (which is the same vocabulary limit
 as M-9, on the fixture side). Where a transform applied, retention was 1.000; the claim is "every
@@ -118,13 +118,13 @@ the only defensible statement is the local-first one: the baseline computes with
 | `normalize()` is idempotent | **passes** (audit P6) |
 | Import of the package is clean; no phantom API | **passes** (audit P8, D-004) |
 | No person-level inference in the package | **passes**, two ways: the static scan and the behavioural verbatim/kind check over every gold fixture (`tests/test_no_profiling.py`; see its "what this file cannot prove" section for the limits) |
-| Field extraction is verbatim, never inferred | **passes** - every emitted fact value is a substring of its own document, over all 24 fixtures |
+| Field extraction is verbatim, never inferred | **passes** - every emitted fact value is a substring of its own document, over all 26 fixtures |
 | Every doc citation resolves; no uncited source | **passes** (`scripts/provenance.py`) |
 | No stale doc | **passes** (`scripts/fresh.py`) |
 | No dead relative link | **passes** on docs 01–05; `docs/08` still a forward reference |
 | Score stability under perturbation | **measured 2026-10-27**: facts preserved 1.000, ranking inverted 0-6.7 % depending on transform (5.1); the *score* half still waits on A2, because there is no score |
 | Field-level parse quality | **measured 2026-10-27**: `data/gold/results.json`, published in 02 2.7, gated by `scripts/bench.py --check` |
-| Forbidden emissions (a value present that should never be) | **0**, over 24 labelled documents, and the build stops on the first one |
+| Forbidden emissions (a value present that should never be) | **0**, over 26 labelled documents, and the build stops on the first one |
 
 ## 5.5 The honest summary
 

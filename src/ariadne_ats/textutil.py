@@ -39,7 +39,9 @@ SECTION_HEADINGS = {
     # Deliberately NOT "qualifications": on a CV that heading means education, and the segmenter
     # resolves a line to exactly one kind. Version 1 of this vocabulary mapped QUALIFICATIONS to
     # requirements and silently swallowed the EDUCATION block (caught by the perturbation test:
-    # facts 15 -> 14, the graduation year vanished).
+    # facts 15 -> 14, the graduation year vanished). The same trap exists in French: adding bare
+    # "compétences" here hid cv-07's whole skills block, because on a CV it means skills. It lives
+    # under `skills` now, and only the qualified French form stays here.
     #
     # The non-English entries are the headings of the languages the gold set has fixtures for
     # (data/gold/manifest.json: en, de, fr, es, el, ga), added on 2026-10-27 after that benchmark
@@ -49,17 +51,24 @@ SECTION_HEADINGS = {
     # here and is recorded as unknown in docs/08, not silently assumed.
     # All entries are the LOWER-CASED form, because `_classify` folds case first.
     "requirements": ["requirements", "must have", "required", "about you", "who you are",
-                     "what you bring"],
+                     "what you bring",
+                     # jd-06 measured the English-only version of this list at "no requirements at
+                     # all": the heading was never found, so no bullet was ever considered. Same
+                     # shape and same limit as the other non-English entries - a list, no model.
+                     "anforderungen", "voraussetzungen", "was sie mitbringen", "was du mitbringst",
+                     "competences requises", "profil requis", "profil recherche",
+                     "requisitos", "requisitos del puesto", "perfil buscado"],
     "responsibilities": ["responsibilities", "what you will do", "the role", "your role", "duties",
-                         "day to day"],
+                         "day to day", "ihre aufgaben", "hre aufgaben", "vos taches",
+                         "tus responsabilidades", "funktionen"],
     "contact": ["contact", "contact information", "personal details", "personal information"],
     "summary": ["summary", "professional summary", "profile", "about me", "objective",
                 "career objective", "career summary", "highlight of qualifications",
                 "profil", "próifíl", "perfil", "προσοντικα"],
     "skills": ["skills", "technical skills", "core competencies", "core skills",
                "areas of expertise", "technologies", "tools", "expertise", "skill set",
-               "kenntnisse", "fähigkeiten", "compétences", "habilidades", "δεξιότητες",
-               "teicneolóiste"],
+               "kenntnisse", "fähigkeiten", "kompetenzen", "compétences", "habilidades",
+               "δεξιότητες", "teicneolóiste"],
     "experience": ["experience", "work experience", "professional experience",
                    "employment", "employment history", "work history", "career history",
                    "relevant experience",
@@ -74,6 +83,94 @@ SECTION_HEADINGS = {
     "awards": ["awards", "honors", "achievements", "volunteer", "volunteering",
                "activities", "interests"],
 }
+
+
+# ------------------------------------------------------------------ skills, read as the table it is
+# Skills blocks arrive in three shapes: a comma list, a bullet list, and - the one that used to fail -
+# a two-column table read back as text ("Languages\tpython, go"). Splitting only on punctuation made
+# the table produce one value per cell ("Languages", "python, go"), which the gold set scored on cv-23.
+_SKILL_SEP_RE = re.compile(r"[,;/|]")
+_SKILL_LIST_SEPARATORS = ",;/|"
+# Words that name a *class* of skills. In a flattened table they are the row label, not a skill; a
+# label this list has never seen survives as a skill, i.e. as a visible false positive rather than a
+# silent loss. Same shape of rule as the heading vocabulary: a list, its limit stated.
+_SKILL_ROW_LABELS = {"languages", "infrastructure", "data", "tools", "tooling", "frameworks",
+                     "libraries", "databases", "platforms", "stack", "tech", "technologies",
+                     "methods", "practices", "testing", "monitoring", "cloud", "other", "misc",
+                     "miscellaneous", "certifications", "spoken", "programming", "development"}
+_AND_PAIR_RE = re.compile(r"^([A-Za-z][\w.+#-]{1,20}) and ([A-Za-z][\w.+#-]{1,20})$")
+
+
+def _split_skills(text: str) -> list[str]:
+    """Split on `, ; / |`, but never inside brackets.
+
+    "spreadsheets (excel, google sheets)" names one skill; splitting that comma is what made
+    data/gold/cv-06 carry two parser-shaped labels instead of the single value a reader would write.
+    Depth counting rather than a regex, because the nesting a CV produces is arbitrary and a regex for
+    it would be a claim about parentheses this corpus does not need.
+    """
+    out: list[str] = []
+    buf: list[str] = []
+    depth = 0
+    for ch in text:
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth = max(0, depth - 1)
+        if depth == 0 and ch in _SKILL_LIST_SEPARATORS:
+            out.append("".join(buf).strip())
+            buf = []
+        else:
+            buf.append(ch)
+    out.append("".join(buf).strip())
+    return [x for x in out if x]
+
+
+def skill_items(text: str) -> list[str]:
+    """The individual skills a skills block names, in document order.
+
+    Three rules, each traceable to a fixture, and one refusal:
+
+    * a row with a tab and a comma-separated second cell is **label + list**, so the label is dropped
+      and the list is split (cv-23);
+    * an item of the form `X and Y`, where both sides are single tokens, names two skills (cv-13:
+      `* git and docker`). The single-token constraint is the whole point: "Design and implementation
+      of distributed systems" is one skill-shaped phrase, not two, and splitting prose to raise recall
+      would be tuning the corpus instead of reading it;
+    * an item is kept when it has at least one letter and is at most 60 characters. The length floor is
+      about kind, not size - the skill "C" is one character and must survive (cv-10, audit P2).
+
+    What this does not solve: a table whose second column is a level rather than a list
+    ("Python\tAdvanced") yields both cells, because nothing in the row says which column is the skill.
+    That gap is stated in docs/02 2.7 rather than hidden in a vocabulary of level words.
+    """
+    cells: list[str] = []
+    for line in text.split("\n"):
+        raw = line.strip().strip("*\u00b7\u2022- \t")
+        if not raw:
+            continue
+        if "\t" in raw:
+            row = [c.strip() for c in raw.split("\t") if c.strip()]
+            row = [_split_skills(c) for c in row]
+            if (len(row) == 2 and len(row[1]) > 1
+                    and row[0][0].lower().strip() in _SKILL_ROW_LABELS):
+                cells += row[1]                              # row 0 named the class of the row
+            else:
+                for cell in row:
+                    cells += cell
+        else:
+            cells += _split_skills(raw)
+    items: list[str] = []
+    for cell in cells:
+        cell = cell.strip(" \t*\u00b7\u2022-")
+        if not cell:
+            continue
+        pair = _AND_PAIR_RE.match(cell)
+        if pair:
+            items += [pair.group(1), pair.group(2)]
+        else:
+            items.append(cell)
+    return [i for i in items if 1 <= len(i) <= 60 and any(ch.isalpha() for ch in i)]
 
 
 def fold(text: str) -> str:
@@ -179,7 +276,13 @@ def heading_kind(line: str) -> tuple[str | None, float]:
     hit = _FOLDED_HEADINGS.get(fold(plain))
     if hit:
         return hit[0], EXACT_CONFIDENCE
-    if len(plain.split()) <= 3 and raw[:1].isupper():
+    # A *fuzzy* heading candidate must carry no column or list separator. The line
+    # "Languages\tpython, go" begins with an capitalised vocabulary word and is three tokens long, so
+    # the loose path used to claim it as a `languages` **heading** - and everything after the tab
+    # disappeared into a heading line. That, not the splitter, is why cv-23 lost its skills: a heading
+    # is a boundary, and a line with columns in it is data. Exact matches are unaffected: "SKILLS" has
+    # no separators to begin with.
+    if len(plain.split()) <= 3 and raw[:1].isupper() and not any(c in raw for c in "\t,;|"):
         fplain = fold(plain)
         for word, kind in _FOLDED_LONG:
             if word in fplain:

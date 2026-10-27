@@ -134,3 +134,57 @@ def test_version_matches_pyproject():
 
 def test_bench_cli_exits_zero_on_a_green_corpus():
     assert load_gate().main(["--check"]) == 0
+
+
+def _gate():
+    """The gate itself, imported from scripts/ - the ratchet lives in the CLI, and a test that
+    re-implements it would be testing a copy."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("ariadne_gate", ROOT / "scripts" / "bench.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module, ROOT / "data" / "gold" / "thresholds.json"
+
+
+def test_the_gate_notices_a_deliberate_regression():
+    """A ratchet nobody has seen fail is a decoration.
+
+    Two mutations, both in-memory and both reverted by the fixture: one that costs recall (a field rule
+    stops firing) and one that costs precision (a rule invents a value). Each must produce a named
+    failure from the same `check` the CLI runs, so a green gate is known to be able to go red.
+    """
+    from ariadne_ats import fields
+
+    gate, thresholds = _gate()
+    baseline = gate.check(bench.full_report(), thresholds)
+    assert baseline[0] == [], f"the gate is red before the mutation: {baseline[0]}"
+
+    from ariadne_ats import fields as _f
+    _original = _f.role_lines
+    _f.role_lines = lambda *a, **k: []
+    try:
+        failures, _ = gate.check(bench.full_report(), thresholds)
+    finally:
+        _f.role_lines = _original
+    assert failures, "a parser that emits no roles at all passed the ratchet: the floors are not gating"
+    assert any("employer" in f or "title" in f for f in failures)
+
+
+def test_the_gate_notices_invented_values(monkeypatch):
+    from ariadne_ats import fields
+
+    gate, thresholds = _gate()
+    original = fields.person_name
+
+    def invented(text, confidence=0.75):
+        hit = original(text, confidence)
+        if hit is None:
+            return None
+        hit.value = hit.value + " Extra"       # a value that is no longer in the document
+        return hit
+
+    monkeypatch.setattr(fields, "person_name", invented)
+    failures, _ = gate.check(bench.full_report(), thresholds)
+    assert failures, "inventing part of a name did not move the ratchet; precision is not being measured"
+    assert any("name" in f for f in failures)

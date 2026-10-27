@@ -1,0 +1,14 @@
+Tomas Ruiz
+t.ruiz@example.com | +34 612 345 678
+
+PROFILE
+Implementation consultant for wholesale distribution.
+
+EXPERIENCE
+Kappa, Release Steward 2020 - present
+* Ran three squads through two platform migrations
+Release Steward, Verode 2017-2020
+* Coached the release train through a reorganisation
+
+EDUCATION
+BA Economics, 2016
