@@ -4,7 +4,7 @@
 status:        BINDING since 2026-10-25 (first commit of this file)
 applies_to:    principal agent, every subagent, every future session
 scope:         every file in this repository, including this one
-Last verified: 2026-10-25
+Last verified: 2026-10-27
 Reviewed by:   Ariadne (principal) / owner (rules issued 2026-10-25)
 ```
 
@@ -81,6 +81,16 @@ source of a confident, wrong statement.
 
 **3.5** Refreshing a fact re-dates it in the same change. Re-dating without re-checking
 is forgery, not maintenance.
+
+**3.6 The commit rule for current-state claims.** A sentence that describes what *is* — "there is no
+CI", "the parser cannot see X", "this file does not exist" — must name the tree it was checked
+against, or sit in a section that does. An audit that keeps its date after the thing it describes has
+changed is worse than no audit: it reads as current fact while describing history. That happened to
+`docs/00-audit.md` (A.3 stated "README — none exists, CI — none" under a 2026-10-25 header, four
+commits after both arrived) and an outside reader found it before we did. Re-verifying means *running
+the check* — `git ls-files`, `pytest --collect-only`, the script that measures the claim — never
+re-typing a date; 3.5 forbids the shortcut. A statement that cannot be re-checked that way is history
+and must be labelled as history.
 
 ## C4 — UPDATE TOOLING (part of the contract, not optional)
 
@@ -226,8 +236,8 @@ absence as a blocking defect, in the same class as a deleted failing test.
 | C4 `check-sources.py`, `fresh.py`, `provenance.py` | **CLOSED 2026-10-25** | All three exist and run: `provenance.py` passes bidirectionally (39 sources, 0 dangling, 0 uncited); `fresh.py` reports every doc dated/attributed/within clock; `check-sources.py` has a 39-line probe manifest, fails on a registered-but-unprobeable source, records `ok/walled/dead/unreachable`, and writes `docs/source-status.json`. `--probe` is manual, never a hook (a push may not depend on third parties) |
 | C5 Labels + grades | **ENFORCED** | Grades used in `docs/00-audit.md` §B, including 5 retractions and 8 `U` items |
 | C6 Known-unknowns + probe | **PARTIAL — improving** | Three of six legal unknowns **closed at A/B** this turn (OJ-1/2/3, `docs/09` §7.1) with the primary evidence named; OJ-4/5/6 remain with probes. `docs/08-known-unknowns.md` is still an A0 artifact; the open three migrate into it verbatim |
-| C7 Product posture | **ENFORCED** | No dependency added (package still has zero runtime deps); `__init__.py` no longer advertises an API that does not exist. Test dependency: `pytest` (dev-only; declared when `pyproject.toml` lands in A0) |
-| C9 No-profiling gate | **ENFORCED** | `tests/test_no_profiling.py` (7 tests) runs in CI; clause added 2026-10-25 with the WP251 rationale in D-019 |
+| C7 Product posture | **ENFORCED** | No dependency added (package still has zero runtime deps); `__init__.py` advertises only importable names, and `tests/test_bench.py` now fails if `__version__` and `pyproject.toml` disagree. Test dependency `pytest` is declared in the `dev` extra. Since 2026-10-27 the claim is not only structural: `scripts/bench.py --check` measures extraction against `data/gold/` on every push (D-035) |
+| C9 No-profiling gate | **ENFORCED, WITH ITS LIMITS STATED** | `tests/test_no_profiling.py` runs in CI: a static scan (identifiers, callables, banned inference vocabulary) **and** a behavioural check that every emitted fact is a declared kind and a verbatim substring of its own document, over every gold fixture. The file's own header lists what neither half can prove (bypass by renaming, output coverage, legal classification, completeness of the word lists); it is a guardrail, not a compliance certification, and docs/09 remains the classification instrument. Clause added 2026-10-25 with the WP251 rationale in D-019; behavioural half and limitations added 2026-10-27 |
 | C8 User-facing strings | **ENFORCED (manual)** | Clause added 2026-10-25 with the Art. 3(12) rationale; first application recorded in `DECISIONS.md` D-010 (tagline verdict) |
 
 **Escalation rule:** if an agent cannot satisfy a clause it must stop and report the clause
