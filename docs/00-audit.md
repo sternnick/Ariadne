@@ -31,7 +31,7 @@ Machine-checked, from `git ls-files`, `pytest --collect-only` and `.github/workf
 |---|---|---|
 | `README.md` | exists, 84+ lines, with a measured-results section | `README.md` |
 | `pyproject.toml` | exists; zero runtime dependencies; `ariadne` console script | `pyproject.toml`, D-016 |
-| `tests/` | 6 files, 74 tests, all passing locally under Python 3.13 | `tests/` |
+| `tests/` | 8 files, 98 collected: **97 pass, 1 skips** when the optional PyMuPDF backend is absent, which is how CI runs it (`tests/test_parser.py::test_pdf_with_text_layer_extracts` uses `importorskip`, because the runtime dependency list is empty by policy). Verified on a clean clone under Python 3.11 with `pip install -e .[dev]` | `tests/`, `pyproject.toml` |
 | `docs/` | 9 research docs + `SOURCES.md` + this file | `docs/` |
 | `docs/SOURCES.md` | exists; `provenance.py` reports 0 dangling / 0 uncited | `scripts/provenance.py` |
 | `scripts/` | `fresh.py`, `provenance.py`, `check-sources.py`, `check-links.py`, **`bench.py`** | `scripts/` |

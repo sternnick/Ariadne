@@ -116,9 +116,12 @@ numbers below were copied from is `data/gold/results.json`. Micro-averaged over 
 | contact | 1.000 | 1.000 | 1.000 | 24/24 | read from the contact block only, so a reference's email never becomes the candidate's (cv-19) |
 | name | 1.000 | 1.000 | 1.000 | 23/23 | abstains on a headline above the name (cv-24) instead of guessing |
 
-Requirement weighting on the 6 JD fixtures: 5 of 6 exactly right; the sixth is German (`jd-06`), where
-the cue vocabulary is English and the result is no must/nice signal at all. Aggregate cue accuracy
-0.857. The labelled ground truth there is what a reader of the advertisement would say, not what our
+Requirement weighting on the 6 JD fixtures: 5 of 6 exactly right. The sixth is German (`jd-06`) and
+writing the unit test made the limitation precise, in the worse direction: it is not that a German
+advertisement gets the wrong weight, it is that it gets **no requirements at all**, because the
+heading vocabulary is as English as the cue vocabulary (`ANFORDERUNGEN` is not a section, so the
+bullets land nowhere and no cue rescues them). Aggregate cue accuracy 0.857, pinned by
+`tests/test_jd.py::test_german_advertising_text_yields_no_requirements_at_all`. The labelled ground truth there is what a reader of the advertisement would say, not what our
 rule finds, which is the only reason the number is below 1.
 
 **Forbidden emissions: 0.** Six values are labelled as "must never be emitted" (a reference's email, an

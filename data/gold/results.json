@@ -742,9 +742,11 @@
         "issues": [],
         "facts": {
           "contact": 2,
+          "name": 1,
           "summary": 1,
           "skill": 5,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 3
         }
@@ -799,9 +801,11 @@
         "issues": [],
         "facts": {
           "contact": 2,
+          "name": 1,
           "summary": 1,
           "skill": 5,
           "role": 2,
+          "employer": 2,
           "date": 4,
           "bullet": 2
         }
@@ -858,8 +862,10 @@
         ],
         "facts": {
           "contact": 2,
+          "name": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 2
         }
@@ -914,9 +920,11 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 5,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 1
         }
@@ -973,6 +981,7 @@
         ],
         "facts": {
           "contact": 1,
+          "name": 1,
           "bullet": 3
         }
       },
@@ -1026,9 +1035,11 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 5,
           "role": 2,
+          "employer": 2,
           "date": 4,
           "bullet": 3
         }
@@ -1083,9 +1094,11 @@
         "issues": [],
         "facts": {
           "contact": 2,
+          "name": 1,
           "summary": 1,
           "skill": 5,
           "role": 2,
+          "employer": 2,
           "date": 4,
           "bullet": 2
         }
@@ -1140,9 +1153,11 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 3,
           "role": 1,
+          "employer": 1,
           "date": 2,
           "bullet": 1
         }
@@ -1197,9 +1212,11 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 4,
           "bullet": 1
         }
@@ -1257,9 +1274,11 @@
         ],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 6,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 2
         }
@@ -1314,8 +1333,10 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 1
         }
@@ -1370,9 +1391,11 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 3
         }
@@ -1432,9 +1455,11 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 5,
           "role": 1,
+          "employer": 1,
           "date": 3,
           "bullet": 4
         }
@@ -1489,9 +1514,11 @@
         "issues": [],
         "facts": {
           "contact": 4,
+          "name": 1,
           "summary": 1,
           "skill": 5,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 1
         }
@@ -1548,8 +1575,10 @@
         ],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "role": 1,
+          "employer": 1,
           "date": 3,
           "bullet": 1
         }
@@ -1604,8 +1633,10 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "skill": 5,
           "role": 1,
+          "employer": 1,
           "date": 1,
           "bullet": 2
         }
@@ -1660,8 +1691,10 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 2
         }
@@ -1716,9 +1749,11 @@
         "issues": [],
         "facts": {
           "contact": 2,
+          "name": 1,
           "summary": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 4,
           "bullet": 2
         }
@@ -1773,9 +1808,11 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 1
         }
@@ -1832,9 +1869,11 @@
         ],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 4,
           "bullet": 2
         }
@@ -1901,9 +1940,11 @@
         "issues": [],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 4,
           "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 2
         }
@@ -1968,6 +2009,7 @@
         ],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "skill": 4,
           "date": 5,
@@ -2033,8 +2075,10 @@
         ],
         "facts": {
           "contact": 1,
+          "name": 1,
           "summary": 1,
           "role": 1,
+          "employer": 1,
           "date": 3,
           "bullet": 1
         }
@@ -2092,6 +2136,7 @@
           "summary": 1,
           "skill": 4,
           "role": 1,
+          "employer": 1,
           "date": 3,
           "bullet": 1
         }
@@ -2190,7 +2235,7 @@
       },
       {
         "id": "jd-06",
-        "note": "ADVERSARIAL, and the most important one here: the cue list is English, so a German advertisement yields no must/nice signal at all. The expected row is what a reader of the text would label, not what our rule finds.",
+        "note": "ADVERSARIAL, and the most important one here: both vocabularies - headings and cues - are English, so a German advertisement yields no requirements at all (not even unknown-weighted ones). The expected row is what a reader of the text would label, not what our rule finds.",
         "expected_weights": {
           "must": 2,
           "nice": 1,
@@ -3166,7 +3211,7 @@
     "note": "ranking_inversion_rate is the share of fixture pairs whose order against the anchor advertisement flips; it is the figure nearest to the 29.6 % matched-pair reversal rate in [EV-02], and it is not the same experiment."
   },
   "generated": {
-    "utc": "2026-10-27T16:59:13Z",
+    "utc": "2026-10-27T18:09:50Z",
     "command": "python scripts/bench.py --write",
     "note": "deterministic given the tree; the timestamp records when the published artefact was refreshed, not a claim about the parser"
   }

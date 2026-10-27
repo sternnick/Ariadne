@@ -50,7 +50,7 @@
     "a role line whose date sits on the following line is not recognised at all: cv-22.",
     "skills expressed as a two-column table yield one compound value per row: cv-23.",
     "'* git and docker' is one list item carrying two skills: cv-13. Splitting ' and ' in prose has a false-positive cost no fixture yet justifies.",
-    "requirement cues are English, so a non-English advertisement produces no must/nice signal: jd-06.",
+    "both the heading and the cue vocabulary are English, so a non-English advertisement yields no requirements at all: jd-06.",
     "the corpus is author-written by the same session that wrote the rules; these numbers describe this 24-document corpus and nothing else."
   ],
   "measured_on": "2026-10-27"

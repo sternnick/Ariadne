@@ -86,6 +86,11 @@ gate `scripts/bench.py --check`, artefact `data/gold/results.json`):
 | name | 1.000 | 1.000 | abstains when a headline sits above the name instead of guessing one |
 
 Forbidden emissions (a value present that must never be): **0**, and the build stops on the first one.
+
+Requirement extraction from job advertisements is measured the same way: 5 of 6 labelled fixtures
+exactly right, and the sixth is German, where it yields **no requirements at all** - the heading
+vocabulary is as English as the cue vocabulary (`tests/test_jd.py` pins that limitation so a future
+change has to change the claim with it).
 Under competence-preserving perturbation every fact survived every transform; renaming a heading moves
 the cosine against a fixed advertisement by up to 0.098 and reorders 6.7 % of fixture pairs, which is
 our own version of the reversal rate in the literature, at roughly a quarter of the published figure.
@@ -98,6 +103,10 @@ The full table, the failure cases named per fixture, and what the corpus cannot 
 §2.7.
 
 ## The gates
+
+`pytest` reports one skip on a machine without PyMuPDF: the text-PDF test needs an optional backend,
+and the runtime dependency list is empty by policy, so the skip is the honest outcome rather than a
+silent pass. Nothing else skips.
 
 Every push runs, and `main` requires: freshness (90-day and 30-day clocks), provenance (bidirectional
 citation check), source registry (offline), dead relative links, `compileall`, `pytest`, and the

@@ -7,6 +7,45 @@ responsibility was considered and why it could not absorb the content.
 
 ---
 
+## D-042 · 2026-10-27 · Verification round on PR #7: two files of tests, and a stale artefact they caught
+Considered for the two new test files: `tests/test_fields.py` (it tests rules; these two test *sentences
+about* rules, a different object) and `tests/test_no_profiling.py` (its bans are about person-level
+inference; these are about score-shaped output and calibrated-probability wording). Neither existing
+file could take them without acquiring a second responsibility, so: `tests/test_claims.py` (user-facing
+claims bound to the code that prints them) and `tests/test_jd.py` (requirement weighting, including
+every way cue vocabulary can mislead).
+
+Three findings from running the checks rather than reading them:
+
+1. **CI blocker.** The `benchmark` job I added pinned `actions/checkout@v4.2.2` /
+   `actions/setup-python@v5.3.2`. The resolver cannot find a version tag that was never published and
+   fails in two seconds at "Getting action download info". This repository pins by commit SHA with a
+   `# vN` comment (D-030); every pin in the tree is now verified to resolve to the claimed release
+   (checkout v4.4.0, setup-python v5.6.0, github-script v7.1.0, fetch-metadata v2.5.0,
+   dependency-review-action v5.0.0). The lesson is not "check the version" but "copy the house pinning
+   pattern instead of inventing a plausible-looking one".
+2. **A stale published artefact survived a green build.** `data/gold/results.json` under-reported the
+   `by_kind` fact counts (no `name`, no `employer`) because it was generated while `KINDS` still
+   omitted them, and `Ledger.summary()` iterates `KINDS`. Every headline number in the file was
+   correct, which is exactly why nobody noticed. `test_published_results_match_a_fresh_run` was
+   comparing only the accuracy table and the stability block - a partial equality check - and now
+   compares the whole artefact except the timestamp, naming the first differing path in one line.
+   Proven to fail: mutate a `by_kind` entry and the test reports the path.
+3. **A limitation stated too small.** The German advertisement gap was written as "the cue vocabulary
+   is English". Writing the unit test showed it is both vocabularies: the heading is not recognised
+   either, so a German JD yields **no requirements at all**, not `unknown`-weighted ones. Corrected in
+   `docs/02` 2.7, `docs/08` M-9, the README, the manifest note and the gate's `known_gaps`.
+
+Also corrected: four internal pointers still said `docs/02 2.6` after the measured numbers moved to
+2.7, and the audit's test-count row now says what CI actually reports (97 pass, 1 optional-backend
+skip) instead of the local figure.
+**Rejected:** adding mypy/ruff to make this round look more verified - no type or lint gate is
+configured here, no interpreter supports adding one silently, and this task's rule was not to expand
+scope. Reported as "not configured" instead.
+**Rule:** C1.3 (a surprising result is investigated), C2.1, C5.1.
+
+---
+
 ## D-035 · 2026-10-27 · A gold corpus, a scorer, and one measuring gate (M-1 closed)
 **Considered for each new file:** `tests/test_parser.py` (a scorer is not a unit test; it produces a
 number a contributor must be able to run without pytest); `scripts/check-sources.py`/`fresh.py` (they

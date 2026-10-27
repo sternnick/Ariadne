@@ -58,16 +58,58 @@ def test_gold_corpus_meets_its_own_floors():
     assert not fails, "\n".join(fails)
 
 
+def _without_stamp(report: dict) -> dict:
+    return {k: v for k, v in report.items() if k != "generated"}
+
+
 def test_published_results_match_a_fresh_run():
-    """results.json is the artefact the docs cite. It may not drift from the code it describes."""
+    """`results.json` is the artefact the docs cite, so it may not drift from the code it describes.
+
+    Compared structurally, everything except the timestamp. An earlier version of this test compared
+    only the per-field accuracy table and the stability numbers, and that hole was paid for: the
+    committed artefact carried `by_kind` fact counts generated while `KINDS` still omitted `name` and
+    `employer`, so the published file under-reported what the parser emitted while every headline
+    number in it was correct. A partial equality check is how a stale artefact survives a green build.
+    """
     published = json.loads((ROOT / "data" / "gold" / "results.json").read_text(encoding="utf-8"))
     fresh = bench.full_report()
-    assert published["accuracy"]["fields"] == fresh["accuracy"]["fields"]
-    assert published["stability"]["transforms"].keys() == fresh["stability"]["transforms"].keys()
-    for name, t in fresh["stability"]["transforms"].items():
-        for k in ("mean_fact_retention", "max_abs_cosine_delta", "ranking_inversion_rate",
-                  "competence_preserved_all", "fixtures_applied"):
-            assert published["stability"]["transforms"][name][k] == t[k], (name, k)
+    a, b = _without_stamp(published), _without_stamp(fresh)
+    assert a == b, _first_difference(a, b)
+
+
+def _first_difference(a, b, path="$") -> str:
+    """Name the first place the published artefact and a fresh run disagree. A dict-vs-dict assert in
+    pytest would dump both trees; the artefact is 60 KB and the reader wants one line."""
+    if type(a) is not type(b):
+        return f"{path}: published {type(a).__name__}, fresh {type(b).__name__}"
+    if isinstance(a, dict):
+        for k in sorted(set(a) | set(b), key=str):
+            if k not in a:
+                return f"{path}.{k}: missing from the published artefact"
+            if k not in b:
+                return f"{path}.{k}: absent from a fresh run (was the artefact hand-edited?)"
+            if a[k] != b[k]:
+                return _first_difference(a[k], b[k], f"{path}.{k}")
+    elif isinstance(a, list):
+        if len(a) != len(b):
+            return f"{path}: published {len(a)} items, fresh {len(b)}"
+        for i, (x, y) in enumerate(zip(a, b)):
+            if x != y:
+                return _first_difference(x, y, f"{path}[{i}]")
+    else:
+        return f"{path}: published {a!r}, fresh {b!r}"
+    return f"{path}: differs (no scalar found; structural comparison)"
+
+
+def test_the_two_runs_that_should_be_identical_are_byte_identical():
+    """Determinism claim in README: same tree, same numbers. Only the stamp may differ."""
+    import copy
+
+    first = copy.deepcopy(bench.full_report())
+    second = copy.deepcopy(bench.full_report())
+    first.pop("generated", None)
+    second.pop("generated", None)
+    assert json.dumps(first, sort_keys=True) == json.dumps(second, sort_keys=True)
 
 
 def test_perturbations_really_do_preserve_competence():

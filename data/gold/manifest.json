@@ -919,7 +919,7 @@
       "file": "jd-06-german.txt",
       "language": "de",
       "surface": "German obligation vocabulary",
-      "note": "ADVERSARIAL, and the most important one here: the cue list is English, so a German advertisement yields no must/nice signal at all. The expected row is what a reader of the text would label, not what our rule finds.",
+      "note": "ADVERSARIAL, and the most important one here: both vocabularies - headings and cues - are English, so a German advertisement yields no requirements at all (not even unknown-weighted ones). The expected row is what a reader of the text would label, not what our rule finds.",
       "expect_requirements": 3,
       "expect_weights": {
         "must": 2,

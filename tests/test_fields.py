@@ -170,3 +170,28 @@ def test_an_unassigned_bullet_block_reports_why_it_has_no_employer():
             if entry["position"] == "":
                 assert entry["custom"].get("ariadne.unassigned") is True
                 assert Code.ROLE_LINE_AMBIGUOUS.value in [i["code"] for i in ledger.issues], path.name
+
+
+def test_a_one_letter_skill_survives_the_splitter():
+    """Audit P2 in its second location: the skills splitter's length floor used to delete "C"."""
+    ledger = build_ledger_text("EXPERIENCE\nEngineer, Acme 2019-2024\n\nSKILLS\nc, bash, r\n")
+    assert {f.value for f in ledger.facts if f.kind == "skill"} == {"c", "bash", "r"}
+
+
+def test_repeated_experience_sections_stay_separate_employers():
+    """Audit P5 (first-heading-wins) in the work list: two EXPERIENCE blocks are two blocks."""
+    text = (
+        "EXPERIENCE\nFirmware Engineer, Nordbit 2018-2024\n* Shipped the bootloader\n\n"
+        "EXPERIENCE\nTest Engineer, Bilka Elektronik 2014-2018\n* Built the HIL rig\n\n"
+        "EDUCATION\nMSc Embedded Systems, 2014\n")
+    ledger = build_ledger_text(text)
+    assert [(w["position"], w["name"]) for w in ledger.work] == [
+        ("Firmware Engineer", "Nordbit"), ("Test Engineer", "Bilka Elektronik")]
+    assert all(w["highlights"] for w in ledger.work), "each block keeps its own achievements"
+
+
+def build_ledger_text(text: str):
+    """Ledger from a string, for rules that need no file on disk."""
+    from ariadne_ats.bench import build_ledger_text as _b
+
+    return _b(text)

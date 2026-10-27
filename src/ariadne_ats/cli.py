@@ -111,7 +111,7 @@ def cmd_bench(args: argparse.Namespace) -> int:
         for k, v in acc.items()}}, indent=2))
     print("Measured on the synthetic gold corpus only (data/gold/manifest.json); these are not "
           "accuracy figures for any real CV, and the corpus was written by the same session that "
-          "wrote the rules. See docs/02 2.6.", file=sys.stderr)
+          "wrote the rules. See docs/02 2.7.", file=sys.stderr)
     return 0
 
 

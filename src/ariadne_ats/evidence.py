@@ -270,7 +270,7 @@ class Ledger:
         # a 5 % penalty: under a degraded layout the number itself may be a merged-column artefact.
         # This is a heuristic about *consequence*, not a probability of being right — the measured
         # accuracy per field lives in data/gold/results.json, and the two must not be confused
-        # (docs/05 5.1, docs/02 2.6).
+        # (docs/05 5.1, docs/02 2.7).
         conf = base_conf if not numbers else round(base_conf * 0.95, 3)
         return Fact(fid, kind, value.strip(), section, span, conf,
                     derived or ("bullet" if kind == "bullet" else "text"), numbers)
@@ -345,7 +345,7 @@ class Ledger:
             "min_confidence": min((f.confidence for f in self.facts), default=0.0),
             "work_entries": len(self.work),
             "note": "confidence is a layout/section heuristic, not a measured probability; measured "
-                    "field accuracy is in data/gold/results.json (docs/02 2.6)",
+                    "field accuracy is in data/gold/results.json (docs/02 2.7)",
         }
 
 
