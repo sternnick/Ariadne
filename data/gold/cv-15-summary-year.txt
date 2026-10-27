@@ -1,0 +1,15 @@
+Marek Nowak
+marek.nowak@example.pl
+
+SUMMARY
+Joined the field in 2003 and has worked on Windows estates ever since.
+
+EXPERIENCE
+Systems Engineer, Vikka Systems 2015-2024
+* Migrated 1,800 desktops to Windows 11 with zero rollback
+
+EDUCATION
+BSc Computer Science, 2004
+
+ADDITIONAL INFORMATION
+Driving licence. Available from Q3.

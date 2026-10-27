@@ -1,5 +1,5 @@
 ```
-Last verified: 2026-10-25
+Last verified: 2026-10-27
 Reviewed by:   Ariadne (principal)
 Live surfaces: none (specs and papers; no vendor pricing or star counts depend on this page)
 ```
@@ -96,9 +96,56 @@ compatibility.
    the normaliser disagreed about what text is (2.4).
 3. **Report what the parse lost, not just what it found.** A field-level diff is honest; an "ATS
    score" is not (2.2, [EV-02]).
-4. **Multilingual is a requirement, not a stretch goal** — our own corpus contains German
-   (EV-08/EV-12), French (EV-19) and a 5-language benchmark (EV-13), and our tokenizer fails P1.
+4. **Multilingual is a requirement, not a stretch goal.** Our own corpus contains German (EV-08/EV-12),
+   French (EV-19) and a 5-language benchmark (EV-13). The tokenizer used to fail P1 on exactly that
+   input; it now passes, and 2.7 is the measurement that says so rather than the prose.
 
-**[OPEN]** Field-level evaluation needs annotated pairs we do not have. Probe: hand-annotate 20
-synthetic résumés (fields: employer, title, dates, skills) and score our parser against them; that is
-the minimum honest basis for saying anything about parse quality.
+## 2.7 Field-level accuracy, measured (M-1 closed 2026-10-27)
+
+The probe named above was run: 24 synthetic CVs and 6 job descriptions, hand-labelled before any
+parser output was read (`data/gold/manifest.json` records the matching rule and every expected value).
+The scorer is `src/ariadne_ats/bench.py`, the gate is `scripts/bench.py --check`, and the artefact the
+numbers below were copied from is `data/gold/results.json`. Micro-averaged over the corpus:
+
+| Field | precision | recall | f1 | fixtures exactly right | What the misses are |
+|---|---|---|---|---|---|
+| employer | 0.947 | 0.900 | 0.923 | 21/23 | employer-first role lines (cv-21), date on its own line (cv-22) |
+| title | 0.947 | 0.900 | 0.923 | 21/23 | the same two documents, swapped rather than missing |
+| date | 1.000 | 1.000 | 1.000 | 23/23 | a year is emitted only inside experience/education, so a year in prose stays out (cv-15 forbids it) |
+| skill | 0.989 | 0.919 | 0.953 | 20/22 | `* git and docker` is one item naming two tools (cv-13); a skills table yields one compound value per row (cv-23) |
+| contact | 1.000 | 1.000 | 1.000 | 24/24 | read from the contact block only, so a reference's email never becomes the candidate's (cv-19) |
+| name | 1.000 | 1.000 | 1.000 | 23/23 | abstains on a headline above the name (cv-24) instead of guessing |
+
+Requirement weighting on the 6 JD fixtures: 5 of 6 exactly right. The sixth is German (`jd-06`) and
+writing the unit test made the limitation precise, in the worse direction: it is not that a German
+advertisement gets the wrong weight, it is that it gets **no requirements at all**, because the
+heading vocabulary is as English as the cue vocabulary (`ANFORDERUNGEN` is not a section, so the
+bullets land nowhere and no cue rescues them). Aggregate cue accuracy 0.857, pinned by
+`tests/test_jd.py::test_german_advertising_text_yields_no_requirements_at_all`. The labelled ground truth there is what a reader of the advertisement would say, not what our
+rule finds, which is the only reason the number is below 1.
+
+**Forbidden emissions: 0.** Six values are labelled as "must never be emitted" (a reference's email, an
+employer named inside a bullet, a year inside a sentence, and so on). Emitting one is a different class
+of failure from missing a field, so it is counted separately and the build stops on it.
+
+Per-language rows in `data/gold/results.json` show 1.000 recall for de, el, es, fr, ga and nl. Do not
+read that as language support: **n = 1 document per language**, and the corpus has 15 English
+documents, so the English column is where the difficulty lives. What the non-English fixtures do prove
+is narrow and real: headings are recognised under capitalisation and accents (Greek is the hard case,
+because capitalising Greek deletes the accents), and the tokenizer no longer splits an accented word.
+
+Three things this corpus cannot tell anyone, stated because the table above invites the wrong
+inference:
+
+1. It is **author-written by the same session that wrote the extraction rules**. Five of the 24
+   documents (cv-21 to cv-24, jd-06) were added specifically to fail, which is the only reason the
+   headline numbers are not 1.000. These figures describe this corpus and no other. `[OPEN]` a real or
+   licensed corpus is G-8/D-4, still unresolved.
+2. 24 documents is a floor, not a distribution. A 0.947 with 38 true positives has a confidence
+   interval roughly as wide as the gap between 0.947 and 1.000; no statistical claim is being made.
+3. Nothing here says what any *vendor's* parser does with the same file. It says what ours does, and
+   2.6 rule 1 is the reason we may not imply the former.
+
+**[OPEN]** M-3 (skill-matching false negatives) still needs its 40 labelled requirement/evidence
+pairs: this benchmark measures *extraction*, not matching. `[OPEN]` a corpus of real documents, and
+the label noise that comes with it (D-4).

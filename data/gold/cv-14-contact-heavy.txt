@@ -1,0 +1,20 @@
+Sofia Rossi
+sofia.rossi@example.it
++39 340 1122334
+github.com/srossi
+linkedin.com/in/sofia-rossi
+Via Roma 12, 20121 Milano, Italy
+
+SUMMARY
+Security engineer, 10 years, mostly in identity and secrets tooling.
+
+WORK EXPERIENCE
+Security Engineer, Aurelia Finance 2019-2025
+* Consolidated 7 identity providers into one, 18,000 users
+Security Analyst, Tessera Group 2015-2019
+
+SKILLS
+oidc, saml, vault, python, linux
+
+EDUCATION
+MSc Computer Science, 2015

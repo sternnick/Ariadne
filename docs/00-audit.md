@@ -1,12 +1,49 @@
 ```
-Last verified: 2026-10-25
+Last verified: 2026-10-27
 Reviewed by:   Ariadne (principal engineer / repo steward)
 Purpose:       Rule-1 audit. The one-page precondition to any implementation.
 Method:        full tree read, git status, all 9 lane reports read, all 3 src modules read
                in full, and 12 executable probes run against the code (not opinions).
+Snapshot:      sections A.2-A.5, B, C, D and E describe the tree at commit `8f31ba9` (2026-10-25).
+               They are history and are left in place because retracting an audit is how an audit
+               stops being evidence.
+Current state: section A.0, checked against `git rev-parse HEAD` on 2026-10-27. Anything in this
+               file that speaks in the present tense belongs to A.0 or says which commit it means.
 ```
 
 # 00 — Audit
+
+---
+
+## A.0 Current state, checked against the tree on 2026-10-27
+
+> Why this section exists: an external review on 2026-10-27 correctly found that this document stated
+> "`README.md` — none exists … CI — none" under a `Last verified: 2026-10-25` header while the
+> repository had had a README, packaging, nine docs, four scripts and an eight-job pipeline since
+> commits made that same day. The audit was not wrong when it was written; it stopped being true and
+> kept its date. That is a documentation-reliability defect of the first order, and a renewed date
+> would not have fixed it. So the history stays, and current state moves here, checked against a
+> tree rather than remembered. The rule is now C3.5 in `AGENT_CONTRACT.md`.
+
+Machine-checked, from `git ls-files`, `pytest --collect-only` and `.github/workflows/`:
+
+| What the audit said was missing | State now | Where to see it |
+|---|---|---|
+| `README.md` | exists, 84+ lines, with a measured-results section | `README.md` |
+| `pyproject.toml` | exists; zero runtime dependencies; `ariadne` console script | `pyproject.toml`, D-016 |
+| `tests/` | 8 files, 98 collected: **97 pass, 1 skips** when the optional PyMuPDF backend is absent, which is how CI runs it (`tests/test_parser.py::test_pdf_with_text_layer_extracts` uses `importorskip`, because the runtime dependency list is empty by policy). Verified on a clean clone under Python 3.11 with `pip install -e .[dev]` | `tests/`, `pyproject.toml` |
+| `docs/` | 9 research docs + `SOURCES.md` + this file | `docs/` |
+| `docs/SOURCES.md` | exists; `provenance.py` reports 0 dangling / 0 uncited | `scripts/provenance.py` |
+| `scripts/` | `fresh.py`, `provenance.py`, `check-sources.py`, `check-links.py`, **`bench.py`** | `scripts/` |
+| CI | 8 workflow files; the `ci.yml` pipeline runs 7 jobs (fresh, provenance, sources, links, compile, pytest, benchmark) | `.github/workflows/ci.yml` |
+| `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE` | all present | repo root |
+| Accuracy measurement of any kind | **now exists**: 24 synthetic CVs + 6 job descriptions, hand-labelled; per-field precision/recall, forbidden-emission count, and a perturbation-stability run, gated by a ratchet | `data/gold/`, `docs/02` §2.7, `docs/05` §5.1, D-035 |
+
+What is still true from the snapshot below, and matters: the evidence discipline is real (98 URLs,
+18 arXiv ids, five retractions in B.2), the parser is deterministic and dependency-free, and the two
+load-bearing commercial unknowns in B.3 — vendor acceptance rules and vendor parser attribution —
+remain unanswered. What changed since: the five measured defects P1-P5 are fixed and tested,
+and "no accuracy measurement of any kind" is no longer a fair description.
 
 ---
 
@@ -34,12 +71,17 @@ Method:        full tree read, git status, all 9 lane reports read, all 3 src mo
 | `.work/rescue/*.txt` (9 files, **244 KB**) | raw transcripts of research runs: tool calls + fetched bodies | contains full prompts and vendor page bodies; disposable once distilled. This is where every fact in the lane reports came from |
 | `.work/mine.py` | the transcript-miner that recovered evidence from *timed-out* children | scratch, but reproducible; worth promoting into `scripts/` if we ever re-run research |
 
-### A.3 Missing entirely (a public repo must have these)
+### A.3 Missing entirely (a public repo must have these) — **historical, superseded by A.0**
+
+Written against `8f31ba9` on 2026-10-25, when it was accurate:
 
 `README.md` — **none exists**. `pyproject.toml` — none. `tests/` — none. `docs/` — empty
 before this file. `docs/SOURCES.md` — none, so **no claim in this repo is currently
 resolvable by id**. `scripts/` — none, so C3/C4 are unenforced. CI — none. `Makefile`,
 `CONTRIBUTING.md`, `SECURITY.md` — none.
+
+**Every line above is now false** (see A.0). It is kept because the audit trail is the point of an
+audit; the sentence that made it a defect was using it as a statement about the present.
 
 ### A.4 What I changed this turn (Rule 2, commit `c45ed02`)
 
@@ -185,16 +227,20 @@ they are raw reports, not docs — no `Last verified:` header, no source ids, mi
    a missing header or a stale doc.
 3. ~~`scripts/provenance.py`~~ **DONE** — bidirectional `[Xn]` ↔ `SOURCES.md`, currently
    **39 sources / 0 dangling / 0 uncited**.
-4. CI — **still nothing runs.** `py_compile` passes by hand and there is now **one** test file
-   (`tests/test_no_profiling.py`, 7 tests, all passing), but no CI definition exists, so nothing is
-   enforced on a push.
-5. Packaging — `pyproject.toml` absent, so "installable" is false, and C7.2 (declared
-   dependencies) has nothing to declare into. **`pytest` is currently an undeclared dev dependency.**
-6. `README.md` absent → an outside engineer cannot learn what this is in 30 seconds.
+4. CI — **historical**: at the snapshot nothing ran. Since then: `.github/workflows/ci.yml` with the
+   six original gates plus a seventh (`benchmark`, added 2026-10-27, D-035), and three further
+   workflows for dependency review, failure alerting and health checks.
+5. Packaging — **historical**: `pyproject.toml` now exists, declares zero runtime dependencies and
+   puts `pytest` in the `dev` extra, so `pytest` is no longer undeclared.
+6. `README.md` — **historical**: present, and it now leads with measured numbers rather than intent.
 
 ---
 
 ## D. Health assessment
+
+> **Snapshot verdict (2026-10-25, tree at `8f31ba9`).** Read A.0 first: the paragraph below describes
+> that tree. Two of its five numbered blockers (no tests/CI, no accuracy measurement) have since been
+> closed; the other three have not.
 
 **Verdict: the research track is professional; the engineering track does not exist yet; the
 product is unsellable tomorrow and the reason is honest, not cosmetic.** The evidence discipline
@@ -215,6 +261,20 @@ directly outside the EU by explicit scope decision, **(4)** a codebase that
 fails on non-English input while the literature we cite is explicitly multilingual, and
 **(5)** an undecided licence and copyright holder. Drifting? No — but the gap is now *measured*
 rather than assumed, which is the difference between a project with debts and one with surprises.
+
+### D.1 The same five blockers, re-checked on 2026-10-27
+
+| # | Blocker as written at the snapshot | State now | Evidence |
+|---|---|---|---|
+| 1 | no verified knowledge of any real ATS's acceptance rules (7 of 8 UNKNOWN) | **unchanged**. V-1 is still the item that limits what the product may say | `docs/08` §8.2, DR-1 |
+| 2 | no validity harness, so every accuracy sentence would be invented | **closed for extraction**: 24 hand-labelled documents, per-field precision/recall, a forbidden-emission count and a stability run, all gated | `data/gold/`, `docs/02` §2.7, D-035 |
+| 3 | legal surface assessed for the EU only | **unchanged by decision** (`docs/09` §9); six items still open at §7 | `docs/09` |
+| 4 | codebase fails on non-English input while the literature is multilingual | **partly closed and measured**: the tokenizer is Unicode-aware, the heading vocabulary now covers de/fr/es/el/ga, and the gold set scores those fixtures at the same recall as English ones — with n=1 per language, which is a coverage floor, not language support | `docs/02` §2.7, D-040 |
+| 5 | undecided licence and copyright holder | **unchanged**; `LICENSE` still records holder as [OPEN G2] | `LICENSE`, G2 |
+
+The strategic risk named in the external review — investing in more process before proving the base
+parser — is the reason increment 2 of this round was a benchmark and not a gate. One gate was added
+(`benchmark`, which measures) and no gate that only checks paperwork was added.
 
 ---
 

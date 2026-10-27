@@ -1,0 +1,9 @@
+Data Engineer
+
+REQUIREMENTS
+* SQL is desirable but required for this role
+* Experience with Airflow is required, though not essential
+* You have built pipelines in Python
+
+QUALIFICATIONS
+* A relevant degree would be preferred

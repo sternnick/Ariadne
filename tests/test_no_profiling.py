@@ -41,6 +41,29 @@ That keeps the output on the "measurement of documents" side of the line rather 
 "evaluation of a person" side. It is a design position, not a court ruling: if we ever ship
 person-level inference, this test is the thing that should fail loudly *before* the product does.
 
+WHAT THIS FILE CANNOT PROVE (read this before trusting it)
+----------------------------------------------------------
+It is a static check over source text, and it must never be described as a compliance
+certification. Concretely, it cannot prove:
+
+* **Behaviour.** It reads code, not outputs. A function that computes an attribute of a person under
+  a permitted name passes every test here. The behavioural half is
+  `tests/test_fields.py::test_every_emitted_fact_value_applies_verbatim` plus the kind whitelist
+  asserted in `test_pipeline_output_is_within_the_documented_kinds` below, and both are still only as
+  strong as their fixtures.
+* **Bypass-resistance.** Renaming a function or routing the logic through a lambda defeats the
+  identifier scan. The scan is a tripwire for well-meaning drift, not an adversary model.
+* **Classification.** Whether a system is high-risk turns on its intended purpose and actual use
+  (Art. 3(12), Art. 6(2)-(3)), not on the absence of a function name. That determination is a legal
+  assessment with a lawyer in it, recorded in docs/09; this file only proves the assessment's stated
+  premise has not silently changed.
+* **Completeness of the lists.** `BANNED_INFERENCE` is a list of words someone thought of. Absence of
+  a word is not absence of a capability.
+
+So: keep this file, and keep it next to a behavioural test and a legal assessment. Never cite it as
+the reason a claim about fairness or non-profiling is safe to publish - docs/09 §8 bans those claims
+precisely because a guardrail of this strength cannot support them.
+
 The second half of the legal exposure is Art. 3(12) (intended purpose): classification follows what
 we say the system is for, "as specified in the instructions for use, promotional or sales materials
 and statements, as well as in the technical documentation". So the test also asserts that the
@@ -167,6 +190,45 @@ def identifiers_only(path: Path) -> str:
     code = re.sub(r'"[^"\n]*"', "", code)      # drop string literals
     code = re.sub(r"'[^'\n]*'", "", code)
     return code
+
+
+def test_pipeline_output_is_within_the_documented_kinds():
+    """The behavioural half, as far as behaviour can be checked without a model.
+
+    Every fact the pipeline emits, over every gold fixture, must be (a) of a kind the schema lists and
+    (b) a value the document itself contains. That is weaker than "does not profile" and stronger than
+    the text scan: it is falsifiable by output, and a fact carrying an inferred seniority, potential or
+    demographic reading would have to be *some* kind with *some* value to escape both checks.
+    """
+    import sys
+
+    sys.path.insert(0, str(ROOT / "src"))
+    from ariadne_ats.evidence import KINDS, build_ledger  # noqa: PLC0415 - import under test
+    from ariadne_ats.textutil import normalize  # noqa: PLC0415
+
+    fixtures = sorted((ROOT / "data" / "gold").glob("cv-*.txt"))
+    assert fixtures, "the gold corpus is missing; this gate would pass vacuously"
+    for path in fixtures:
+        text = normalize(path.read_text(encoding="utf-8", errors="replace")).casefold()
+        for fact in build_ledger(path).facts:
+            assert fact.kind in KINDS, f"{path.name}: undeclared kind {fact.kind!r}"
+            assert fact.value.casefold() in text, (
+                f"{path.name}: {fact.kind} value {fact.value!r} is not in the document, so it was "
+                "produced rather than read")
+
+
+def test_no_numeric_person_attribute_is_ever_emitted():
+    """No fact may be a computed judgement. Facts carry text; a judgement would arrive as a number
+    attached to a person, and the only numbers in the ledger are the ones inside the document."""
+    import sys
+
+    sys.path.insert(0, str(ROOT / "src"))
+    from ariadne_ats.evidence import build_ledger  # noqa: PLC0415
+
+    for path in sorted((ROOT / "data" / "gold").glob("cv-*.txt")):
+        for fact in build_ledger(path).facts:
+            assert 0.0 < fact.confidence <= 1.0
+            assert not hasattr(fact, "score"), f"{path.name}: a fact grew a score"
 
 
 @pytest.mark.parametrize("word", ["profile", "profiling", "profil"])

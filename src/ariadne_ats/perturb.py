@@ -34,14 +34,21 @@ LIGATURES = {"fi": "\ufb01", "fl": "\ufb02", "ff": "\ufb00"}
 
 
 def reorder_sections(text: str) -> str:
-    """Move the SKILLS block after EDUCATION. Facts are untouched; order and spans are not."""
-    blocks = re.split(r"\n(?=[A-Z][A-Z &/]{2,}$)", text, flags=re.M)
+    """Move the SKILLS block after EDUCATION. Facts are untouched; order and spans are not.
+
+    Fixed 2026-10-27, and the fix belongs to the fixture, not the parser: the split consumes the
+    newline that precedes each heading, and the old reassembly joined the chunks with "". That glued
+    one heading onto the end of the previous block ("...fewer late departuresEDUCATION"), which both
+    destroyed a heading and added a fact. `data/gold/cv-20` (a document with no blank lines) is what
+    exposed it: the measurement was reporting a stability failure that was a broken perturbation.
+    """
+    blocks = [b.strip("\n") for b in re.split(r"\n+(?=[A-Z][A-Z &/]{2,}$)", text, flags=re.M)]
     if len(blocks) < 3:
         return text
     head, *sections = blocks
     skills = [s for s in sections if re.match(r"(?i)^skills\b", s.strip())]
     rest = [s for s in sections if s not in skills]
-    return head + "".join(rest) + "".join(skills)
+    return "\n".join([head] + rest + skills)
 
 
 def rename_headings(text: str) -> str:

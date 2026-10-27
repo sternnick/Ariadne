@@ -97,6 +97,24 @@ def cmd_compare(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_bench(args: argparse.Namespace) -> int:
+    """Score the parser against data/gold/. The subject of the measurement is the software."""
+    from . import bench as _bench
+
+    report = _bench.full_report()
+    if args.json:
+        print(json.dumps(report, indent=2))
+        return 0
+    acc = report["accuracy"]["fields"]
+    print(json.dumps({"corpus": report["corpus"]["fixtures"], "fields": {
+        k: {"precision": v["precision"], "recall": v["recall"], "f1": v["f1"]}
+        for k, v in acc.items()}}, indent=2))
+    print("Measured on the synthetic gold corpus only (data/gold/manifest.json); these are not "
+          "accuracy figures for any real CV, and the corpus was written by the same session that "
+          "wrote the rules. See docs/02 2.7.", file=sys.stderr)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="ariadne",
@@ -118,6 +136,10 @@ def build_parser() -> argparse.ArgumentParser:
     j.add_argument("file")
     j.add_argument("--json", action="store_true", help="emit the full jd.json document")
     j.set_defaults(func=cmd_jd)
+
+    b = sub.add_parser("bench", help="score the parser against data/gold/ (the software, not a CV)")
+    b.add_argument("--json", action="store_true", help="full machine-readable report")
+    b.set_defaults(func=cmd_bench)
 
     c = sub.add_parser("compare", help="TF-IDF cosine similarity between two documents, with evidence")
     c.add_argument("a")

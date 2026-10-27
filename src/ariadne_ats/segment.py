@@ -20,7 +20,7 @@ import re
 from dataclasses import dataclass, field
 
 from .errors import Code, ParseReport, Severity
-from .textutil import SECTION_HEADINGS, normalize
+from .textutil import heading_kind, normalize
 
 _MARKERS = ("*", "-", "\u2022", "\u25cf", "\u25aa", "\u25e6", "\u00b7")
 _ACHIEVEMENT_RE = re.compile(
@@ -56,21 +56,12 @@ class Section:
 
 
 def _classify(line: str) -> tuple[str | None, float]:
-    """Return (canonical kind, base confidence) for a candidate heading line."""
-    raw = line.strip()
-    if not raw or len(raw) > 46:
-        return None, 0.0
-    plain = raw.strip(" :#*_-\t").lower()
-    if not plain or len(plain.split()) > 4:
-        return None, 0.0
-    for kind, names in SECTION_HEADINGS.items():
-        if plain in names:
-            return kind, EXACT_CONFIDENCE
-    if len(plain.split()) <= 3 and raw[:1].isupper():
-        for kind, names in SECTION_HEADINGS.items():
-            if any(w in plain for w in names if len(w) > 5):
-                return kind, FUZZY_CONFIDENCE
-    return None, 0.0
+    """Return (canonical kind, base confidence) for a candidate heading line.
+
+    The comparison itself lives in `textutil.heading_kind`, because it needs the accent-insensitive
+    fold and that fold must not be re-implemented per caller.
+    """
+    return heading_kind(line)
 
 
 def bullets(body: str) -> list[str]:

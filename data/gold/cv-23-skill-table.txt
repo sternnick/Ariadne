@@ -1,0 +1,17 @@
+Kenji Watanabe
+kenji.watanabe@example.jp
+
+SUMMARY
+Infrastructure engineer, 9 years, mostly on the reliability side.
+
+EXPERIENCE
+Platform Engineer, Sumida Systems 2017-2025
+* Cut the incident backlog from 400 to 40 tickets
+
+SKILLS
+Languages	python, go
+Infrastructure	kubernetes, terraform
+Data	postgresql, kafka
+
+EDUCATION
+BSc Information Engineering, 2017

@@ -1,0 +1,19 @@
+MARIA GONZALEZ
+maria.gonzalez@example.org | Madrid | linkedin.com/in/mariagonzalez
+
+SUMMARY
+Data engineer with 7 years building batch and streaming pipelines.
+
+EXPERIENCE
+Data Engineer, Norddata 2020-2024
+* Rebuilt the nightly ETL in Airflow, cutting runtime from 6 hours to 40 minutes
+* Owned the migration of 300 tables to Snowflake
+
+Junior Analyst, Bisel SA 2017-2020
+* Wrote the reporting layer in SQL used by 40 analysts
+
+SKILLS
+sql, python, airflow, snowflake, bash
+
+EDUCATION
+BSc Mathematics, 2017

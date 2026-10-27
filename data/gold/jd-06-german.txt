@@ -1,0 +1,9 @@
+DevOps Engineer
+
+ANFORDERUNGEN
+* Sie haben Produktionserfahrung mit Kubernetes
+* Sie haben Terraform in Produktion eingesetzt
+* Erfahrung mit Monitoring ist wünschenswert
+
+IHRE AUFGABEN
+* Sie betreuen die Shared-Cluster

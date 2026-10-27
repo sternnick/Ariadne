@@ -1,0 +1,3218 @@
+{
+  "schema": "1.0.0",
+  "corpus": {
+    "fixtures": 24,
+    "languages": [
+      "de",
+      "el",
+      "en",
+      "es",
+      "fr",
+      "ga",
+      "nl"
+    ],
+    "fields": [
+      "employer",
+      "title",
+      "date",
+      "skill",
+      "contact",
+      "name"
+    ],
+    "matching_rule": "A value counts as extracted when its normalised form (NFKC, casefold, whitespace collapsed, surrounding punctuation from ' \\t.,;:|-/' stripped) equals the normalised expected form. Set semantics: a value is extracted or it is not; repeating it does not score twice."
+  },
+  "accuracy": {
+    "fields": {
+      "employer": {
+        "tp": 36,
+        "fp": 2,
+        "fn": 4,
+        "fixtures": 23,
+        "exact_match_fixtures": 21,
+        "forbidden_violations": 0,
+        "precision": 0.947,
+        "recall": 0.9,
+        "f1": 0.923,
+        "misses": [
+          "cv-21:norra bank",
+          "cv-21:vestland insurance",
+          "cv-22:luz systems",
+          "cv-22:tejo digital"
+        ],
+        "extras": [
+          "cv-21:senior engineer",
+          "cv-21:systems analyst"
+        ]
+      },
+      "title": {
+        "tp": 36,
+        "fp": 2,
+        "fn": 4,
+        "fixtures": 23,
+        "exact_match_fixtures": 21,
+        "forbidden_violations": 0,
+        "precision": 0.947,
+        "recall": 0.9,
+        "f1": 0.923,
+        "misses": [
+          "cv-21:senior engineer",
+          "cv-21:systems analyst",
+          "cv-22:qa lead",
+          "cv-22:tester"
+        ],
+        "extras": [
+          "cv-21:norra bank",
+          "cv-21:vestland insurance"
+        ]
+      },
+      "date": {
+        "tp": 59,
+        "fp": 0,
+        "fn": 0,
+        "fixtures": 23,
+        "exact_match_fixtures": 23,
+        "forbidden_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "misses": [],
+        "extras": []
+      },
+      "skill": {
+        "tp": 91,
+        "fp": 1,
+        "fn": 8,
+        "fixtures": 22,
+        "exact_match_fixtures": 20,
+        "forbidden_violations": 0,
+        "precision": 0.989,
+        "recall": 0.919,
+        "f1": 0.953,
+        "misses": [
+          "cv-13:docker",
+          "cv-13:git",
+          "cv-23:go",
+          "cv-23:kafka",
+          "cv-23:kubernetes",
+          "cv-23:postgresql",
+          "cv-23:python",
+          "cv-23:terraform"
+        ],
+        "extras": [
+          "cv-13:git and docker"
+        ]
+      },
+      "contact": {
+        "tp": 32,
+        "fp": 0,
+        "fn": 0,
+        "fixtures": 24,
+        "exact_match_fixtures": 24,
+        "forbidden_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "misses": [],
+        "extras": []
+      },
+      "name": {
+        "tp": 23,
+        "fp": 0,
+        "fn": 0,
+        "fixtures": 23,
+        "exact_match_fixtures": 23,
+        "forbidden_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "misses": [],
+        "extras": []
+      }
+    },
+    "languages": {
+      "de": {
+        "employer": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "title": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "date": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "skill": {
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "contact": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "name": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        }
+      },
+      "el": {
+        "employer": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "title": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "date": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "skill": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "contact": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "name": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        }
+      },
+      "en": {
+        "employer": {
+          "tp": 25,
+          "fp": 2,
+          "fn": 4,
+          "fixtures": 17,
+          "exact_match_fixtures": 15,
+          "forbidden_violations": 0,
+          "precision": 0.926,
+          "recall": 0.862,
+          "f1": 0.893,
+          "misses": [],
+          "extras": []
+        },
+        "title": {
+          "tp": 25,
+          "fp": 2,
+          "fn": 4,
+          "fixtures": 17,
+          "exact_match_fixtures": 15,
+          "forbidden_violations": 0,
+          "precision": 0.926,
+          "recall": 0.862,
+          "f1": 0.893,
+          "misses": [],
+          "extras": []
+        },
+        "date": {
+          "tp": 47,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 17,
+          "exact_match_fixtures": 17,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "skill": {
+          "tp": 66,
+          "fp": 1,
+          "fn": 8,
+          "fixtures": 16,
+          "exact_match_fixtures": 14,
+          "forbidden_violations": 0,
+          "precision": 0.985,
+          "recall": 0.892,
+          "f1": 0.936,
+          "misses": [],
+          "extras": []
+        },
+        "contact": {
+          "tp": 24,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 18,
+          "exact_match_fixtures": 18,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "name": {
+          "tp": 17,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 17,
+          "exact_match_fixtures": 17,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        }
+      },
+      "es": {
+        "employer": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "title": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "date": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "skill": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "contact": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "name": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        }
+      },
+      "fr": {
+        "employer": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "title": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "date": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "skill": {
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "contact": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "name": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        }
+      },
+      "ga": {
+        "employer": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "title": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "date": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "skill": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "contact": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "name": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        }
+      },
+      "nl": {
+        "employer": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "title": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "date": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "skill": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "contact": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        },
+        "name": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "fixtures": 1,
+          "exact_match_fixtures": 1,
+          "forbidden_violations": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "misses": [],
+          "extras": []
+        }
+      }
+    },
+    "per_fixture": [
+      {
+        "id": "cv-01",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 5,
+            "emitted": 5,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 2,
+          "name": 1,
+          "summary": 1,
+          "skill": 5,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 3
+        }
+      },
+      {
+        "id": "cv-02",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 5,
+            "emitted": 5,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 2,
+          "name": 1,
+          "summary": 1,
+          "skill": 5,
+          "role": 2,
+          "employer": 2,
+          "date": 4,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-03",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [
+          "TABLE_STRUCTURE"
+        ],
+        "facts": {
+          "contact": 2,
+          "name": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-04",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 5,
+            "emitted": 5,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 5,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-05",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 0,
+            "emitted": 0,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 0,
+            "emitted": 0,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 0,
+            "emitted": 0,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 0,
+            "emitted": 0,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [
+          "NO_SECTIONS_FOUND"
+        ],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "bullet": 3
+        }
+      },
+      {
+        "id": "cv-06",
+        "language": "de",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 5,
+            "emitted": 5,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 5,
+          "role": 2,
+          "employer": 2,
+          "date": 4,
+          "bullet": 3
+        }
+      },
+      {
+        "id": "cv-07",
+        "language": "fr",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 5,
+            "emitted": 5,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 2,
+          "name": 1,
+          "summary": 1,
+          "skill": 5,
+          "role": 2,
+          "employer": 2,
+          "date": 4,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-08",
+        "language": "el",
+        "fields": {
+          "employer": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 3,
+          "role": 1,
+          "employer": 1,
+          "date": 2,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-09",
+        "language": "es",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 4,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-10",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 6,
+            "emitted": 6,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [
+          "SECTION_REPEATED",
+          "SECTION_REPEATED"
+        ],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 6,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-11",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-12",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 3
+        }
+      },
+      {
+        "id": "cv-13",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 6,
+            "emitted": 5,
+            "missed": [
+              "docker",
+              "git"
+            ],
+            "extra": [
+              "git and docker"
+            ],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 5,
+          "role": 1,
+          "employer": 1,
+          "date": 3,
+          "bullet": 4
+        }
+      },
+      {
+        "id": "cv-14",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 5,
+            "emitted": 5,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 4,
+          "name": 1,
+          "summary": 1,
+          "skill": 5,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-15",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 0,
+            "emitted": 0,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [
+          "SECTION_UNRECOGNISED"
+        ],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "role": 1,
+          "employer": 1,
+          "date": 3,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-16",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 5,
+            "emitted": 5,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "skill": 5,
+          "role": 1,
+          "employer": 1,
+          "date": 1,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-17",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-18",
+        "language": "ga",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 2,
+          "name": 1,
+          "summary": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 4,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-19",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-20",
+        "language": "nl",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [
+          "SOFT_HYPHEN_FOLDED"
+        ],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 4,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-21",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [
+              "norra bank",
+              "vestland insurance"
+            ],
+            "extra": [
+              "senior engineer",
+              "systems analyst"
+            ],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [
+              "senior engineer",
+              "systems analyst"
+            ],
+            "extra": [
+              "norra bank",
+              "vestland insurance"
+            ],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 4,
+          "role": 2,
+          "employer": 2,
+          "date": 5,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-22",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 0,
+            "missed": [
+              "luz systems",
+              "tejo digital"
+            ],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 2,
+            "emitted": 0,
+            "missed": [
+              "qa lead",
+              "tester"
+            ],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [
+          "ROLE_LINE_AMBIGUOUS",
+          "ROLE_LINE_AMBIGUOUS",
+          "ROLE_LINE_AMBIGUOUS"
+        ],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "skill": 4,
+          "date": 5,
+          "bullet": 2
+        }
+      },
+      {
+        "id": "cv-23",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 6,
+            "emitted": 0,
+            "missed": [
+              "go",
+              "kafka",
+              "kubernetes",
+              "postgresql",
+              "python",
+              "terraform"
+            ],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [
+          "SECTION_UNRECOGNISED"
+        ],
+        "facts": {
+          "contact": 1,
+          "name": 1,
+          "summary": 1,
+          "role": 1,
+          "employer": 1,
+          "date": 3,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-24",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 4,
+            "emitted": 4,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 0,
+            "emitted": 0,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 1,
+          "summary": 1,
+          "skill": 4,
+          "role": 1,
+          "employer": 1,
+          "date": 3,
+          "bullet": 1
+        }
+      }
+    ],
+    "forbidden_violations": [],
+    "fixtures": 24
+  },
+  "jd": {
+    "fixtures": 6,
+    "per_fixture": [
+      {
+        "id": "jd-01",
+        "note": "The responsibilities line is not an ask and is excluded; 'WHAT YOU WILL NEED' and 'NICE TO HAVE' are headings, not requirements, and count 0.",
+        "expected_weights": {
+          "must": 3,
+          "nice": 2,
+          "unknown": 0
+        },
+        "actual_weights": {
+          "must": 3,
+          "nice": 2,
+          "unknown": 0
+        },
+        "requirements": 5,
+        "expected_requirements": 5,
+        "match": true
+      },
+      {
+        "id": "jd-02",
+        "note": "'Python is not required' contains the cue word 'required' and must not be classified must.",
+        "expected_weights": {
+          "must": 1,
+          "nice": 1,
+          "unknown": 2
+        },
+        "actual_weights": {
+          "must": 1,
+          "nice": 1,
+          "unknown": 2
+        },
+        "requirements": 4,
+        "expected_requirements": 4,
+        "match": true
+      },
+      {
+        "id": "jd-03",
+        "note": "Where the cues contradict, the honest answer is unknown, not whichever cue the loop saw first.",
+        "expected_weights": {
+          "must": 1,
+          "nice": 1,
+          "unknown": 2
+        },
+        "actual_weights": {
+          "must": 1,
+          "nice": 1,
+          "unknown": 2
+        },
+        "requirements": 4,
+        "expected_requirements": 4,
+        "match": true
+      },
+      {
+        "id": "jd-04",
+        "note": "Membership of the section is the only signal; the weight must stay unknown.",
+        "expected_weights": {
+          "must": 0,
+          "nice": 0,
+          "unknown": 3
+        },
+        "actual_weights": {
+          "must": 0,
+          "nice": 0,
+          "unknown": 3
+        },
+        "requirements": 3,
+        "expected_requirements": 3,
+        "match": true
+      },
+      {
+        "id": "jd-05",
+        "note": "Repetition is not two asks. Duplicates must collapse.",
+        "expected_weights": {
+          "must": 1,
+          "nice": 0,
+          "unknown": 1
+        },
+        "actual_weights": {
+          "must": 1,
+          "nice": 0,
+          "unknown": 1
+        },
+        "requirements": 2,
+        "expected_requirements": 2,
+        "match": true
+      },
+      {
+        "id": "jd-06",
+        "note": "ADVERSARIAL, and the most important one here: both vocabularies - headings and cues - are English, so a German advertisement yields no requirements at all (not even unknown-weighted ones). The expected row is what a reader of the text would label, not what our rule finds.",
+        "expected_weights": {
+          "must": 2,
+          "nice": 1,
+          "unknown": 0
+        },
+        "actual_weights": {
+          "must": 0,
+          "nice": 0,
+          "unknown": 0
+        },
+        "requirements": 0,
+        "expected_requirements": 3,
+        "match": false
+      }
+    ],
+    "actual_weights": {
+      "must": 6,
+      "nice": 4,
+      "unknown": 8
+    },
+    "expected_weights": {
+      "must": 8,
+      "nice": 5,
+      "unknown": 8
+    },
+    "weight_cue_accuracy": 0.857,
+    "fixtures_exactly_matching": 0.833
+  },
+  "stability": {
+    "anchor_jd": "anchor-jd.txt",
+    "transforms": {
+      "reorder_sections": {
+        "fixtures_applied": 21,
+        "competence_preserved_all": true,
+        "broken_fixtures": [],
+        "mean_fact_retention": 1.0,
+        "max_abs_cosine_delta": 0.0,
+        "ranking_inversion_rate": 0.0,
+        "per_fixture": [
+          {
+            "id": "cv-01",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1337,
+            "cosine_after": 0.1337,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-02",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1757,
+            "cosine_after": 0.1757,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-03",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1278,
+            "cosine_after": 0.1278,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-04",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1345,
+            "cosine_after": 0.1345,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-05",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-06",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0312,
+            "cosine_after": 0.0312,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-07",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0571,
+            "cosine_after": 0.0571,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-08",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-09",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0,
+            "cosine_after": 0.0,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-10",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1941,
+            "cosine_after": 0.1941,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-11",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1939,
+            "cosine_after": 0.1939,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-12",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1776,
+            "cosine_after": 0.1776,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-13",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1976,
+            "cosine_after": 0.1976,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-14",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1373,
+            "cosine_after": 0.1373,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-15",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1024,
+            "cosine_after": 0.1024,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-16",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1163,
+            "cosine_after": 0.1163,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-17",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1226,
+            "cosine_after": 0.1226,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-18",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-19",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.057,
+            "cosine_after": 0.057,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-20",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1094,
+            "cosine_after": 0.1094,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-21",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0903,
+            "cosine_after": 0.0903,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-22",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0907,
+            "cosine_after": 0.0907,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-23",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.3783,
+            "cosine_after": 0.3783,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-24",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.156,
+            "cosine_after": 0.156,
+            "cosine_delta": 0.0
+          }
+        ]
+      },
+      "rename_headings": {
+        "fixtures_applied": 16,
+        "competence_preserved_all": true,
+        "broken_fixtures": [],
+        "mean_fact_retention": 1.0,
+        "max_abs_cosine_delta": 0.0983,
+        "ranking_inversion_rate": 0.0667,
+        "per_fixture": [
+          {
+            "id": "cv-01",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1337,
+            "cosine_after": 0.0808,
+            "cosine_delta": -0.053
+          },
+          {
+            "id": "cv-02",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-03",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1278,
+            "cosine_after": 0.0678,
+            "cosine_delta": -0.06
+          },
+          {
+            "id": "cv-04",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-05",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-06",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-07",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-08",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-09",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-10",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1941,
+            "cosine_after": 0.0958,
+            "cosine_delta": -0.0983
+          },
+          {
+            "id": "cv-11",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1939,
+            "cosine_after": 0.13,
+            "cosine_delta": -0.0639
+          },
+          {
+            "id": "cv-12",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1776,
+            "cosine_after": 0.1236,
+            "cosine_delta": -0.054
+          },
+          {
+            "id": "cv-13",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1976,
+            "cosine_after": 0.131,
+            "cosine_delta": -0.0665
+          },
+          {
+            "id": "cv-14",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1373,
+            "cosine_after": 0.1361,
+            "cosine_delta": -0.0012
+          },
+          {
+            "id": "cv-15",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1024,
+            "cosine_after": 0.0375,
+            "cosine_delta": -0.0648
+          },
+          {
+            "id": "cv-16",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1163,
+            "cosine_after": 0.0418,
+            "cosine_delta": -0.0745
+          },
+          {
+            "id": "cv-17",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1226,
+            "cosine_after": 0.0599,
+            "cosine_delta": -0.0627
+          },
+          {
+            "id": "cv-18",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-19",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.057,
+            "cosine_after": 0.0,
+            "cosine_delta": -0.057
+          },
+          {
+            "id": "cv-20",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1094,
+            "cosine_after": 0.0537,
+            "cosine_delta": -0.0557
+          },
+          {
+            "id": "cv-21",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0903,
+            "cosine_after": 0.0329,
+            "cosine_delta": -0.0575
+          },
+          {
+            "id": "cv-22",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0907,
+            "cosine_after": 0.033,
+            "cosine_delta": -0.0577
+          },
+          {
+            "id": "cv-23",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.3783,
+            "cosine_after": 0.3071,
+            "cosine_delta": -0.0712
+          },
+          {
+            "id": "cv-24",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.156,
+            "cosine_after": 0.0937,
+            "cosine_delta": -0.0623
+          }
+        ]
+      },
+      "change_markers": {
+        "fixtures_applied": 22,
+        "competence_preserved_all": true,
+        "broken_fixtures": [],
+        "mean_fact_retention": 1.0,
+        "max_abs_cosine_delta": 0.0,
+        "ranking_inversion_rate": 0.0,
+        "per_fixture": [
+          {
+            "id": "cv-01",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1337,
+            "cosine_after": 0.1337,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-02",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1757,
+            "cosine_after": 0.1757,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-03",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1278,
+            "cosine_after": 0.1278,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-04",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1345,
+            "cosine_after": 0.1345,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-05",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-06",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0312,
+            "cosine_after": 0.0312,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-07",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0571,
+            "cosine_after": 0.0571,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-08",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0,
+            "cosine_after": 0.0,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-09",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0,
+            "cosine_after": 0.0,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-10",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1941,
+            "cosine_after": 0.1941,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-11",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1939,
+            "cosine_after": 0.1939,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-12",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-13",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1976,
+            "cosine_after": 0.1976,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-14",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1373,
+            "cosine_after": 0.1373,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-15",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1024,
+            "cosine_after": 0.1024,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-16",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1163,
+            "cosine_after": 0.1163,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-17",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1226,
+            "cosine_after": 0.1226,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-18",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0307,
+            "cosine_after": 0.0307,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-19",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.057,
+            "cosine_after": 0.057,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-20",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1094,
+            "cosine_after": 0.1094,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-21",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0903,
+            "cosine_after": 0.0903,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-22",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0907,
+            "cosine_after": 0.0907,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-23",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.3783,
+            "cosine_after": 0.3783,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-24",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.156,
+            "cosine_after": 0.156,
+            "cosine_delta": 0.0
+          }
+        ]
+      },
+      "add_typographic_damage": {
+        "fixtures_applied": 11,
+        "competence_preserved_all": true,
+        "broken_fixtures": [],
+        "mean_fact_retention": 1.0,
+        "max_abs_cosine_delta": 0.0,
+        "ranking_inversion_rate": 0.0,
+        "per_fixture": [
+          {
+            "id": "cv-01",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1337,
+            "cosine_after": 0.1337,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-02",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-03",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-04",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-05",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-06",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-07",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-08",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-09",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-10",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1941,
+            "cosine_after": 0.1941,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-11",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-12",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1776,
+            "cosine_after": 0.1776,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-13",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-14",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1373,
+            "cosine_after": 0.1373,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-15",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1024,
+            "cosine_after": 0.1024,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-16",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-17",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-18",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
+          },
+          {
+            "id": "cv-19",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.057,
+            "cosine_after": 0.057,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-20",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1094,
+            "cosine_after": 0.1094,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-21",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0903,
+            "cosine_after": 0.0903,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-22",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0907,
+            "cosine_after": 0.0907,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-23",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.3783,
+            "cosine_after": 0.3783,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-24",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.156,
+            "cosine_after": 0.156,
+            "cosine_delta": 0.0
+          }
+        ]
+      }
+    },
+    "note": "ranking_inversion_rate is the share of fixture pairs whose order against the anchor advertisement flips; it is the figure nearest to the 29.6 % matched-pair reversal rate in [EV-02], and it is not the same experiment."
+  },
+  "generated": {
+    "utc": "2026-10-27T18:09:50Z",
+    "command": "python scripts/bench.py --write",
+    "note": "deterministic given the tree; the timestamp records when the published artefact was refreshed, not a claim about the parser"
+  }
+}

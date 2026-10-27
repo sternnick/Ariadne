@@ -1,16 +1,20 @@
 """TF-IDF with cosine similarity, in plain Python.
 
-This is the layer almost every ATS and every "match rate" product starts from. The
-sources that document it in real systems are catalogued in `.work/lanes/scoring.md`
-(arXiv 2503.17438 survey, sbert.net docs, IJCOPE implementation paper); `docs/` does not
-exist yet, so this line points at the primary artifact rather than a doc that was never
-written (AGENT_CONTRACT C2 -- no dead references).
+This is the layer almost every ATS and every "match rate" product starts from; docs/03 §3.1 carries
+the sources that document it in real systems ([EV-07], [EV-15]), and docs/03 §3.5 states exactly what
+is computed today.
 
-IDF is computed over the corpus you hand it. Two-document comparison is a degenerate
-case: every term present in both gets idf = ln(3/3)+1 = 1 and every term in one gets the
-same larger weight, so the ranking carries no market information. A background corpus is
-what makes IDF mean anything. There is no `idf_from_background` helper and no corpus
-shipped in this repo yet -- supplying one is increment A2 (docs/00-audit.md C-9).
+**This is document similarity, not candidate-to-role matching.** IDF is computed over the corpus you
+hand it. A two-document comparison is the degenerate case: every term present in both gets
+idf = ln(3/3) + 1 = 1 and every term present in one gets the same larger weight, so the ranking
+carries no market information at all. The repository has no background corpus (G-7), which is why
+`ariadne compare` prints a note saying so and no `ariadne score` command exists.
+
+One measured caveat, from the stability run in docs/05 §5.1: cosine over a bag of terms is
+permutation-invariant, so reordering a CV changes nothing here - but renaming a *heading* moves the
+cosine by up to 0.098 on this corpus, because heading words are themselves terms. A number from this
+function is sensitive to vocabulary and insensitive to layout, and a caller should say which of the
+two it is asking about.
 """
 from __future__ import annotations
 

@@ -1,0 +1,6 @@
+Support Engineer
+
+REQUIREMENTS
+* Linux at the command line
+* TCP/IP and DNS fundamentals
+* Written English at report level

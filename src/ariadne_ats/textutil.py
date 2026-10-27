@@ -25,7 +25,11 @@ _TRANS = {ord(k): v for k, v in _LIGATURES.items()}
 # and any non-English CV was shredded (audit P1). A token may contain dots, plus signs, hashes and
 # slashes (c++, c#, .net, ci/cd) and may END in + or # for exactly those cases.
 TOKEN_RE = re.compile(r"[^\W_](?:[\w.+#/-]*[^\W_+#])?", re.UNICODE)
-_WS_RE = re.compile(r"[ \t\u00a0]+")
+# A tab survives normalisation as exactly one tab. It is a column boundary, not whitespace
+# ambiguity: collapsing it is what made the two-column role line in data/gold/cv-03 read as one
+# undifferentiated segment (audit P3 again, in a different function). Spaces collapse; tabs persist.
+_WS_RE = re.compile(r"[ \u00a0]+")
+_TAB_RUN_RE = re.compile(r"[ \t\u00a0]*\t[ \t\u00a0]*")
 _NL_RE = re.compile(r"\n{3,}")
 _SENT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9])")
 
@@ -36,36 +40,67 @@ SECTION_HEADINGS = {
     # resolves a line to exactly one kind. Version 1 of this vocabulary mapped QUALIFICATIONS to
     # requirements and silently swallowed the EDUCATION block (caught by the perturbation test:
     # facts 15 -> 14, the graduation year vanished).
+    #
+    # The non-English entries are the headings of the languages the gold set has fixtures for
+    # (data/gold/manifest.json: en, de, fr, es, el, ga), added on 2026-10-27 after that benchmark
+    # measured an English-only vocabulary at 0.0 recall on every non-English fixture: the section was
+    # never found, so nothing downstream could run. This is a heading list, not a language model, and
+    # it is exactly as complete as its fixtures prove it. A language with no fixture has no vocabulary
+    # here and is recorded as unknown in docs/08, not silently assumed.
+    # All entries are the LOWER-CASED form, because `_classify` folds case first.
     "requirements": ["requirements", "must have", "required", "about you", "who you are",
                      "what you bring"],
     "responsibilities": ["responsibilities", "what you will do", "the role", "your role", "duties",
                          "day to day"],
     "contact": ["contact", "contact information", "personal details", "personal information"],
     "summary": ["summary", "professional summary", "profile", "about me", "objective",
-                "career objective", "career summary", "highlight of qualifications"],
+                "career objective", "career summary", "highlight of qualifications",
+                "profil", "próifíl", "perfil", "προσοντικα"],
     "skills": ["skills", "technical skills", "core competencies", "core skills",
-               "areas of expertise", "technologies", "tools", "expertise", "skill set"],
+               "areas of expertise", "technologies", "tools", "expertise", "skill set",
+               "kenntnisse", "fähigkeiten", "compétences", "habilidades", "δεξιότητες",
+               "teicneolóiste"],
     "experience": ["experience", "work experience", "professional experience",
                    "employment", "employment history", "work history", "career history",
-                   "relevant experience"],
+                   "relevant experience",
+                   "berufserfahrung", "expérience professionnelle", "experiencia",
+                   "εμπειρικη εργοσειρα", "taithí oibre"],
     "projects": ["projects", "selected projects", "personal projects", "side projects",
                  "open source", "publications", "patents"],
     "education": ["education", "education & qualifications", "academic background",
-                  "qualifications", "certifications", "certificates", "courses"],
+                  "qualifications", "certifications", "certificates", "courses",
+                  "ausbildung", "formation", "formación", "σπουδες", "oideachas"],
     "languages": ["languages", "language skills"],
     "awards": ["awards", "honors", "achievements", "volunteer", "volunteering",
                "activities", "interests"],
 }
 
 
+def fold(text: str) -> str:
+    """Casefold and strip diacritics, for *heading matching only*.
+
+    Two facts make this necessary. Accented headings are the norm in French, German, Spanish, Irish
+    and Greek, so an ASCII-only fold loses them (audit P1, same class). And Greek is harsher still:
+    capitalising "δεξιότητες" yields "ΔΕΞΙΟΤΗΤΕΣ" - the accents are simply gone - so a vocabulary
+    keyed on the accented dictionary form misses every all-caps Greek heading. Both were measured by
+    data/gold/ on 2026-10-27, not theorised.
+
+    Nothing in the output is folded: a fact value keeps its accents, so matching a heading accent-
+    insensitively never rewrites a person's text.
+    """
+    decomposed = unicodedata.normalize("NFD", text.casefold())
+    return unicodedata.normalize("NFC", "".join(c for c in decomposed
+                                                if not unicodedata.combining(c)))
+
+
 def normalize(text: str) -> str:
-    """NFKC + ligature/bullet folding + whitespace collapse. Idempotent."""
+    """NFKC + ligature/bullet folding + whitespace collapse. Idempotent; tabs survive as tabs."""
     if not text:
         return ""
     text = unicodedata.normalize("NFKC", text)
     text = text.translate(_TRANS)
     text = text.replace("\r\n", "\n").replace("\r", "\n")
-    text = "\n".join(_WS_RE.sub(" ", ln).rstrip() for ln in text.split("\n"))
+    text = "\n".join(_WS_RE.sub(" ", _TAB_RUN_RE.sub("\t", ln)).rstrip() for ln in text.split("\n"))
     return _NL_RE.sub("\n\n", text).strip()
 
 
@@ -117,3 +152,36 @@ def ngrams(tokens: list[str], n: int) -> list[str]:
 
 def term_frequencies(tokens: list[str]) -> Counter:
     return Counter(tokens)
+
+
+_FOLDED_HEADINGS: dict[str, tuple[str, float]] = {}
+for _kind, _names in SECTION_HEADINGS.items():
+    for _name in _names:
+        _FOLDED_HEADINGS.setdefault(fold(_name), (_kind, 0.0))
+_FOLDED_LONG: list[tuple[str, str]] = [(fold(w), _k) for _k, _ws in SECTION_HEADINGS.items()
+                                       for _w in _ws for w in _w.split() if len(w) > 5]
+
+
+def heading_kind(line: str) -> tuple[str | None, float]:
+    """Classify a heading line against the vocabulary: (kind, base confidence).
+
+    Exact (after `fold`) is 0.9; a long vocabulary word appearing inside the line is 0.6. The rules
+    and the numbers are `segment`'s; this function exists so the fold lives in one place.
+    """
+    from .segment import EXACT_CONFIDENCE, FUZZY_CONFIDENCE
+
+    raw = line.strip()
+    if not raw or len(raw) > 46:
+        return None, 0.0
+    plain = raw.strip(" :#*_-").strip("\t").lower()
+    if not plain or len(plain.split()) > 4:
+        return None, 0.0
+    hit = _FOLDED_HEADINGS.get(fold(plain))
+    if hit:
+        return hit[0], EXACT_CONFIDENCE
+    if len(plain.split()) <= 3 and raw[:1].isupper():
+        fplain = fold(plain)
+        for word, kind in _FOLDED_LONG:
+            if word in fplain:
+                return kind, FUZZY_CONFIDENCE
+    return None, 0.0
