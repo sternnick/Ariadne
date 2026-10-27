@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://ariadne.local/schemas/resume.schema.json",
   "title": "Ariadne resume document",
-  "$comment": "Extends JSON Resume 1.7.0 (whose own $schema is in the instance) with provenance under `custom`, which that spec designates as the preserved extension point (EV-16, EV-31). Graded A for the base spec, B for this extension. `kind` gained `name` and `employer` on 2026-10-27: the interface named fields the ledger never emitted, and data/gold/ measured the gap at 0.0 recall. A field a schema offers and the code never fills is the defect this closes (docs/02 2.6, DECISIONS D-036).",
+  "$comment": "Extends JSON Resume 1.7.0 (whose own $schema is in the instance) with provenance under `custom`, which that spec designates as the preserved extension point (EV-16, EV-31). Graded A for the base spec, B for this extension. `kind` gained `name` and `employer` on 2026-10-27: the interface named fields the ledger never emitted, and data/gold/ measured the gap at 0.0 recall. A field a schema offers and the code never fills is the defect this closes (docs/02 2.7, DECISIONS D-036).",
   "type": "object",
   "required": [
     "basics",

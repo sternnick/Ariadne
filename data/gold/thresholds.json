@@ -1,5 +1,5 @@
 {
-  "comment": "Ratchet floors, seeded on 2026-10-27 from the first measurement of data/gold/. Each entry sits 0.02 under what was measured, so an improvement passes and a regression stops the build. Raise a floor only in the commit that explains why; never lower one to make a red run green (AGENT_CONTRACT C2.4). The numbers these floors came from live in data/gold/results.json and are published in docs/02 2.6 and docs/05 5.1.",
+  "comment": "Ratchet floors, seeded on 2026-10-27 from the first measurement of data/gold/. Each entry sits 0.02 under what was measured, so an improvement passes and a regression stops the build. Raise a floor only in the commit that explains why; never lower one to make a red run green (AGENT_CONTRACT C2.4). The numbers these floors came from live in data/gold/results.json and are published in docs/02 2.7 and docs/05 5.1.",
   "forbidden_violations_max": 0,
   "fields": {
     "employer": {
