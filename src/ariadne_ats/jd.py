@@ -12,7 +12,7 @@ Extraction rules are deliberately lexical and boring:
 * a skill term is any comma/slash-separated item in a requirements bullet, kept verbatim.
 
 Nothing is inferred about the candidate. Nothing is inferred about the employer beyond the words they
-wrote. There is no seniority model, no culture model, and no scoring here — that is A2/A3, and the
+wrote. There is no seniority model, no culture model, and no scoring here - that is A2/A3, and the
 constraints on it live in `docs/03` and `AGENT_CONTRACT` C9.
 """
 from __future__ import annotations
@@ -40,7 +40,7 @@ REQUIREMENT_HEADINGS = ("requirements", "qualifications", "what you", "must have
                         "experience", "about you", "you have", "nice to have", "benefits")
 
 # A cue inside a negation is not evidence of a requirement. "A degree is not required" contains the
-# cue word `required`, and until 2026-10-27 it was classified `must` — measured, not theorised, by
+# cue word `required`, and until 2026-10-27 it was classified `must` - measured, not theorised, by
 # data/gold/jd-02-negations.txt. The mask covers the words between the negator and the cue so
 # "No prior fintech experience required" is caught as well as "is not required".
 _NEGATED_CUE_RE = re.compile(
@@ -126,7 +126,7 @@ def _weight(line: str) -> tuple[str, str]:
     """Weight the line, plus the reason when the reason is 'we could not tell'.
 
     Two cues of different families in one sentence, or a cue the sentence then denies, is a
-    contradiction, and the answer to a contradiction is `unknown` — not whichever cue the loop happened
+    contradiction, and the answer to a contradiction is `unknown` - not whichever cue the loop happened
     to test first. Until 2026-10-27 `NICE_CUES` were tested first, so "SQL is desirable but required"
     silently became `nice` and "is required, though not essential" became `must`; `jd-03-conflicts.txt`
     is the labelled case.
