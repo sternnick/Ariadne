@@ -43,6 +43,13 @@ things are reported instead of one blended score:
 | change bullet markers | 22 | yes | 1.000 | 0.0000 | 0.0 % |
 | inject ligature / soft hyphen | 11 | yes | 1.000 | 0.0000 | 0.0 % |
 
+The middle column is the honest one and the one a reader will otherwise ignore: it is how many of the
+24 documents the transform actually **changed**, and a transform that finds nothing to do measures
+nothing. `add_typographic_damage` needs five bullets or three commas to have a target, so it fired on
+11; `rename_headings` knows two English headings, so it fired on 16 (which is the same vocabulary limit
+as M-9, on the fixture side). Where a transform applied, retention was 1.000; the claim is "every
+change we actually made preserved every fact", not "every document was perturbed four ways".)
+
 Read the columns before comparing them to 29.6 %, because the easy reading is wrong:
 
 * **The ledger is presentation-proof on this corpus.** Every fact survived every transform, and every
