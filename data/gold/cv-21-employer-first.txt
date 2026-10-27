@@ -1,0 +1,18 @@
+Lars Eriksen
+lars.eriksen@example.no
+
+SUMMARY
+Twenty years of finance systems, most of it in the room where the ledger broke.
+
+EXPERIENCE
+Norra Bank — Senior Engineer 2016-2025
+* Rebuilt the reconciliation engine, 12 million lines per night
+
+Vestland Insurance — Systems Analyst 2009-2016
+* Owned the batch window for 300 nightly jobs
+
+SKILLS
+sql, java, oracle, unix
+
+EDUCATION
+MSc Finance, 2009

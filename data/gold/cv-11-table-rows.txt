@@ -1,0 +1,13 @@
+Henrik Vesterby
+h.vesterby@example.se
+
+EXPERIENCE
+Role: Senior Platform Engineer   Company: Saxen AB          Period: 2020-2025
+* Cut the deploy queue from 40 minutes to 6 minutes
+Role: Build Engineer   Company: Nordic Foundry          Period: 2017-2020
+
+SKILLS
+nix, nixops, nix, terraform
+
+EDUCATION
+BSc Computer Engineering, 2017

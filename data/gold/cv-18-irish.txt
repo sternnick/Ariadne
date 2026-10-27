@@ -1,0 +1,18 @@
+Séamus Ó Briain
+seamus.obriain@example.ie | Corcaigh | +353 83 1122334
+
+PRÓIFÍL
+Innealtóir bóithre, 12 bliain taithí i ngreanga Linux.
+
+TAITHÍ OIBRE
+Príomhinnealtóir, Coho Networks 2018 - inniu
+* Thóg mé an ardán faire do 200 seirbhís
+* Laghdaíodh an meán-am deisiúcháin ó 6 uair go 45 nóiméad
+
+Innealtóir Líonra, Muir Teic 2012 - 2018
+
+TEICNEOLÓISTE
+linux, ansible, netbox, python
+
+OIDEACHAS
+BSc Cumarsáide, 2012

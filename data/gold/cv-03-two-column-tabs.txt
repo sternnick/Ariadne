@@ -1,0 +1,14 @@
+ANNA KUROWSKA
+anna.k@example.de	Berlin	+49 30 123456
+
+EXPERIENCE
+Senior Backend Engineer	KfW Tech	2019 - 2024
+* Led the redesign of the payments ledger, 99.99 percent availability
+Tech Lead	Berlino Systems	2016 - 2019
+* Shipped the CI platform used by 60 engineers
+
+SKILLS
+java, kotlin, postgresql, docker
+
+EDUCATION
+BSc Computer Science, 2015

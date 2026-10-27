@@ -1,0 +1,19 @@
+THOMAS MÜLLER
+thomas.mueller@example.de | Köln
+
+PROFIL
+Infrastruktingenieur mit 12 Jahren Erfahrung in Linux und Virtualisierung.
+
+BERUFSERFAHRUNG
+DevOps Engineer, Rheinhanda GmbH 03/2019 - heute
+* Reduzierte die Bereitstellungszeit von 3 Tagen auf 20 Minuten
+* Betreute 400 virtuelle Maschinen unter Proxmox
+
+Systemadministrator, Vektor IT 2014 - 2019
+* Migration der Filialnetze auf VLANs
+
+KENNTNISSE
+linux, docker, proxmox, bash, ansible
+
+AUSBILDUNG
+Bachelor Informatik, 2014

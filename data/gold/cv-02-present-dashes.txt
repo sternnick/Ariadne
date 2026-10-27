@@ -1,0 +1,18 @@
+TOMI LAINE
+tomi.laine@example.fi · Helsinki · +358 40 1234567
+
+PROFILE
+Site reliability engineer, 11 years in production Linux estates.
+
+WORK HISTORY
+Senior SRE, Umbrella Ops Oy 2018 - Present
+* Cut incident count by 42 percent over four quarters
+* Ran the observability platform for 120 services
+
+Systems Engineer, Polarmesh 2013-2018
+
+CORE COMPETENCIES
+linux, prometheus, ansible, terraform, python
+
+QUALIFICATIONS
+MSc Computer Science, Aalto University, 2013

@@ -1,0 +1,8 @@
+Site Reliability Engineer
+
+REQUIREMENTS
+* You have run Prometheus in production
+
+WHAT YOU BRING
+* You have run Prometheus in production
+* Comfortable being woken up at 3 am

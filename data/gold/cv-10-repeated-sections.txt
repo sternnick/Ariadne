@@ -1,0 +1,22 @@
+Emil Svendsen
+emil.svendsen@example.dk
+
+SUMMARY
+Embedded engineer. Ten years close to the hardware.
+
+EXPERIENCE
+Firmware Engineer, Nordbit 2018-2024
+* Shipped the bootloader used in 120,000 devices
+
+SKILLS
+c, assembly, cmake
+
+EXPERIENCE
+Test Engineer, Bilka Elektronik 2014-2018
+* Built the hardware-in-the-loop rig used by three teams
+
+SKILLS
+python, labview, can bus
+
+EDUCATION
+MSc Embedded Systems, 2014

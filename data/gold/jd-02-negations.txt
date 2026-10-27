@@ -1,0 +1,9 @@
+Backend Engineer
+
+REQUIREMENTS
+* A computer science degree is not required
+* You must be comfortable being on call
+* No prior fintech experience required
+
+PREFERRED
+* Familiarity with event-driven systems is desirable

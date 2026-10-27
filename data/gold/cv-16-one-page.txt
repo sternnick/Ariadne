@@ -1,0 +1,10 @@
+Ingrid Solberg
+ingrid.solberg@example.no
+
+EXPERIENCE
+Lead Network Engineer, Fjord Netverk 2016 - present
+* Designed the redundant edge for 140 sites
+* Cut the mean time to repair from 9 hours to 90 minutes
+
+SKILLS
+bgp, junos, ansible, netbox, linux

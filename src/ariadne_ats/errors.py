@@ -44,6 +44,13 @@ class Code(str, Enum):
     SECTION_REPEATED = "SECTION_REPEATED"
     SECTION_AMBIGUOUS_HEADING = "SECTION_AMBIGUOUS_HEADING"
 
+    # field extraction (data/gold/ measures this surface; scripts/bench.py is the gate)
+    ROLE_LINE_AMBIGUOUS = "ROLE_LINE_AMBIGUOUS"
+
+    # requirement weighting in a job description
+    REQUIREMENT_AMBIGUOUS_CUES = "REQUIREMENT_AMBIGUOUS_CUES"
+    REQUIREMENT_NEGATED_CUE = "REQUIREMENT_NEGATED_CUE"
+
 
 class Severity(str, Enum):
     BLOCKING = "blocking"

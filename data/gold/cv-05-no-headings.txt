@@ -1,0 +1,13 @@
+Daniel O'Brien
+daniel.obrien@example.ie
+
+I have spent the last nine years keeping Linux estates upright in two
+hosting companies. I am good at the unglamorous parts: patching, backup
+verification, and the network diagram that is actually true.
+
+Led the decommissioning of 60 physical hosts, moved to 400 VMs
+Reduced the restore time for the mail estate from 9 hours to 25 minutes
+Built the monitoring stack that caught the 2023 cooling failure
+
+Working days: python, bash, debian, nagios, pve
+References available on request

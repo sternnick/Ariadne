@@ -1,5 +1,5 @@
 ```
-Last verified: 2026-10-25
+Last verified: 2026-10-27
 Reviewed by:   Ariadne (principal)
 Live surfaces: vendor documentation reachability (the walls below can open or close)
 ```
@@ -41,11 +41,23 @@ V-1 is the item that most limits the product: without it we cannot say which for
 
 | id | Unknown | Why it blocks | Probe |
 |---|---|---|---|
-| M-1 | field-level parse quality of our own parser | we cannot claim anything about parsing | hand-annotate 20 synthetic résumés (employer, title, dates, skills); score exact-match/F1 (doc 02 §2.6) |
-| M-2 | score stability under competence-preserving perturbation | a point estimate is unjustifiable without it (29.6 % baseline, [EV-02]). **Substrate exists (A1):** `perturb.TRANSFORMS` + `Ledger.delta()` prove “same competence, different surface” today; the *measurement* is still absent | A2: five fixtures × the four transforms, measure score/ranking inversion rate (doc 05 §5.1) |
+| M-2 | whether a **score** is stable under competence-preserving perturbation | there is no score to stabilize. The extraction layer's half is measured and published (doc 05 5.1): facts preserved 1.000, ranking inverted 0-6.7 % by transform | A2: the same `bench.stability()` run against `score()` once a score exists, with the declared tolerance from `data/gold/thresholds.json` |
 | M-3 | false-negative rate for skill matching | friction is the harm ([EV-04]) | 40 hand-labelled requirement/evidence pairs; compare TF-IDF vs lexicon vs both |
 | M-4 | abstention rate, and whether users experience it as failure | doc 04 §4.7 ships abstention as a success value | instrument abstentions and follow-up completion in A3 |
 | M-5 | whether better-parsing artefacts are preferred over higher-scoring ones | the core product bet ([HYPOTHESIS] in doc 01 §1.7) | A/B two rendered CVs; measure which users keep |
+
+## 8.3b Opened by the benchmark itself (2026-10-27)
+
+A measurement that closes one unknown always names two more. These are the ones M-1 produced; each is
+a question, not a to-do, and each says what would answer it.
+
+| id | Unknown | Why it is a question and not a task | Probe |
+|---|---|---|---|
+| M-6 | how common the employer-first role line is in real CVs ("Acme Corp - Senior Engineer") | our rule assumes title-first; on the one adversarial fixture we have, both fields come out **swapped**, which is worse than missing. Whether this is 2 % or 30 % of documents is unknown and decides whether the rule needs a tie-breaker at all | label 100 real CVs by convention once a corpus exists (D-4); until then the failure is published, not averaged away |
+| M-7 | whether the name rule's "first non-channel line" holds on documents whose name sits elsewhere | cv-24 proves the abstention; it does not say how often the abstention fires in the wild | same corpus as M-6; measure name recall per layout class |
+| M-8 | whether stripping heading vocabulary from the comparison removes the 0.098 cosine move that a heading rename causes | we can name the mechanism (heading words are terms) but not the side-effect on term evidence | A2 experiment: cosine with and without heading terms over the gold corpus |
+| M-9 | per-language extraction quality beyond one document per language | the 1.000 recall rows for de/el/es/fr/ga/nl are n=1 and must not be read as language support | 5+ documents per language, then report the spread, not the mean |
+| M-10 | what the numbers look like on documents nobody here wrote | the gold corpus is author-written by the session that wrote the rules; the 0.947 is a property of this pairing | D-4 / G-8 again: it is the cheapest way to turn our numbers into someone else's numbers |
 
 ## 8.4 Data and taxonomy
 
@@ -71,7 +83,7 @@ V-1 is the item that most limits the product: without it we cannot say which for
 | id | Unknown | Note |
 |---|---|---|
 | X-1 | model-provider retention and training terms for any LLM we would call | **U** — no provider terms read. This is why the baseline is local-only (`D-016`) and remote calls are opt-in |
-| X-2 | whether our `[HYPOTHESIS]` about layout→field-recovery holds | testable now (M-1); it is the cheapest experiment in the repository |
+| X-2 | whether our `[HYPOTHESIS]` about layout → field-recovery holds | **partly answered 2026-10-27, and it split.** Where the layout damage leaves field boundaries on the same line (tab-separated role lines, cv-03; glyph damage, cv-20) the fields come back intact. Where the damage moves a boundary to another line (the date on its own line, cv-22) recovery fails completely while the years survive. So "layout damages fields" is too coarse: the recoverable axis is *within-line* structure, and the unrecoverable one is *line merging*. What remains open is the frequency of each in real documents (M-6, M-10) | label real CVs by damage class once a corpus exists (D-4) |
 | X-3 | the reversal-rate tolerance we should declare | a **decision**, not a fact: publish the measurement, then set the threshold in `DECISIONS.md` |
 
 
@@ -87,9 +99,9 @@ owns the gap, and the artefact that would prove closure. This table is the singl
 | DR-1 | `01` §1.5 | formats / size limits / parser vendor, 7 of 8 engines | browser rung on `support.greenhouse.io`, `help.lever.co`, `help.smartrecruiters.com`, `developers.ashbyhq.com`, `help.teamtailor.com`, `docs.oracle.com` (Fusion HCM → Resume Parsing); then Textkernel + Daxtra partner pages | `docs/01` §1.5 table with quoted sentences + access dates, grades moved off `U` |
 | DR-2 | `01` §1.3 | adoption measured only by vendor telemetry | DNS/HTTP census of `careers.<company>` across a fixed 100-company sample | a method paragraph + the sample + the number, in `docs/01` |
 | DR-3 | `01` §1.4 | "75 % auto-rejected" rests on one sceptical blog | trace the statistic to its earliest citation, or record that none exists | a paragraph saying "no origin found", with the searches listed |
-| DR-4 | `05` §5.1 | no stability number of our own (**M-2**) | the stability test (not yet written): 5 fixtures × 3 competence-preserving perturbations, declared tolerance | the test + a published inversion rate, in `docs/05` |
+| DR-4 | `05` §5.1 | no stability number of our own (**M-2**) - **half closed 2026-10-27**: fact-set preservation and a ranking-inversion rate against one fixed advertisement are measured and gated; the number that waits is the one a score would produce | `bench.stability()` over the gold corpus, D-038 | the published rates, in `docs/05` 5.1 |
 | DR-5 | `05` §5.2 | fairness is an absence of claims | 40 synthetic CVs differing only in name signal; publish the output delta, or record that measuring it would require a capability C9 forbids | a paragraph either way — both outcomes are publishable |
-| DR-6 | `05` §5.4 | no field-level parse quality (**M-1**) | 20 synthetic résumés hand-annotated (employer, title, dates, skills) | per-field confusion table, in `docs/02`/`05` |
+| ~~DR-6~~ | `05` §5.4 | ~~no field-level parse quality (**M-1**)~~ **CLOSED 2026-10-27**: 24 documents hand-labelled before the parser ran, per-field precision/recall, forbidden-emission count, ratchet floors | `data/gold/manifest.json`, `scripts/bench.py --check`, D-035 | published table in `docs/02` §2.7, artefact `data/gold/results.json` |
 | DR-7 | `05` §5.3 | provider retention terms unread (**X-1**) | read the DPA/terms of the single provider we would call; quote the retention sentence | `docs/09` §3 row + a `DECISIONS` entry |
 | DR-8 | `06` §6.3 | no maintenance signal; star counts untrusted | per project: `/repos`, `/releases`, `/contributors?per_page=100`, 90-day commit histogram, stargazer timestamps | maintenance table in `docs/06`, star counts either vindicated or annotated |
 | DR-9 | `06` §6.2 | two licences unread | `GET /repos/{o}/{r}/contents/LICENSE` for `sinaatalay/avicv`, `BPMSoftwareSolutions/agentic-resume-tailor` | quoted first line per project |
@@ -98,8 +110,10 @@ owns the gap, and the artefact that would prove closure. This table is the singl
 | DR-12 | `08` §8.4 | no corpus with ground-truth superiority (**D-4**) | synthetic pairs per the M-2 method; request PopResume access ([EV-14]) | a corpus path + a licence note, or a recorded refusal |
 | ~~DR-13~~ | `05`/`09` | ~~branch protection absent (plan-gated)~~ **CLOSED 2026-10-25** — repository flipped public, protection active with six required contexts (`D-031` carries the API response) | — | — |
 
-**Priority.** DR-4 is first: it is the cheapest, it closes the highest-value unknown, and it is A2's
-acceptance criterion. DR-1 is second: it is the only gap that limits what the product may *say* about
+**Priority.** DR-1 is first now that DR-4's extraction half is closed: it is the only remaining gap
+that limits what the product may *say*. Next is the corpus gap (D-4/G-8): our own numbers are measured
+on 24 documents written by the session that wrote the rules, which is a floor and not a distribution.
+DR-13 is third because it is a purchase/visibility decision, not an engineering one.: it is the only gap that limits what the product may *say* about
 compatibility. DR-13 is third because it is a purchase/visibility decision, not an engineering one.
 
 ## 8.7 How this file is maintained

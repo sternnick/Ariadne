@@ -1,0 +1,17 @@
+Priya Raman
+priya.raman@example.com
+
+ABOUT ME
+Platform engineer focused on build systems and developer velocity.
+
+EMPLOYMENT HISTORY
+Staff Engineer, Halcyon Labs 2019 - 2025
+* Rebuilt the monorepo build graph, cutting CI wall time by 63 percent
+
+Backend Engineer, Tessellate 2015 - 2019
+
+TECHNOLOGIES
+go, bazel, grpc, kubernetes, sql
+
+ACADEMIC BACKGROUND
+BTech Information Technology, 2015

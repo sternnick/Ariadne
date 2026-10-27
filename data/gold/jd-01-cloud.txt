@@ -1,0 +1,13 @@
+Cloud Platform Engineer
+
+WHAT YOU WILL NEED
+* You have production experience with Kubernetes
+* You have written infrastructure as code with Terraform
+* Strong Linux administration is required
+
+NICE TO HAVE
+* Experience with service meshes is desirable
+* A public portfolio or talks are a plus
+
+RESPONSIBILITIES
+* You will own the upgrade cadence for the shared clusters

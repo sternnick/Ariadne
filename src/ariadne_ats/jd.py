@@ -28,7 +28,17 @@ from .textutil import normalize
 MUST_CUES = ("must", "required", "requirement", "essential", "you have", "you will need", "minimum")
 NICE_CUES = ("nice to have", "preferred", "bonus", "plus", "desirable", "advantageous")
 REQUIREMENT_HEADINGS = ("requirements", "qualifications", "what you", "must have", "skills",
-                        "experience", "about you", "you have")
+                        "experience", "about you", "you have", "nice to have", "benefits")
+
+# A cue inside a negation is not evidence of a requirement. "A degree is not required" contains the
+# cue word `required`, and until 2026-10-27 it was classified `must` — measured, not theorised, by
+# data/gold/jd-02-negations.txt. The mask covers the words between the negator and the cue so
+# "No prior fintech experience required" is caught as well as "is not required".
+_NEGATED_CUE_RE = re.compile(
+    r"\b(?:not|no|never|without|nor)\b[\w'\s]{0,28}?\b(?:must|required|requirement|essential|"
+    r"necessary|experience)\b",
+    re.I,
+)
 
 
 @dataclass
@@ -83,13 +93,34 @@ def _sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
-def _weight(line: str) -> str:
+def _cue_evidence(line: str) -> tuple[bool, bool, bool]:
+    """(unnegated must cue?, unnegated nice cue?, any cue appeared negated?)."""
     low = line.lower()
-    if any(cue in low for cue in NICE_CUES):
-        return "nice"
-    if any(cue in low for cue in MUST_CUES):
-        return "must"
-    return "unknown"
+    masked = _NEGATED_CUE_RE.sub(lambda m: " " * len(m.group(0)), low)
+    must = any(c in masked for c in MUST_CUES)
+    nice = any(c in masked for c in NICE_CUES)
+    return must, nice, bool(_NEGATED_CUE_RE.search(low))
+
+
+def _weight(line: str) -> tuple[str, str]:
+    """Weight the line, plus the reason when the reason is 'we could not tell'.
+
+    Two cues of different families in one sentence, or a cue the sentence then denies, is a
+    contradiction, and the answer to a contradiction is `unknown` — not whichever cue the loop happened
+    to test first. Until 2026-10-27 `NICE_CUES` were tested first, so "SQL is desirable but required"
+    silently became `nice` and "is required, though not essential" became `must`; `jd-03-conflicts.txt`
+    is the labelled case.
+    """
+    must, nice, negated = _cue_evidence(line)
+    if must and nice:
+        return "unknown", "contradictory cues"
+    if negated:
+        return "unknown", "negated cue"
+    if must:
+        return "must", ""
+    if nice:
+        return "nice", ""
+    return "unknown", "no cue"
 
 
 def build_jd(text: str, source: str = "", report: ParseReport | None = None) -> JobDescription:
@@ -106,7 +137,16 @@ def build_jd(text: str, source: str = "", report: ParseReport | None = None) -> 
             raw = line.strip(" \t*-")
             if len(raw) < 12:
                 continue
-            weight = _weight(raw)
+            if raw.isupper() and len(raw.split()) <= 4:
+                continue        # a short ALL-CAPS line is a section label, not an ask (jd-01)
+            weight, reason = _weight(raw)
+            if reason == "contradictory cues":
+                report.add(Code.REQUIREMENT_AMBIGUOUS_CUES, Severity.NOTE,
+                           f"'{raw[:60]}' carries both obligation and preference cues; weight left "
+                           "unknown rather than resolved by evaluation order")
+            elif reason == "negated cue":
+                report.add(Code.REQUIREMENT_NEGATED_CUE, Severity.NOTE,
+                           f"'{raw[:60]}' denies a requirement cue; weight left unknown")
             if weight == "unknown" and not in_req_section:
                 continue
             rid = _sha(re.sub(r"\s+", " ", raw.lower()))[:12]

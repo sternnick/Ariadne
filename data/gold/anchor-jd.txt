@@ -1,0 +1,9 @@
+Platform Engineer
+
+REQUIREMENTS
+* You have production experience with Kubernetes
+* You have written infrastructure as code with Terraform
+* Strong Python is required
+
+NICE TO HAVE
+* Experience with Kafka is desirable

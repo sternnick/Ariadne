@@ -1,0 +1,20 @@
+Ana Ferreira
+ana.ferreira@example.pt
+
+SUMMARY
+QA lead. Twelve years of breaking software on purpose.
+
+EXPERIENCE
+QA Lead, Luz Systems
+2019 - 2024
+* Built the regression suite that now blocks every release
+* Cut the escaped-defect rate by half
+
+Tester, Tejo Digital
+2014 - 2019
+
+SKILLS
+selenium, python, sql, jira
+
+EDUCATION
+BSc Software Engineering, 2014

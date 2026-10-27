@@ -1,5 +1,5 @@
 ```
-Last verified: 2026-10-25
+Last verified: 2026-10-27
 Reviewed by:   Ariadne (principal)
 Live surfaces: none
 ```
@@ -25,12 +25,48 @@ changes — same candidate, same content, reordered. Two consequences, both alre
 1. **Scores ship as bands** (doc 03 §3.4).
 2. **Perturbation is a test, not an audit ritual.** A release test must take a fixture, apply
    competence-preserving perturbations (reorder sections, rephrase bullets, change template), and
-   assert the ranking does not invert beyond a declared tolerance. That test does not exist yet — it is
-   A2's acceptance criterion, and it is the single most important test we will write.
+   assert the ranking does not invert beyond a declared tolerance. **Written 2026-10-27**: the
+   substrate below; the acceptance criterion for an A2 score is the same test run against that score,
+   which does not exist yet and is the honest half of what remains.
 
-**[OPEN]** A tolerance threshold is a product decision with no source: we cannot cite a number for
-"acceptable reversal rate". Probe: publish our measured rate against the 29.6 % baseline and state our
-own threshold explicitly as a decision (`DECISIONS.md`), not as a fact.
+### Our own number, measured 2026-10-27
+
+The test the paragraph above asked for now exists (`src/ariadne_ats/bench.py::stability`, gated by
+`scripts/bench.py --check`, artefact `data/gold/results.json`). Each of the 24 gold documents is
+rebuilt through four competence-preserving transforms and compared against itself, and three separate
+things are reported instead of one blended score:
+
+| Transform | fixtures changed | facts preserved | fact retention | max cosine move | ranking inversions |
+|---|---|---|---|---|---|
+| reorder sections | 21 | yes | 1.000 | 0.0000 | 0.0 % |
+| rename headings | 16 | yes | 1.000 | 0.0983 | 6.7 % |
+| change bullet markers | 22 | yes | 1.000 | 0.0000 | 0.0 % |
+| inject ligature / soft hyphen | 11 | yes | 1.000 | 0.0000 | 0.0 % |
+
+Read the columns before comparing them to 29.6 %, because the easy reading is wrong:
+
+* **The ledger is presentation-proof on this corpus.** Every fact survived every transform, and every
+  transform that claimed to preserve competence did (`competence_hash` identical). That is the design
+  claim of the two-hash model, and it held.
+* **Cosine over a bag of terms is permutation-invariant by construction.** Reordering sections cannot
+  move it, so the 0.0 % on row 1 is a property of the arithmetic, not evidence of robustness. Anyone
+  quoting that row as "stable under reordering" is quoting the wrong thing: it says our comparison
+  layer cannot *see* order.
+* **What does move the number is vocabulary.** Renaming `EXPERIENCE` to `WORK HISTORY` moves the
+  cosine against a fixed advertisement by up to 0.098 and inverts the order of 6.7 % of fixture pairs,
+  with zero change in content. That is the same disease as [EV-02]'s 29.6 %, in our own tool, at about
+  a quarter of the published rate - and the mechanism is now identified: heading words are themselves
+  terms in the vector.
+* The ranking figure is the only one comparable to 29.6 %, and it is not the same experiment: [EV-02]
+  reverses *candidate pairs on competence-preserving edits*; we invert *fixture order against one
+  advertisement*. Say which one is meant.
+
+**Decision (D-038), not a fact:** the declared tolerance is 0.02 for cosine-preserving transforms and
+0.09 for heading-rename inversions, recorded as a ratchet in `data/gold/thresholds.json`. The first
+number is arithmetic; the second is a ceiling we accepted because we can name its mechanism and have
+not yet paid to remove it. `[OPEN]` whether stripping heading terms from the comparison removes the
+vocabulary sensitivity without losing term evidence - that is an A2 experiment, and the measurement
+above is what makes it worth running.
 
 ## 5.2 Fairness: the claims we are allowed to make
 
@@ -74,16 +110,20 @@ the only defensible statement is the local-first one: the baseline computes with
 |---|---|
 | `normalize()` is idempotent | **passes** (audit P6) |
 | Import of the package is clean; no phantom API | **passes** (audit P8, D-004) |
-| No person-level inference in the package | **passes** (`tests/test_no_profiling.py`, 7 tests) |
+| No person-level inference in the package | **passes**, two ways: the static scan and the behavioural verbatim/kind check over every gold fixture (`tests/test_no_profiling.py`; see its "what this file cannot prove" section for the limits) |
+| Field extraction is verbatim, never inferred | **passes** - every emitted fact value is a substring of its own document, over all 24 fixtures |
 | Every doc citation resolves; no uncited source | **passes** (`scripts/provenance.py`) |
 | No stale doc | **passes** (`scripts/fresh.py`) |
 | No dead relative link | **passes** on docs 01–05; `docs/08` still a forward reference |
-| Score stability under perturbation | **does not exist** — A2 |
-| Field-level parse quality | **does not exist** — A1/A2 |
+| Score stability under perturbation | **measured 2026-10-27**: facts preserved 1.000, ranking inverted 0-6.7 % depending on transform (5.1); the *score* half still waits on A2, because there is no score |
+| Field-level parse quality | **measured 2026-10-27**: `data/gold/results.json`, published in 02 2.7, gated by `scripts/bench.py --check` |
+| Forbidden emissions (a value present that should never be) | **0**, over 24 labelled documents, and the build stops on the first one |
 
 ## 5.5 The honest summary
 
-Reliability is *measurable and currently unmeasured*; fairness is *evidenced against us and therefore
+Reliability is *measurable and now measured at the extraction layer* (02 2.7, and 5.1 for what a
+presentation change does to a fact set and to a similarity number); it is still unmeasured wherever
+there is no number yet, which is anywhere a score would sit. Fairness is *evidenced against us and therefore
 must not be claimed*; security is *architecturally addressed at the one boundary we control* (channel
 separation) and *unaddressed at the one we do not* (model provider retention).
 

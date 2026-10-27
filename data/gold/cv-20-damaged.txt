@@ -1,0 +1,13 @@
+Pieter de Vries
+p.de-vries@example.nl | Utrecht
+SUMMARY
+Warehouse and logistics engineer­. Finished in 2013 and never left the floor.
+EXPERIENCE
+Operations Engineer, Van Dijk Logistiek 2013/2019
+* Reduced the mis-pick rate from 3.1 to 0.4 per thousand
+Shift Lead, Rijnvold 2019 - heden
+* Auto­mated the dock sche­duling; 22 % fewer late departures
+SKILLS
+sap, sql, excel, vba
+EDUCATION
+HBO Logistics Management, 2013

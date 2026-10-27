@@ -1,0 +1,16 @@
+SENIOR SECURITY ENGINEER
+Mikael Lindqvist
+mikael.lindqvist@example.se | Stockholm
+
+SUMMARY
+Ten years in detection engineering and one long argument about log volume.
+
+EXPERIENCE
+Security Engineer, Norrsen Security 2018-2025
+* Cut mean time to detect from 6 hours to 18 minutes
+
+SKILLS
+siem, python, cloudtrail, linux
+
+EDUCATION
+BSc Computer Science, 2015

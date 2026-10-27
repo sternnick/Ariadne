@@ -1,0 +1,936 @@
+{
+  "version": "1.0.0",
+  "annotated_by": "hand annotation, 2026-10-27, from the fixture text only (no parser output consulted while labelling)",
+  "matching_rule": "A value counts as extracted when its normalised form (NFKC, casefold, whitespace collapsed, surrounding punctuation from ' \\t.,;:|-/' stripped) equals the normalised expected form. Set semantics: a value is extracted or it is not; repeating it does not score twice.",
+  "fields": [
+    "employer",
+    "title",
+    "date",
+    "skill",
+    "contact",
+    "name"
+  ],
+  "empty_expectation_rule": "If a field has no expected value in a fixture and the parser emits one, that emission is a false positive. This is how an abstention rule is made falsifiable: 'we do not guess' must be measurable.",
+  "fixtures": [
+    {
+      "id": "cv-01",
+      "file": "cv-01-single-column.txt",
+      "language": "en",
+      "surface": "single column, exact headings, marked bullets",
+      "note": "The reference case: everything the parser claims to do should work here.",
+      "expect": {
+        "employer": [
+          "Norddata",
+          "Bisel SA"
+        ],
+        "title": [
+          "Data Engineer",
+          "Junior Analyst"
+        ],
+        "date": [
+          "2017",
+          "2020",
+          "2024"
+        ],
+        "skill": [
+          "sql",
+          "python",
+          "airflow",
+          "snowflake",
+          "bash"
+        ],
+        "contact": [
+          "maria.gonzalez@example.org",
+          "linkedin.com/in/mariagonzalez"
+        ],
+        "name": [
+          "MARIA GONZALEZ"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-02",
+      "file": "cv-02-present-dashes.txt",
+      "language": "en",
+      "surface": "synonym headings, 'Present' as an end marker, phone in the contact block",
+      "note": "An open-ended role must not invent an end year.",
+      "expect": {
+        "employer": [
+          "Umbrella Ops Oy",
+          "Polarmesh"
+        ],
+        "title": [
+          "Senior SRE",
+          "Systems Engineer"
+        ],
+        "date": [
+          "2013",
+          "2018"
+        ],
+        "skill": [
+          "linux",
+          "prometheus",
+          "ansible",
+          "terraform",
+          "python"
+        ],
+        "contact": [
+          "tomi.laine@example.fi",
+          "+358 40 1234567"
+        ],
+        "name": [
+          "TOMI LAINE"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-03",
+      "file": "cv-03-two-column-tabs.txt",
+      "language": "en",
+      "surface": "tab-separated role lines (flattened two-column)",
+      "note": "The layout damage is reported; the fields must still be recoverable from the same line.",
+      "expect": {
+        "employer": [
+          "KfW Tech",
+          "Berlino Systems"
+        ],
+        "title": [
+          "Senior Backend Engineer",
+          "Tech Lead"
+        ],
+        "date": [
+          "2015",
+          "2016",
+          "2019",
+          "2024"
+        ],
+        "skill": [
+          "java",
+          "kotlin",
+          "postgresql",
+          "docker"
+        ],
+        "contact": [
+          "anna.k@example.de",
+          "+49 30 123456"
+        ],
+        "name": [
+          "ANNA KUROWSKA"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-04",
+      "file": "cv-04-synonym-headings.txt",
+      "language": "en",
+      "surface": "heading vocabulary variants (ABOUT ME / EMPLOYMENT HISTORY / TECHNOLOGIES / ACADEMIC BACKGROUND)",
+      "note": "Heading synonyms are the cheap axis; a rename must not lose a field.",
+      "expect": {
+        "employer": [
+          "Halcyon Labs",
+          "Tessellate"
+        ],
+        "title": [
+          "Staff Engineer",
+          "Backend Engineer"
+        ],
+        "date": [
+          "2015",
+          "2019",
+          "2025"
+        ],
+        "skill": [
+          "go",
+          "bazel",
+          "grpc",
+          "kubernetes",
+          "sql"
+        ],
+        "contact": [
+          "priya.raman@example.com"
+        ],
+        "name": [
+          "Priya Raman"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-05",
+      "file": "cv-05-no-headings.txt",
+      "language": "en",
+      "surface": "no headings at all; prose plus unmarked achievements",
+      "note": "Section-driven extraction must abstain, not infer. The year inside prose is the trap.",
+      "expect": {
+        "employer": [],
+        "title": [],
+        "date": [],
+        "skill": [],
+        "contact": [
+          "daniel.obrien@example.ie"
+        ],
+        "name": [
+          "Daniel O'Brien"
+        ]
+      },
+      "forbid": {
+        "date": [
+          "2023"
+        ],
+        "skill": [
+          "python",
+          "bash",
+          "debian",
+          "nagios",
+          "pve"
+        ],
+        "employer": [
+          "PVE"
+        ]
+      }
+    },
+    {
+      "id": "cv-06",
+      "file": "cv-06-german.txt",
+      "language": "de",
+      "surface": "German headings, '03/2019 - heute' date style, umlauts",
+      "note": "Multilingual is a stated requirement (docs/02 2.6); this is the measurement of it.",
+      "expect": {
+        "employer": [
+          "Rheinhanda GmbH",
+          "Vektor IT"
+        ],
+        "title": [
+          "DevOps Engineer",
+          "Systemadministrator"
+        ],
+        "date": [
+          "2014",
+          "2019"
+        ],
+        "skill": [
+          "linux",
+          "docker",
+          "proxmox",
+          "bash",
+          "ansible"
+        ],
+        "contact": [
+          "thomas.mueller@example.de"
+        ],
+        "name": [
+          "THOMAS MÜLLER"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-07",
+      "file": "cv-07-french.txt",
+      "language": "fr",
+      "surface": "French headings with accents, 'Présent', apostrophes",
+      "note": "Accented headings are the P1 class: an ASCII-only rule loses the whole section.",
+      "expect": {
+        "employer": [
+          "Lumineo SAS",
+          "Ateliers du Rhône"
+        ],
+        "title": [
+          "Développeuse senior",
+          "Développeuse"
+        ],
+        "date": [
+          "2015",
+          "2018"
+        ],
+        "skill": [
+          "python",
+          "django",
+          "postgresql",
+          "docker",
+          "kubernetes"
+        ],
+        "contact": [
+          "nadia.benali@example.fr",
+          "+33 6 12 34 56 78"
+        ],
+        "name": [
+          "Nadia Benali"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-08",
+      "file": "cv-08-greek.txt",
+      "language": "el",
+      "surface": "Greek headings and body, 'Simeras' end marker transliterated as希腊",
+      "note": "Non-Latin script: token equality, not translation, is what is being tested.",
+      "expect": {
+        "employer": [
+          "Τμήμα Πληροφορικής ΑΕ"
+        ],
+        "title": [
+          "Μηχανικός Λογισμικού"
+        ],
+        "date": [
+          "2011",
+          "2012"
+        ],
+        "skill": [
+          "java",
+          "oracle",
+          "linux"
+        ],
+        "contact": [
+          "g.papadakis@example.gr"
+        ],
+        "name": [
+          "Γιώργος Παπαδάκης"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-09",
+      "file": "cv-09-spanish.txt",
+      "language": "es",
+      "surface": "Spanish headings, 'Actualidad'",
+      "expect": {
+        "employer": [
+          "Mareterra SL",
+          "Grupo Almirante"
+        ],
+        "title": [
+          "Ingeniera de soporte",
+          "Técnica de sistemas"
+        ],
+        "date": [
+          "2016",
+          "2019"
+        ],
+        "skill": [
+          "windows",
+          "powershell",
+          "vmware",
+          "azure"
+        ],
+        "contact": [
+          "lucia.ferrer@example.es"
+        ],
+        "name": [
+          "Lucía Ferrer"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-10",
+      "file": "cv-10-repeated-sections.txt",
+      "language": "en",
+      "surface": "EXPERIENCE and SKILLS each appear twice (audit P5)",
+      "note": "First-heading-wins used to drop the second block silently. Both blocks must survive.",
+      "expect": {
+        "employer": [
+          "Nordbit",
+          "Bilka Elektronik"
+        ],
+        "title": [
+          "Firmware Engineer",
+          "Test Engineer"
+        ],
+        "date": [
+          "2014",
+          "2018",
+          "2024"
+        ],
+        "skill": [
+          "c",
+          "assembly",
+          "cmake",
+          "python",
+          "labview",
+          "can bus"
+        ],
+        "contact": [
+          "emil.svendsen@example.dk"
+        ],
+        "name": [
+          "Emil Svendsen"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-11",
+      "file": "cv-11-table-rows.txt",
+      "language": "en",
+      "surface": "key-value role rows flattened with wide gaps (a table read as text)",
+      "expect": {
+        "employer": [
+          "Saxen AB",
+          "Nordic Foundry"
+        ],
+        "title": [
+          "Senior Platform Engineer",
+          "Build Engineer"
+        ],
+        "date": [
+          "2017",
+          "2020",
+          "2025"
+        ],
+        "skill": [
+          "nix",
+          "nixops",
+          "terraform"
+        ],
+        "contact": [
+          "h.vesterby@example.se"
+        ],
+        "name": [
+          "Henrik Vesterby"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-12",
+      "file": "cv-12-unmarked-bullets.txt",
+      "language": "en",
+      "surface": "achievements with no bullet marker (audit P4)",
+      "expect": {
+        "employer": [
+          "Meridian Data",
+          "Atlas Grid"
+        ],
+        "title": [
+          "Senior Database Engineer",
+          "Database Engineer"
+        ],
+        "date": [
+          "2017",
+          "2019",
+          "2025"
+        ],
+        "skill": [
+          "postgresql",
+          "python",
+          "grafana",
+          "terraform"
+        ],
+        "contact": [
+          "clara.ndiaye@example.com"
+        ],
+        "name": [
+          "Clara Ndiaye"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-13",
+      "file": "cv-13-skills-as-bullets.txt",
+      "language": "en",
+      "surface": "skills as bullets; one bullet names two tools",
+      "note": "'* git and docker' is one list item that carries two skills. Splitting on ' and ' in prose is a false-positive risk, so this fixture measures the gap rather than papering over it.",
+      "expect": {
+        "employer": [
+          "Anatolia Yazilim"
+        ],
+        "title": [
+          "Backend Engineer"
+        ],
+        "date": [
+          "2018",
+          "2024"
+        ],
+        "skill": [
+          "java",
+          "spring boot",
+          "kafka",
+          "postgresql",
+          "git",
+          "docker"
+        ],
+        "contact": [
+          "yusuf.demir@example.com.tr"
+        ],
+        "name": [
+          "Yusuf Demir"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-14",
+      "file": "cv-14-contact-heavy.txt",
+      "language": "en",
+      "surface": "one contact value per line, plus a postal address",
+      "note": "A postal address is a location, not a contact channel; it must not be emitted as a contact.",
+      "expect": {
+        "employer": [
+          "Aurelia Finance",
+          "Tessera Group"
+        ],
+        "title": [
+          "Security Engineer",
+          "Security Analyst"
+        ],
+        "date": [
+          "2015",
+          "2019",
+          "2025"
+        ],
+        "skill": [
+          "oidc",
+          "saml",
+          "vault",
+          "python",
+          "linux"
+        ],
+        "contact": [
+          "sofia.rossi@example.it",
+          "+39 340 1122334",
+          "github.com/srossi",
+          "linkedin.com/in/sofia-rossi"
+        ],
+        "name": [
+          "Sofia Rossi"
+        ]
+      },
+      "forbid": {
+        "contact": [
+          "Via Roma 12, 20121 Milano, Italy"
+        ]
+      }
+    },
+    {
+      "id": "cv-15",
+      "file": "cv-15-summary-year.txt",
+      "language": "en",
+      "surface": "a year inside summary prose, no skills section",
+      "note": "A year in a sentence is not an employment date. The expected list proves the rule; the forbidden list makes it falsifiable.",
+      "expect": {
+        "employer": [
+          "Vikka Systems"
+        ],
+        "title": [
+          "Systems Engineer"
+        ],
+        "date": [
+          "2004",
+          "2015",
+          "2024"
+        ],
+        "skill": [],
+        "contact": [
+          "marek.nowak@example.pl"
+        ],
+        "name": [
+          "Marek Nowak"
+        ]
+      },
+      "forbid": {
+        "date": [
+          "2003"
+        ]
+      }
+    },
+    {
+      "id": "cv-16",
+      "file": "cv-16-one-page.txt",
+      "language": "en",
+      "surface": "single role, no education section, lowercase 'present'",
+      "expect": {
+        "employer": [
+          "Fjord Netverk"
+        ],
+        "title": [
+          "Lead Network Engineer"
+        ],
+        "date": [
+          "2016"
+        ],
+        "skill": [
+          "bgp",
+          "junos",
+          "ansible",
+          "netbox",
+          "linux"
+        ],
+        "contact": [
+          "ingrid.solberg@example.no"
+        ],
+        "name": [
+          "Ingrid Solberg"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-17",
+      "file": "cv-17-all-caps.txt",
+      "language": "en",
+      "surface": "everything upper-cased, including the email",
+      "expect": {
+        "employer": [
+          "DANUBIA DATA",
+          "CARPATHIAN HOSTING"
+        ],
+        "title": [
+          "STORAGE ENGINEER",
+          "SENIOR ADMIN"
+        ],
+        "date": [
+          "2008",
+          "2011",
+          "2024"
+        ],
+        "skill": [
+          "ZFS",
+          "LINUX",
+          "SHELL",
+          "PROMETHEUS"
+        ],
+        "contact": [
+          "BORIS.KOVACS@EXAMPLE.HU"
+        ],
+        "name": [
+          "BORIS KOVACS"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-18",
+      "file": "cv-18-irish.txt",
+      "language": "ga",
+      "surface": "Irish headings, accented personal names, 'inniu'",
+      "note": "A name with prefixes (O, Do) is the P1 tokenisation case in real use.",
+      "expect": {
+        "employer": [
+          "Coho Networks",
+          "Muir Teic"
+        ],
+        "title": [
+          "Príomhinnealtóir",
+          "Innealtóir Líonra"
+        ],
+        "date": [
+          "2012",
+          "2018"
+        ],
+        "skill": [
+          "linux",
+          "ansible",
+          "netbox",
+          "python"
+        ],
+        "contact": [
+          "seamus.obriain@example.ie",
+          "+353 83 1122334"
+        ],
+        "name": [
+          "Séamus Ó Briain"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-19",
+      "file": "cv-19-adversarial.txt",
+      "language": "en",
+      "surface": "employers named in prose and in a reference block",
+      "note": "An employer mentioned inside a bullet, and a reference's employer and email, are not the candidate's employer or contact channel.",
+      "expect": {
+        "employer": [
+          "Kestrel Digital",
+          "Meridian Partners"
+        ],
+        "title": [
+          "Delivery Lead",
+          "Programme Manager"
+        ],
+        "date": [
+          "2016",
+          "2020",
+          "2025"
+        ],
+        "skill": [
+          "stakeholder management",
+          "jira",
+          "budgeting",
+          "communication"
+        ],
+        "contact": [
+          "grace.adeyemi@example.com"
+        ],
+        "name": [
+          "Grace Adeyemi"
+        ]
+      },
+      "forbid": {
+        "employer": [
+          "Acme Corp",
+          "Halcyon Bank"
+        ],
+        "contact": [
+          "a.dada@example.com"
+        ]
+      }
+    },
+    {
+      "id": "cv-20",
+      "file": "cv-20-damaged.txt",
+      "language": "nl",
+      "surface": "no blank lines, soft hyphens inside words, '2013/2019' date style, Dutch 'heden'",
+      "expect": {
+        "employer": [
+          "Van Dijk Logistiek",
+          "Rijnvold"
+        ],
+        "title": [
+          "Operations Engineer",
+          "Shift Lead"
+        ],
+        "date": [
+          "2013",
+          "2019"
+        ],
+        "skill": [
+          "sap",
+          "sql",
+          "excel",
+          "vba"
+        ],
+        "contact": [
+          "p.de-vries@example.nl"
+        ],
+        "name": [
+          "Pieter de Vries"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-21",
+      "file": "cv-21-employer-first.txt",
+      "language": "en",
+      "surface": "employer-first role line ('Norra Bank - Senior Engineer')",
+      "note": "ADVERSARIAL. The parser assumes title-first, so both fields come out swapped. This fixture exists to keep the headline number honest, not to be fixed by a tie-breaker we cannot justify.",
+      "expect": {
+        "employer": [
+          "Norra Bank",
+          "Vestland Insurance"
+        ],
+        "title": [
+          "Senior Engineer",
+          "Systems Analyst"
+        ],
+        "date": [
+          "2009",
+          "2016",
+          "2025"
+        ],
+        "skill": [
+          "sql",
+          "java",
+          "oracle",
+          "unix"
+        ],
+        "contact": [
+          "lars.eriksen@example.no"
+        ],
+        "name": [
+          "Lars Eriksen"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-22",
+      "file": "cv-22-date-own-line.txt",
+      "language": "en",
+      "surface": "role line with the date on the following line",
+      "note": "ADVERSARIAL. The role-line rule needs the date on the same line; with it elsewhere the line is unrecognised and the employer/title are lost while the years survive.",
+      "expect": {
+        "employer": [
+          "Luz Systems",
+          "Tejo Digital"
+        ],
+        "title": [
+          "QA Lead",
+          "Tester"
+        ],
+        "date": [
+          "2014",
+          "2019",
+          "2024"
+        ],
+        "skill": [
+          "selenium",
+          "python",
+          "sql",
+          "jira"
+        ],
+        "contact": [
+          "ana.ferreira@example.pt"
+        ],
+        "name": [
+          "Ana Ferreira"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-23",
+      "file": "cv-23-skill-table.txt",
+      "language": "en",
+      "surface": "skills as a two-column table (category tab list)",
+      "note": "ADVERSARIAL. A table read as text puts the category word and the whole list on one line; the split then produces one compound value per row.",
+      "expect": {
+        "employer": [
+          "Sumida Systems"
+        ],
+        "title": [
+          "Platform Engineer"
+        ],
+        "date": [
+          "2017",
+          "2025"
+        ],
+        "skill": [
+          "python",
+          "go",
+          "kubernetes",
+          "terraform",
+          "postgresql",
+          "kafka"
+        ],
+        "contact": [
+          "kenji.watanabe@example.jp"
+        ],
+        "name": [
+          "Kenji Watanabe"
+        ]
+      },
+      "forbid": {}
+    },
+    {
+      "id": "cv-24",
+      "file": "cv-24-name-not-first.txt",
+      "language": "en",
+      "surface": "a headline line above the name",
+      "note": "ADVERSARIAL. The name rule stops at the first non-channel line; that line here is a job title. A small headline-word list makes the rule emit no name, an abstention. Before that guard the parser reported 'SENIOR SECURITY ENGINEER' as the candidate's name: a wrong value, which is the failure class that matters most here.",
+      "expect": {
+        "employer": [
+          "Norrsen Security"
+        ],
+        "title": [
+          "Security Engineer"
+        ],
+        "date": [
+          "2015",
+          "2018",
+          "2025"
+        ],
+        "skill": [
+          "siem",
+          "python",
+          "cloudtrail",
+          "linux"
+        ],
+        "contact": [
+          "mikael.lindqvist@example.se"
+        ],
+        "name": []
+      },
+      "forbid": {}
+    }
+  ],
+  "job_descriptions": [
+    {
+      "id": "jd-01",
+      "file": "jd-01-cloud.txt",
+      "language": "en",
+      "surface": "plain obligation vocabulary",
+      "expect_requirements": 5,
+      "expect_weights": {
+        "must": 3,
+        "nice": 2,
+        "unknown": 0
+      },
+      "note": "The responsibilities line is not an ask and is excluded; 'WHAT YOU WILL NEED' and 'NICE TO HAVE' are headings, not requirements, and count 0."
+    },
+    {
+      "id": "jd-02",
+      "file": "jd-02-negations.txt",
+      "language": "en",
+      "surface": "negated obligations and 'no experience required'",
+      "note": "'Python is not required' contains the cue word 'required' and must not be classified must.",
+      "expect_weights": {
+        "must": 1,
+        "nice": 1,
+        "unknown": 2
+      }
+    },
+    {
+      "id": "jd-03",
+      "file": "jd-03-conflicts.txt",
+      "language": "en",
+      "surface": "one line that is both desirable and required elsewhere",
+      "note": "Where the cues contradict, the honest answer is unknown, not whichever cue the loop saw first.",
+      "expect_weights": {
+        "must": 1,
+        "nice": 1,
+        "unknown": 2
+      }
+    },
+    {
+      "id": "jd-04",
+      "file": "jd-04-no-cues.txt",
+      "language": "en",
+      "surface": "a requirements section with no obligation words at all",
+      "note": "Membership of the section is the only signal; the weight must stay unknown.",
+      "expect_weights": {
+        "must": 0,
+        "nice": 0,
+        "unknown": 3
+      }
+    },
+    {
+      "id": "jd-05",
+      "file": "jd-05-duplicates.txt",
+      "language": "en",
+      "surface": "the same requirement repeated under two headings",
+      "note": "Repetition is not two asks. Duplicates must collapse.",
+      "expect_weights": {
+        "must": 1,
+        "nice": 0,
+        "unknown": 1
+      }
+    },
+    {
+      "id": "jd-06",
+      "file": "jd-06-german.txt",
+      "language": "de",
+      "surface": "German obligation vocabulary",
+      "note": "ADVERSARIAL, and the most important one here: the cue list is English, so a German advertisement yields no must/nice signal at all. The expected row is what a reader of the text would label, not what our rule finds.",
+      "expect_requirements": 3,
+      "expect_weights": {
+        "must": 2,
+        "nice": 1,
+        "unknown": 0
+      }
+    }
+  ],
+  "anchor_jd": {
+    "file": "anchor-jd.txt",
+    "note": "Fixed advertisement used by the stability measurement, so cosine drift is measured against one constant."
+  },
+  "name_rule": "The name is the first contact-block line that is not an email, URL, phone or location. A CV that puts its name somewhere else is not covered by the rule, and no fixture in this set tests that; docs/08 records it as unmeasured."
+}

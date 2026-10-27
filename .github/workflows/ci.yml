@@ -69,6 +69,19 @@ jobs:
       - name: source registry integrity (offline, no --probe)
         run: python scripts/check-sources.py
 
+  benchmark:
+    name: Gold benchmark (extraction quality, stability ratchet)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.2
+        with: { python-version: "3.13" }
+      - name: Score the parser against data/gold/ and enforce the floors
+        # This is the only job in this file that measures behaviour rather than the state of a
+        # claim. It has no third-party dependencies, so it cannot fail for supply-chain reasons.
+        # Fixtures, thresholds and results are in-tree, so the run is reproducible offline.
+        run: python scripts/bench.py --check
+
   links:
     name: links
     runs-on: ubuntu-latest

@@ -1,0 +1,19 @@
+Clara Ndiaye
+clara.ndiaye@example.com | Paris
+
+SUMMARY
+Database engineer, 6 years on the postgreSQL internals side.
+
+EXPERIENCE
+Senior Database Engineer, Meridian Data 2019-2025
+Reduced the p99 write latency by 38 percent on the shard fleet
+Automated the failover drill that used to take a full day
+
+Database Engineer, Atlas Grid 2017-2019
+Owned the backup and restore policy for 300 terabytes
+
+SKILLS
+postgresql, python, grafana, terraform
+
+EDUCATION
+MSc Data Engineering, 2017
