@@ -48,8 +48,9 @@ python scripts/fresh.py                    # every dated claim inside its clock
 python scripts/provenance.py               # citations both ways
 python scripts/check-sources.py            # recorded source state (add --probe for the live read)
 python scripts/check-links.py              # no dead relative link
+                                              # and the pytest-pdf job proves it would pass
 python -m compileall -q src scripts tests  # what the `compile` job is
-python -m pytest                           # 110 tests; one skips without the optional PDF backend
+python -m pytest                           # 112 tests; one skips without the optional PDF backend,
 python scripts/bench.py --check            # the parser-quality gate (exits 1 on a regression)
 ```
 
