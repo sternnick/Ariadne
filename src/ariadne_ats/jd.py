@@ -23,10 +23,19 @@ from dataclasses import dataclass, field
 
 from .errors import Code, ParseReport, Severity
 from .segment import segment
-from .textutil import normalize
+from .textutil import fold as _fold, normalize
 
-MUST_CUES = ("must", "required", "requirement", "essential", "you have", "you will need", "minimum")
-NICE_CUES = ("nice to have", "preferred", "bonus", "plus", "desirable", "advantageous")
+MUST_CUES = ("must", "required", "requirement", "essential", "you have", "you will need", "minimum",
+             # Non-English obligation cues, for the languages data/gold has advertisements in (jd-06 de,
+             # jd-07 fr). A cue list, not a grammar: a German or French requirement phrased without one
+             # of these words stays `unknown`, which is the same abstention the English rule makes.
+             "erforderlich", "erforderliche", "voraussetzung", "setzen wir voraus", "zwingend",
+             "verpflichtend", "mitbringen", "obligatoire", "indispensable", "exige", "nous exigeons",
+             "requis", "imprescindible", "obligatorio", "se requiere")
+NICE_CUES = ("nice to have", "preferred", "bonus", "plus", "desirable", "advantageous",
+             "wunschenswer", "wünschenswert", "von vorteil", "von vorteil", "idealerweise",
+             "souhaite", "apprécie", "un plus", "nice-to-have",
+             "deseable", "valorable")
 REQUIREMENT_HEADINGS = ("requirements", "qualifications", "what you", "must have", "skills",
                         "experience", "about you", "you have", "nice to have", "benefits")
 
@@ -35,8 +44,9 @@ REQUIREMENT_HEADINGS = ("requirements", "qualifications", "what you", "must have
 # data/gold/jd-02-negations.txt. The mask covers the words between the negator and the cue so
 # "No prior fintech experience required" is caught as well as "is not required".
 _NEGATED_CUE_RE = re.compile(
-    r"\b(?:not|no|never|without|nor)\b[\w'\s]{0,28}?\b(?:must|required|requirement|essential|"
-    r"necessary|experience)\b",
+    r"\b(?:not|no|never|without|nor|nicht|keine|kein|senza)\b[\w'\s]{0,28}?"
+    r"\b(?:must|required|requirement|essential|necessary|experience|erforderlich|verpflichtend|"
+    r"obligatoire|indispensable|requis|imprescindible|necessaire)\b",
     re.I,
 )
 
@@ -93,12 +103,22 @@ def _sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
+_MUST_CUES_FOLDED = tuple(_fold(c) for c in MUST_CUES)
+_NICE_CUES_FOLDED = tuple(_fold(c) for c in NICE_CUES)
+
+
 def _cue_evidence(line: str) -> tuple[bool, bool, bool]:
-    """(unnegated must cue?, unnegated nice cue?, any cue appeared negated?)."""
-    low = line.lower()
+    """(unnegated must cue?, unnegated nice cue?, any cue appeared negated?).
+
+    Compared with `textutil.fold`, the same accent-insensitive form the heading vocabulary uses: the
+    French cue "souhaitée" and the German "wünschenswert" do not contain the ASCII strings that spell
+    them, and a cue list that silently required dictionary spelling would quietly do nothing in the two
+    languages it claims to cover. English text folds to itself, so nothing about the English rules moves.
+    """
+    low = _fold(line)
     masked = _NEGATED_CUE_RE.sub(lambda m: " " * len(m.group(0)), low)
-    must = any(c in masked for c in MUST_CUES)
-    nice = any(c in masked for c in NICE_CUES)
+    must = any(c in masked for c in _MUST_CUES_FOLDED)
+    nice = any(c in masked for c in _NICE_CUES_FOLDED)
     return must, nice, bool(_NEGATED_CUE_RE.search(low))
 
 
@@ -131,8 +151,12 @@ def build_jd(text: str, source: str = "", report: ParseReport | None = None) -> 
     seen: set[str] = set()
 
     for sec in sections:
-        in_req_section = any(h in sec.heading.lower() for h in REQUIREMENT_HEADINGS) or sec.kind in (
-            "skills", "experience")
+        # `requirements` belongs in the kind test: the segmenter already resolved the heading against
+        # the vocabulary, and a second heading list here is a second source of truth - which is exactly
+        # how a German or French advertisement ended up with no requirements at all (jd-06): the section
+        # was classified, then ignored here because its heading is not an English string.
+        in_req_section = (sec.kind in ("requirements", "skills", "experience")
+                          or any(h in sec.heading.lower() for h in REQUIREMENT_HEADINGS))
         for line in sec.body.split("\n"):
             raw = line.strip(" \t*-")
             if len(raw) < 12:

@@ -96,18 +96,26 @@ def test_labelled_job_description_fixtures(fixture, expected):
     assert counts == expected, f"{fixture}: {counts}"
 
 
-def test_german_advertising_text_yields_no_requirements_at_all():
-    """The published limitation, stated at its real size and pinned by a test (jd-06, D-041).
+def test_non_english_advertisements_yield_their_requirements_but_not_all_their_weights():
+    """The limitation, restated at its true size after the 2026-10-27 fixes (jd-06, jd-07).
 
-    Writing this test made the limitation precise. It is worse than "the cue vocabulary is English":
-    the *heading* vocabulary is English too, so `ANFORDERUNGEN` is not recognised as a section, the
-    bullets land in no requirements section, and with no English cue to rescue them the result is an
-    empty requirement list - not `unknown`-weighted requirements. Both halves of that must be true for
-    this test to pass, so a change to either vocabulary has to come with a change to the claim.
+    Before: a German advertisement produced **no requirements at all**, because the heading vocabulary
+    was English and the section was never found. That is fixed, and the honest residue is narrower -
+    the requirements are extracted, and the ones with a cue word are weighted, while a requirement
+    phrased *without* a cue word ("Sie haben X eingesetzt", "Vous avez une expérience …") stays
+    `unknown`. That is the same abstention the English rule makes, and the fixture labels record it.
+
+    Both halves are asserted so that a vocabulary change has to change this claim with it.
     """
-    doc = build_jd((GOLD / "jd-06-german.txt").read_text(encoding="utf-8"), source="jd-06")
-    assert doc.requirements == [], (
-        "German cues or headings were added; then the limitation in docs/02 2.7 and docs/08 M-9 is "
-        "no longer accurate and must be re-measured, not quietly narrowed")
-    assert "NO_SECTIONS_FOUND" in doc.issue_codes, (
-        "the failure mode should still be 'no section recognised', not a silent empty result")
+    for name in ("jd-06-german.txt", "jd-07-french.txt"):
+        doc = build_jd((GOLD / name).read_text(encoding="utf-8"), source=name)
+        assert len(doc.requirements) == 3, f"{name}: requirements lost again"
+        assert "NO_SECTIONS_FOUND" not in doc.issue_codes, f"{name}: the heading vocabulary regressed"
+        weights = sorted(r.weight for r in doc.requirements)
+        assert "unknown" in weights, f"{name}: cue-less requirement phrasing is being guessed now"
+        assert set(weights) & {"must", "nice"}, f"{name}: the cue vocabulary stopped matching at all"
+
+
+def test_english_advertisement_weighting_is_unchanged_by_the_cue_extension():
+    doc = build_jd((GOLD / "jd-01-cloud.txt").read_text(encoding="utf-8"), source="jd-01")
+    assert [r.weight for r in doc.requirements] == ["must", "must", "must", "nice", "nice"]

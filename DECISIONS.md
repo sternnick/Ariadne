@@ -7,6 +7,86 @@ responsibility was considered and why it could not absorb the content.
 
 ---
 
+## D-043 · 2026-10-27 · The optional PDF backend: an extra, a switch, and a job that runs the skipped test
+Considered before: `tests/test_parser.py` (its `importorskip` is the mechanism being improved, not a
+second home for this decision) and `docs/05` §5.4 (it lists gates; it does not decide dependencies).
+Neither could hold it, so the decision lives here.
+
+`pytest` has always reported exactly one skip: the text-PDF test needs PyMuPDF, and the runtime
+dependency list is empty by policy. A permanent skip is not neutral - a broken optional import and a
+passing suite look identical in the log. Three parts: an optional extra `pdf = ["pymupdf>=1.24"]` (not
+`dependencies`, not `dev`, because it is neither runtime nor test infrastructure - it is the backend the
+extractor uses *if the host already has one*); `ARIADNE_REQUIRE_PDF_BACKEND=1` in the test, which turns
+the skip into a hard `ImportError`; and a `pytest-pdf` CI job that installs `.[dev,pdf]` and sets it.
+Verified locally with the backend installed: 14 tests, none skipped.
+**Rejected:** adding pymupdf to `dependencies` (the baseline promise is zero runtime dependencies), and
+adding it to `dev` (then the default run would silently run a different parser path than the installed
+product). **Rule:** C4.1, C5.1.
+
+## D-044 · 2026-10-27 · Role-line ordering is decided on evidence, and on silence the default stands
+Considered before: `data/gold/manifest.json` (the labels, which are the measurement, not the rule) and
+`tests/test_fields.py` (which now pins the behaviour but does not own the justification).
+
+cv-21 measured the cost of the assumption "first segment is the title": on `Norra Bank - Senior Engineer`
+both fields come out transposed, which reads as data. The fix scores each segment (+1 role word,
+-1 legal/corporate suffix) and orders by score. Two decisions inside that one line of code:
+
+* **conflict → abstain.** Two company-looking names (`Aurelia Finance, Kestrel Group`) produce no facts
+  and a `ROLE_LINE_AMBIGUOUS` issue. A fifty-fifty answer is worse than none, because it is
+  indistinguishable from a good one downstream.
+* **silence → the documented default.** No evidence on either side (`Príomhinnealtóir, Coho Networks`)
+  keeps title-first. The first version abstained here and cost two fixtures' worth of recall -
+  caution that behaves like a regression is not caution.
+
+Measured lesson, in the code comment: the first evidence list contained "data", "security", "analytics"
+and "software", and it broke cv-12, cv-17 and cv-24, because those are what *employers* are called. The
+list is a filter over role-only words, and it is a limit, not an ontology.
+`cv-26` (an employer-first line made of words the vocabulary has never seen) is labelled as a failure and
+left failing; widening the vocabulary until it passes would be tuning the corpus. **Rule:** C1.2, C2.1.
+
+## D-045 · 2026-10-27 · Skills: bracket-aware splitting, one label rule, and a refusal
+Splitting moved out of an inlined regex in `evidence.py` into `textutil.skill_items`, which owns text
+shapes. Three rules and one refusal, each traceable: a row with a tab and a comma list on the right is
+label + list *when the left cell names a class of skill* (`_SKILL_ROW_LABELS`) - dropping the left cell
+unconditionally would have silently eaten `c++` from a row like `c++\tpython, go`, and a silent loss is
+worse than a visible false positive; `X and Y` splits only when both sides are single tokens, so
+"Design and implementation of distributed systems" stays one skill; commas inside brackets belong to the
+value, which is what made cv-06 carry two parser-shaped labels instead of the one value a reader writes.
+
+The refusal: a table oriented the other way (`Python\tAdvanced`) yields a skill called "Advanced", and
+the cheap fix is a level vocabulary. `cv-25` is labelled with those two false positives and stays red;
+M-11 records why. The same round found the *real* cause of cv-23, which this file had recorded wrongly
+a day earlier: the fuzzy heading rule was reading `Languages\tpython, go` as a `languages` **heading**,
+so the row vanished into a heading line. A fuzzy heading candidate may not contain a tab or a list
+separator. **Rule:** C1.3 (a surprising result is investigated, including one's own previous note).
+
+## D-046 · 2026-10-27 · Non-English job descriptions: headings and cues, and the residue a cue list cannot reach
+Two vocabularies were English (headings and cues), so a German advertisement produced no requirements at
+all, and a third bug hid behind them: `jd.py` kept its own heading list and disagreed with the
+segmenter's classification, so even a recognised `requirements` section was skipped. Now `jd.py` trusts
+`sec.kind`, headings and cues cover de/fr/es, and cues are compared in `textutil.fold` form, because
+"souhaitée" does not contain the bytes of "souhaite" and a cue list that quietly required ASCII spelling
+would do nothing in the languages it names.
+
+Honest residue, measured rather than smoothed: requirement phrasing **without** a cue word - "Sie haben
+X eingesetzt", "Vous avez une expérience …" - stays `unknown`. Cue accuracy went from 0.857 to 0.750
+*because* two documents that previously contributed nothing now contribute labelled weights we cannot
+reach: 18/21 became 18/24. Adding a German perfect-tense pattern would be writing a grammar we cannot
+defend, so M-9 stays open with the number. `jd-07` (French) was added so advertisements are not n=1.
+**Rule:** C1.2, C2.1, C7.
+
+## D-047 · 2026-10-27 · A 3.10 leg that is deliberately not a required check
+`requires-python >=3.10` had never been executed; docs/02 said so. The obvious fix - a `strategy.matrix`
+on the `pytest` job - is the one change that would silently **un-gate** the repository: a matrix renames
+the check to `pytest (3.11)`, and `main` requires a context literally named `pytest`. So 3.10 runs in a
+separate job (`pytest-3.10`), prints `sys.version` in the log, and is not required. Same reasoning for
+`pytest-pdf`. If either leg goes red, the merge is still possible - stated here so nobody reads green
+required checks as "everything passed". No linter or type checker was added either: the runtime
+dependencies are zero, the type surface is five small modules, and a lint sweep across fifteen files
+would be unrelated churn in a PR about parser quality.
+
+---
+
 ## D-042 · 2026-10-27 · Verification round on PR #7: two files of tests, and a stale artefact they caught
 Considered for the two new test files: `tests/test_fields.py` (it tests rules; these two test *sentences
 about* rules, a different object) and `tests/test_no_profiling.py` (its bans are about person-level

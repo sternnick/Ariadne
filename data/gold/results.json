@@ -1,7 +1,7 @@
 {
   "schema": "1.0.0",
   "corpus": {
-    "fixtures": 24,
+    "fixtures": 26,
     "languages": [
       "de",
       "el",
@@ -24,53 +24,43 @@
   "accuracy": {
     "fields": {
       "employer": {
-        "tp": 36,
-        "fp": 2,
-        "fn": 4,
-        "fixtures": 23,
-        "exact_match_fixtures": 21,
+        "tp": 42,
+        "fp": 1,
+        "fn": 1,
+        "fixtures": 25,
+        "exact_match_fixtures": 24,
         "forbidden_violations": 0,
-        "precision": 0.947,
-        "recall": 0.9,
-        "f1": 0.923,
+        "precision": 0.977,
+        "recall": 0.977,
+        "f1": 0.977,
         "misses": [
-          "cv-21:norra bank",
-          "cv-21:vestland insurance",
-          "cv-22:luz systems",
-          "cv-22:tejo digital"
+          "cv-26:kappa"
         ],
         "extras": [
-          "cv-21:senior engineer",
-          "cv-21:systems analyst"
+          "cv-26:release steward"
         ]
       },
       "title": {
-        "tp": 36,
-        "fp": 2,
-        "fn": 4,
-        "fixtures": 23,
-        "exact_match_fixtures": 21,
+        "tp": 42,
+        "fp": 1,
+        "fn": 0,
+        "fixtures": 25,
+        "exact_match_fixtures": 24,
         "forbidden_violations": 0,
-        "precision": 0.947,
-        "recall": 0.9,
-        "f1": 0.923,
-        "misses": [
-          "cv-21:senior engineer",
-          "cv-21:systems analyst",
-          "cv-22:qa lead",
-          "cv-22:tester"
-        ],
+        "precision": 0.977,
+        "recall": 1.0,
+        "f1": 0.988,
+        "misses": [],
         "extras": [
-          "cv-21:norra bank",
-          "cv-21:vestland insurance"
+          "cv-26:kappa"
         ]
       },
       "date": {
-        "tp": 59,
+        "tp": 64,
         "fp": 0,
         "fn": 0,
-        "fixtures": 23,
-        "exact_match_fixtures": 23,
+        "fixtures": 25,
+        "exact_match_fixtures": 25,
         "forbidden_violations": 0,
         "precision": 1.0,
         "recall": 1.0,
@@ -79,35 +69,27 @@
         "extras": []
       },
       "skill": {
-        "tp": 91,
-        "fp": 1,
-        "fn": 8,
-        "fixtures": 22,
-        "exact_match_fixtures": 20,
+        "tp": 101,
+        "fp": 2,
+        "fn": 0,
+        "fixtures": 23,
+        "exact_match_fixtures": 22,
         "forbidden_violations": 0,
-        "precision": 0.989,
-        "recall": 0.919,
-        "f1": 0.953,
-        "misses": [
-          "cv-13:docker",
-          "cv-13:git",
-          "cv-23:go",
-          "cv-23:kafka",
-          "cv-23:kubernetes",
-          "cv-23:postgresql",
-          "cv-23:python",
-          "cv-23:terraform"
-        ],
+        "precision": 0.981,
+        "recall": 1.0,
+        "f1": 0.99,
+        "misses": [],
         "extras": [
-          "cv-13:git and docker"
+          "cv-25:advanced",
+          "cv-25:expert"
         ]
       },
       "contact": {
-        "tp": 32,
+        "tp": 36,
         "fp": 0,
         "fn": 0,
-        "fixtures": 24,
-        "exact_match_fixtures": 24,
+        "fixtures": 26,
+        "exact_match_fixtures": 26,
         "forbidden_violations": 0,
         "precision": 1.0,
         "recall": 1.0,
@@ -116,11 +98,11 @@
         "extras": []
       },
       "name": {
-        "tp": 23,
+        "tp": 25,
         "fp": 0,
         "fn": 0,
-        "fixtures": 23,
-        "exact_match_fixtures": 23,
+        "fixtures": 25,
+        "exact_match_fixtures": 25,
         "forbidden_violations": 0,
         "precision": 1.0,
         "recall": 1.0,
@@ -292,37 +274,37 @@
       },
       "en": {
         "employer": {
-          "tp": 25,
-          "fp": 2,
-          "fn": 4,
-          "fixtures": 17,
-          "exact_match_fixtures": 15,
+          "tp": 31,
+          "fp": 1,
+          "fn": 1,
+          "fixtures": 19,
+          "exact_match_fixtures": 18,
           "forbidden_violations": 0,
-          "precision": 0.926,
-          "recall": 0.862,
-          "f1": 0.893,
+          "precision": 0.969,
+          "recall": 0.969,
+          "f1": 0.969,
           "misses": [],
           "extras": []
         },
         "title": {
-          "tp": 25,
-          "fp": 2,
-          "fn": 4,
-          "fixtures": 17,
-          "exact_match_fixtures": 15,
+          "tp": 31,
+          "fp": 1,
+          "fn": 0,
+          "fixtures": 19,
+          "exact_match_fixtures": 18,
           "forbidden_violations": 0,
-          "precision": 0.926,
-          "recall": 0.862,
-          "f1": 0.893,
+          "precision": 0.969,
+          "recall": 1.0,
+          "f1": 0.984,
           "misses": [],
           "extras": []
         },
         "date": {
-          "tp": 47,
+          "tp": 52,
           "fp": 0,
           "fn": 0,
-          "fixtures": 17,
-          "exact_match_fixtures": 17,
+          "fixtures": 19,
+          "exact_match_fixtures": 19,
           "forbidden_violations": 0,
           "precision": 1.0,
           "recall": 1.0,
@@ -331,24 +313,24 @@
           "extras": []
         },
         "skill": {
-          "tp": 66,
-          "fp": 1,
-          "fn": 8,
-          "fixtures": 16,
-          "exact_match_fixtures": 14,
+          "tp": 76,
+          "fp": 2,
+          "fn": 0,
+          "fixtures": 17,
+          "exact_match_fixtures": 16,
           "forbidden_violations": 0,
-          "precision": 0.985,
-          "recall": 0.892,
-          "f1": 0.936,
+          "precision": 0.974,
+          "recall": 1.0,
+          "f1": 0.987,
           "misses": [],
           "extras": []
         },
         "contact": {
-          "tp": 24,
+          "tp": 28,
           "fp": 0,
           "fn": 0,
-          "fixtures": 18,
-          "exact_match_fixtures": 18,
+          "fixtures": 20,
+          "exact_match_fixtures": 20,
           "forbidden_violations": 0,
           "precision": 1.0,
           "recall": 1.0,
@@ -357,11 +339,11 @@
           "extras": []
         },
         "name": {
-          "tp": 17,
+          "tp": 19,
           "fp": 0,
           "fn": 0,
-          "fixtures": 17,
-          "exact_match_fixtures": 17,
+          "fixtures": 19,
+          "exact_match_fixtures": 19,
           "forbidden_violations": 0,
           "precision": 1.0,
           "recall": 1.0,
@@ -1427,14 +1409,9 @@
           },
           "skill": {
             "expected": 6,
-            "emitted": 5,
-            "missed": [
-              "docker",
-              "git"
-            ],
-            "extra": [
-              "git and docker"
-            ],
+            "emitted": 6,
+            "missed": [],
+            "extra": [],
             "forbidden_emitted": []
           },
           "contact": {
@@ -1457,7 +1434,7 @@
           "contact": 1,
           "name": 1,
           "summary": 1,
-          "skill": 5,
+          "skill": 6,
           "role": 1,
           "employer": 1,
           "date": 3,
@@ -1885,27 +1862,15 @@
           "employer": {
             "expected": 2,
             "emitted": 2,
-            "missed": [
-              "norra bank",
-              "vestland insurance"
-            ],
-            "extra": [
-              "senior engineer",
-              "systems analyst"
-            ],
+            "missed": [],
+            "extra": [],
             "forbidden_emitted": []
           },
           "title": {
             "expected": 2,
             "emitted": 2,
-            "missed": [
-              "senior engineer",
-              "systems analyst"
-            ],
-            "extra": [
-              "norra bank",
-              "vestland insurance"
-            ],
+            "missed": [],
+            "extra": [],
             "forbidden_emitted": []
           },
           "date": {
@@ -1955,21 +1920,15 @@
         "fields": {
           "employer": {
             "expected": 2,
-            "emitted": 0,
-            "missed": [
-              "luz systems",
-              "tejo digital"
-            ],
+            "emitted": 2,
+            "missed": [],
             "extra": [],
             "forbidden_emitted": []
           },
           "title": {
             "expected": 2,
-            "emitted": 0,
-            "missed": [
-              "qa lead",
-              "tester"
-            ],
+            "emitted": 2,
+            "missed": [],
             "extra": [],
             "forbidden_emitted": []
           },
@@ -2004,7 +1963,6 @@
         },
         "issues": [
           "ROLE_LINE_AMBIGUOUS",
-          "ROLE_LINE_AMBIGUOUS",
           "ROLE_LINE_AMBIGUOUS"
         ],
         "facts": {
@@ -2012,6 +1970,8 @@
           "name": 1,
           "summary": 1,
           "skill": 4,
+          "role": 2,
+          "employer": 2,
           "date": 5,
           "bullet": 2
         }
@@ -2043,15 +2003,8 @@
           },
           "skill": {
             "expected": 6,
-            "emitted": 0,
-            "missed": [
-              "go",
-              "kafka",
-              "kubernetes",
-              "postgresql",
-              "python",
-              "terraform"
-            ],
+            "emitted": 6,
+            "missed": [],
             "extra": [],
             "forbidden_emitted": []
           },
@@ -2070,13 +2023,12 @@
             "forbidden_emitted": []
           }
         },
-        "issues": [
-          "SECTION_UNRECOGNISED"
-        ],
+        "issues": [],
         "facts": {
           "contact": 1,
           "name": 1,
           "summary": 1,
+          "skill": 6,
           "role": 1,
           "employer": 1,
           "date": 3,
@@ -2140,13 +2092,139 @@
           "date": 3,
           "bullet": 1
         }
+      },
+      {
+        "id": "cv-25",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 2,
+            "emitted": 4,
+            "missed": [],
+            "extra": [
+              "advanced",
+              "expert"
+            ],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 2,
+          "name": 1,
+          "summary": 1,
+          "skill": 4,
+          "role": 1,
+          "employer": 1,
+          "date": 2,
+          "bullet": 1
+        }
+      },
+      {
+        "id": "cv-26",
+        "language": "en",
+        "fields": {
+          "employer": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [
+              "kappa"
+            ],
+            "extra": [
+              "release steward"
+            ],
+            "forbidden_emitted": []
+          },
+          "title": {
+            "expected": 1,
+            "emitted": 2,
+            "missed": [],
+            "extra": [
+              "kappa"
+            ],
+            "forbidden_emitted": []
+          },
+          "date": {
+            "expected": 3,
+            "emitted": 3,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "skill": {
+            "expected": 0,
+            "emitted": 0,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "contact": {
+            "expected": 2,
+            "emitted": 2,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          },
+          "name": {
+            "expected": 1,
+            "emitted": 1,
+            "missed": [],
+            "extra": [],
+            "forbidden_emitted": []
+          }
+        },
+        "issues": [],
+        "facts": {
+          "contact": 2,
+          "name": 1,
+          "summary": 1,
+          "role": 2,
+          "employer": 2,
+          "date": 4,
+          "bullet": 2
+        }
       }
     ],
     "forbidden_violations": [],
-    "fixtures": 24
+    "fixtures": 26
   },
   "jd": {
-    "fixtures": 6,
+    "fixtures": 7,
     "per_fixture": [
       {
         "id": "jd-01",
@@ -2243,32 +2321,49 @@
         },
         "actual_weights": {
           "must": 0,
-          "nice": 0,
+          "nice": 1,
+          "unknown": 2
+        },
+        "requirements": 3,
+        "expected_requirements": 3,
+        "match": false
+      },
+      {
+        "id": "jd-07",
+        "note": "Second non-English advertisement, added so the 'n=1 per language' ceiling in docs/08 M-9 does not apply to advertisements. Labels are what a reader of the text would write: 'indispensable' is an obligation cue, 'souhait\u00e9e' a preference cue, and 'Vous avez une exp\u00e9rience \u2026' asserts a requirement without a cue word. The parser finds all three requirements and weights two of them `unknown`, because no cue list covers that assertive phrasing - recorded as a limit, not fixed by re-labelling.",
+        "expected_weights": {
+          "must": 2,
+          "nice": 1,
           "unknown": 0
         },
-        "requirements": 0,
+        "actual_weights": {
+          "must": 1,
+          "nice": 1,
+          "unknown": 1
+        },
+        "requirements": 3,
         "expected_requirements": 3,
         "match": false
       }
     ],
     "actual_weights": {
-      "must": 6,
-      "nice": 4,
-      "unknown": 8
+      "must": 7,
+      "nice": 6,
+      "unknown": 11
     },
     "expected_weights": {
-      "must": 8,
-      "nice": 5,
+      "must": 10,
+      "nice": 6,
       "unknown": 8
     },
-    "weight_cue_accuracy": 0.857,
-    "fixtures_exactly_matching": 0.833
+    "weight_cue_accuracy": 0.75,
+    "fixtures_exactly_matching": 0.714
   },
   "stability": {
     "anchor_jd": "anchor-jd.txt",
     "transforms": {
       "reorder_sections": {
-        "fixtures_applied": 21,
+        "fixtures_applied": 23,
         "competence_preserved_all": true,
         "broken_fixtures": [],
         "mean_fact_retention": 1.0,
@@ -2520,16 +2615,38 @@
             "cosine_before": 0.156,
             "cosine_after": 0.156,
             "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-25",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1386,
+            "cosine_after": 0.1386,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-26",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0982,
+            "cosine_after": 0.0982,
+            "cosine_delta": 0.0
           }
         ]
       },
       "rename_headings": {
-        "fixtures_applied": 16,
+        "fixtures_applied": 18,
         "competence_preserved_all": true,
         "broken_fixtures": [],
         "mean_fact_retention": 1.0,
         "max_abs_cosine_delta": 0.0983,
-        "ranking_inversion_rate": 0.0667,
+        "ranking_inversion_rate": 0.0654,
         "per_fixture": [
           {
             "id": "cv-01",
@@ -2746,11 +2863,33 @@
             "cosine_before": 0.156,
             "cosine_after": 0.0937,
             "cosine_delta": -0.0623
+          },
+          {
+            "id": "cv-25",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1386,
+            "cosine_after": 0.0732,
+            "cosine_delta": -0.0654
+          },
+          {
+            "id": "cv-26",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0982,
+            "cosine_after": 0.036,
+            "cosine_delta": -0.0621
           }
         ]
       },
       "change_markers": {
-        "fixtures_applied": 22,
+        "fixtures_applied": 24,
         "competence_preserved_all": true,
         "broken_fixtures": [],
         "mean_fact_retention": 1.0,
@@ -3008,11 +3147,33 @@
             "cosine_before": 0.156,
             "cosine_after": 0.156,
             "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-25",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1386,
+            "cosine_after": 0.1386,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-26",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.0982,
+            "cosine_after": 0.0982,
+            "cosine_delta": 0.0
           }
         ]
       },
       "add_typographic_damage": {
-        "fixtures_applied": 11,
+        "fixtures_applied": 12,
         "competence_preserved_all": true,
         "broken_fixtures": [],
         "mean_fact_retention": 1.0,
@@ -3204,6 +3365,22 @@
             "cosine_before": 0.156,
             "cosine_after": 0.156,
             "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-25",
+            "applied": true,
+            "competence_preserved": true,
+            "facts_added": 0,
+            "facts_removed": 0,
+            "fact_retention": 1.0,
+            "cosine_before": 0.1386,
+            "cosine_after": 0.1386,
+            "cosine_delta": 0.0
+          },
+          {
+            "id": "cv-26",
+            "applied": false,
+            "note": "transform found nothing to change in this fixture"
           }
         ]
       }
@@ -3211,7 +3388,7 @@
     "note": "ranking_inversion_rate is the share of fixture pairs whose order against the anchor advertisement flips; it is the figure nearest to the 29.6 % matched-pair reversal rate in [EV-02], and it is not the same experiment."
   },
   "generated": {
-    "utc": "2026-10-27T18:09:50Z",
+    "utc": "2026-10-27T20:34:26Z",
     "command": "python scripts/bench.py --write",
     "note": "deterministic given the tree; the timestamp records when the published artefact was refreshed, not a claim about the parser"
   }

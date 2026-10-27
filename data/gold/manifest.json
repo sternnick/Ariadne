@@ -850,6 +850,68 @@
         "name": []
       },
       "forbid": {}
+    },
+    {
+      "id": "cv-25",
+      "file": "cv-25-skill-levels.txt",
+      "language": "en",
+      "surface": "skill table with a level column",
+      "expect": {
+        "employer": [
+          "Kern Data Systems"
+        ],
+        "title": [
+          "Database Administrator"
+        ],
+        "date": [
+          "2015",
+          "2013"
+        ],
+        "skill": [
+          "Python",
+          "Kubernetes"
+        ],
+        "contact": [
+          "n.brandt@example.com",
+          "+49 30 1234567"
+        ],
+        "name": [
+          "Nadia Brandt"
+        ]
+      },
+      "forbid": {},
+      "note": "ADVERSARIAL, added 2026-10-27 for the table orientation the splitter cannot resolve. A reader lists Python and Kubernetes as the skills; 'Advanced' and 'Expert' are levels, not skills. `skill_items` drops a first cell only when the second cell is a list and the first names a class of skill, so a level column produces two extra skill facts. Left failing on purpose: adding a level vocabulary to make this pass would be tuning the corpus, not reading tables. The 2013 education year is labelled as everywhere else in the corpus; the first version of this label omitted it and the parser scored two false positives that were its own annotation's fault."
+    },
+    {
+      "id": "cv-26",
+      "file": "cv-26-employer-first-bare.txt",
+      "language": "en",
+      "surface": "employer-first line with no naming evidence",
+      "expect": {
+        "employer": [
+          "Kappa",
+          "Verode"
+        ],
+        "title": [
+          "Release Steward"
+        ],
+        "date": [
+          "2020",
+          "2017",
+          "2020",
+          "2016"
+        ],
+        "skill": [],
+        "contact": [
+          "t.ruiz@example.com",
+          "+34 612 345 678"
+        ],
+        "name": [
+          "Tomas Ruiz"
+        ]
+      },
+      "forbid": {},
+      "note": "ADVERSARIAL, added 2026-10-27. The first version of this fixture said 'Scrum Master' and passed the moment 'scrum' entered the role-evidence vocabulary - it measured the vocabulary, not the convention. 'Release Steward' is a real title made of words the list has never seen, so neither segment carries evidence, the documented title-first default stands, and this entry comes out transposed: one false employer, one false title, while the second entry ('Release Steward, Verode') is right by the same rule. That is M-6 in one labelled document: what is missing is not a word list but the frequency of the employer-first convention in real CVs. The 2016 education year is labelled as everywhere else in the corpus."
     }
   ],
   "job_descriptions": [
@@ -920,6 +982,20 @@
       "language": "de",
       "surface": "German obligation vocabulary",
       "note": "ADVERSARIAL, and the most important one here: both vocabularies - headings and cues - are English, so a German advertisement yields no requirements at all (not even unknown-weighted ones). The expected row is what a reader of the text would label, not what our rule finds.",
+      "expect_requirements": 3,
+      "expect_weights": {
+        "must": 2,
+        "nice": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "id": "jd-07",
+      "file": "jd-07-french.txt",
+      "language": "fr",
+      "kind": "advertisement",
+      "note": "Second non-English advertisement, added so the 'n=1 per language' ceiling in docs/08 M-9 does not apply to advertisements. Labels are what a reader of the text would write: 'indispensable' is an obligation cue, 'souhaitée' a preference cue, and 'Vous avez une expérience …' asserts a requirement without a cue word. The parser finds all three requirements and weights two of them `unknown`, because no cue list covers that assertive phrasing - recorded as a limit, not fixed by re-labelling.",
+      "surface": "French advertisement; accented cue vocabulary",
       "expect_requirements": 3,
       "expect_weights": {
         "must": 2,

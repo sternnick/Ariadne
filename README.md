@@ -52,7 +52,21 @@ ariadne compare cv.txt job.txt        # cosine + the terms that produced it
 ariadne bench                         # score the parser against data/gold/ (the software, not a CV)
 ```
 
-Python ≥ 3.10. `pytest` is the only dev dependency. The baseline performs **no network call**.
+Runtime dependencies: **none**. `pytest` is the only dev dependency, and the baseline performs **no
+network call**. Interpreters, stated as they are tested and not as they are hoped for:
+
+| Python | How it is exercised |
+|---|---|
+| 3.11 | the required `pytest` job in CI, and every local run recorded in these docs |
+| 3.10 | the `pytest-3.10` job in CI, which prints the interpreter it used so the claim is checkable in the log. Not a required status check: a required *matrix* leg would rename the `pytest` context, and a renamed required context silently stops gating |
+| 3.12+ | not claimed. `requires-python >=3.10` means "we run 3.10 and up and test two of them", not "tested on each" |
+
+To see the one skipped test actually run, install the optional backend the extractor uses when the host
+already has one (it is not a runtime dependency):
+
+```bash
+pip install -e ".[dev,pdf]" && ARIADNE_REQUIRE_PDF_BACKEND=1 python -m pytest -q tests/test_parser.py
+```
 
 ## Repository map
 
@@ -70,43 +84,100 @@ Python ≥ 3.10. `pytest` is the only dev dependency. The baseline performs **no
 | `src/ariadne_ats/` | the package |
 | `tests/` | including the no-profiling gate |
 
-## What we have measured (2026-10-27)
+## What we have measured (2026-10-27, re-measured after the parser fixes)
 
-Field extraction is no longer a claim without a number. 24 synthetic CVs and 6 job descriptions were
-hand-labelled first, then the parser was run against them (`data/gold/`, scorer `ariadne_ats.bench`,
-gate `scripts/bench.py --check`, artefact `data/gold/results.json`):
+Field extraction is not a claim without a number. **26 synthetic CVs and 7 job advertisements**,
+hand-labelled before any parser output was read, are scored by `src/ariadne_ats/bench.py`, gated by
+`scripts/bench.py --check` on every push, and published in `data/gold/results.json`. Micro-averaged:
 
-| field | precision | recall | what the misses are |
-|---|---|---|---|
-| employer | 0.947 | 0.900 | employer-first role lines; a date on its own line |
-| title | 0.947 | 0.900 | the same two documents, values swapped rather than missing |
-| dates | 1.000 | 1.000 | years only inside experience/education, so a year in prose stays out |
-| skills | 0.989 | 0.919 | `* git and docker` names two tools in one item; a skills table yields compound rows |
-| contact | 1.000 | 1.000 | read from the contact block only, so a reference's email is not the candidate's |
-| name | 1.000 | 1.000 | abstains when a headline sits above the name instead of guessing one |
+| Field | precision | recall | f1 | fixtures exactly right | what the misses are |
+|---|---|---|---|---|---|
+| employer | 0.977 | 0.977 | 0.977 | 25/26 | one employer-first line with no naming evidence keeps the default order (cv-26) |
+| title | 0.977 | 1.000 | 0.988 | 25/26 | the same document, the same line |
+| date | 1.000 | 1.000 | 1.000 | 26/26 | a year in prose is not an employment date, and is not emitted |
+| skill | 0.981 | 1.000 | 0.990 | 25/26 | a level column in a skills table becomes a skill (cv-25) |
+| contact | 1.000 | 1.000 | 1.000 | 26/26 | channels only, from the contact block only |
+| name | 1.000 | 1.000 | 1.000 | 26/26 | abstains when the headline sits above the name |
 
-Forbidden emissions (a value present that must never be): **0**, and the build stops on the first one.
+Requirement weighting over the 7 advertisements: expected `{must 10, nice 6, unknown 8}`, measured
+`{must 7, nice 6, unknown 11}`; cue accuracy 0.750, 5 of 7 exactly right. **Forbidden emissions: 0**
+across 12 labelled "must never appear" values, and the build stops on the first one.
 
-Requirement extraction from job advertisements is measured the same way: 5 of 6 labelled fixtures
-exactly right, and the sixth is German, where it yields **no requirements at all** - the heading
-vocabulary is as English as the cue vocabulary (`tests/test_jd.py` pins that limitation so a future
-change has to change the claim with it).
-Under competence-preserving perturbation every fact survived every transform; renaming a heading moves
-the cosine against a fixed advertisement by up to 0.098 and reorders 6.7 % of fixture pairs, which is
-our own version of the reversal rate in the literature, at roughly a quarter of the published figure.
+Under four competence-preserving perturbations of the same documents (re-order, rename headings, change
+bullet markers, add typographic damage) **every fact that existed before still exists**: mean fact
+retention 1.000 in every direction, and no ranking change above |Δcos| = 0.098 on one anchor
+advertisement. The transforms do not fire on every fixture (12 to 24 of 26), so read the coverage
+column with the number.
 
-Three limits, stated here rather than buried: the corpus was written by the same session that wrote the
-rules (five documents were added specifically to fail, which is why the numbers are not all 1.000); 24
-documents is a floor, not a distribution, and carries no statistical claim; and every non-English
-language in it has exactly one document, so those rows are a coverage floor, not language support.
-The full table, the failure cases named per fixture, and what the corpus cannot tell you: `docs/02`
-§2.7.
+**What is in the corpus.** 26 CVs: 20 English, one each in German, Greek, Spanish, French, Irish and
+Dutch; single-column, tab-separated two-column, table, all-caps, marker-free, headingless, contact-heavy,
+repeated-section, ligature-damaged, and six written to be hard (cv-21 employer-first, cv-22 date on its
+own line, cv-23 a skills table, cv-24 a headline above the name, cv-25 a skill-level table, cv-26 an
+employer-first line with no naming evidence). 7 advertisements: obligations, negations, contradictory
+cues, no cues at all, duplicates, German, French. 310 labelled field values, 12 forbidden values, 24
+labelled requirement weights, in `data/gold/manifest.json`.
+
+Three limits, stated here rather than buried:
+
+1. The corpus was **written by the same session that wrote the rules**. Seven documents were added to
+   fail or to be labelled partially, and cv-25/cv-26 are left failing rather than answered with another
+   word list. These figures describe this corpus and no other.
+2. 310 values across 26 documents is a floor, not a distribution: no statistical claim, no confidence
+   interval, and every non-English CV is **n = 1**.
+3. Nothing here measures real-world parsing. No real CV, no personal data, and no third-party corpus
+   has been used; `docs/04` G-5/G-8 are the routes to a measurement anyone outside this repository
+   could reuse.
+
+Reproduce it yourself:
+
+```bash
+python scripts/bench.py            # the report, including what was missed and where
+python scripts/bench.py --check    # the CI gate (exit 1 on a regression)
+python scripts/bench.py --write    # refreshes data/gold/results.json; commit it in the same PR
+```
+
+### An end-to-end example, with synthetic data
+
+Input (`data/gold/cv-01-single-column.txt`, a file in this repository, not a person):
+
+```text
+MARIA GONZALEZ
+maria.gonzalez@example.org | Madrid | linkedin.com/in/mariagonzalez
+
+SUMMARY
+Data engineer with 7 years building batch and streaming pipelines.
+
+EXPERIENCE
+Data Engineer, Norddata 2020-2024
+* Rebuilt the nightly ETL in Airflow, cutting runtime from 6 hours to 40 minutes
+```
+
+`ariadne parse data/gold/cv-01-single-column.txt` prints the ledger (`21 facts`, `surface_hash`
+`475d826e603df1dc`, `competence_hash` `09d51d048deda0f6`); `--json` gives the JSON Resume document:
+
+```json
+{
+  "basics": { "name": "MARIA GONZALEZ", "email": "maria.gonzalez@example.org",
+              "url": "linkedin.com/in/mariagonzalez" },
+  "work": [{ "name": "Norddata", "position": "Data Engineer", "startDate": "2020", "endDate": "2024",
+             "highlights": ["Rebuilt the nightly ETL in Airflow, cutting runtime from 6 hours to 40 minutes",
+                            "Owned the migration of 300 tables to Snowflake"] }]
+}
+```
+
+Every value above is a byte-exact substring of the input, which is what the no-profiling tests enforce.
+Nothing in the output is a score, a ranking, or a judgement about Maria Gonzalez.
 
 ## The gates
 
 `pytest` reports one skip on a machine without PyMuPDF: the text-PDF test needs an optional backend,
 and the runtime dependency list is empty by policy, so the skip is the honest outcome rather than a
-silent pass. Nothing else skips.
+silent pass. Nothing else skips, and the `pytest-pdf` job exists to prove that one would pass: it
+installs `.[dev,pdf]` and sets `ARIADNE_REQUIRE_PDF_BACKEND=1`, which turns the skip into a failure.
+
+Seven of those checks are required on `main`: `fresh`, `provenance`, `sources`, `links`, `compile`,
+`pytest`, `benchmark`. The two informational legs above are not, deliberately: adding a *matrix* leg to
+the required set renames the `pytest` context, and a renamed required context silently stops gating.
 
 Every push runs, and `main` requires: freshness (90-day and 30-day clocks), provenance (bidirectional
 citation check), source registry (offline), dead relative links, `compileall`, `pytest`, and the

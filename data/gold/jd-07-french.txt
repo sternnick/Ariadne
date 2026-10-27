@@ -1,0 +1,9 @@
+Ingénieur Plateforme (h/f)
+
+COMPÉTENCES REQUISES
+* Vous avez une expérience confirmée en production sur Kubernetes
+* Une expérience des environnements réglementés est indispensable
+* La connaissance d'un outil d'infrastructure as code est souhaitée
+
+VOS TÂCHES
+* Vous accompagnerez les équipes de développement

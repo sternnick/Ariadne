@@ -28,6 +28,10 @@ dependencies = []
 [project.optional-dependencies]
 # Dev-only. Kept out of `dependencies` so that `pip install ariadne-ats` installs no test stack.
 dev = ["pytest>=8"]
+# Not a runtime dependency and not a test dependency: the PDF *backend* the extractor uses when the
+# host already has one (DECISIONS D-043). The `pytest-pdf` CI job installs `.[dev,pdf]` with
+# ARIADNE_REQUIRE_PDF_BACKEND=1 so the one skipped test in the default run is proven to pass here.
+pdf = ["pymupdf>=1.24"]
 
 [project.scripts]
 ariadne = "ariadne_ats.cli:main"

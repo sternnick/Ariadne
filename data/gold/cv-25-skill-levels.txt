@@ -1,0 +1,16 @@
+Nadia Brandt
+n.brandt@example.com | +49 30 1234567
+
+SUMMARY
+Database administrator working on MSSQL estates in regulated reporting.
+
+EXPERIENCE
+Database Administrator, Kern Data Systems 2015 - present
+* Consolidated 140 instances into nine clusters
+
+SKILLS
+Python	Advanced
+Kubernetes	Expert
+
+EDUCATION
+BSc Business Informatics, 2013

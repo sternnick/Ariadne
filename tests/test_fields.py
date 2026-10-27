@@ -195,3 +195,93 @@ def build_ledger_text(text: str):
     from ariadne_ats.bench import build_ledger_text as _b
 
     return _b(text)
+
+
+# --------------------------------------------------------------------- round 3: the four gaps
+# Each block below is a regression test for a limitation published in docs/02 2.7 and docs/08 M-6/M-7.
+# They were written before the fixes and failed first; they stay because they are the fence.
+
+def test_employer_first_role_line_is_not_swapped():
+    """cv-21, the worst failure class in the corpus: "Norra Bank - Senior Engineer".
+
+    Title-first is assumed, so both fields came out transposed. A transposition reads as data, so the
+    fix must either find evidence for the order or abstain - never guess the other way.
+    """
+    hits = fields.role_lines("Norra Bank - Senior Engineer 2016-2025\n* Rebuilt the ledger")
+    assert [(h.title, h.employer) for h in hits] == [("Senior Engineer", "Norra Bank")]
+
+
+def test_employer_first_with_an_em_dash_and_a_present_end():
+    hits = fields.role_lines("Vesterbro Systems \u2014 Lead Analyst 2021 - present")
+    assert [(h.title, h.employer) for h in hits] == [("Lead Analyst", "Vesterbro Systems")]
+
+
+def test_title_first_is_still_the_default_and_is_not_reordered():
+    """The disambiguator must not disturb the convention most CVs use."""
+    hits = fields.role_lines("Senior Engineer, Acme Corp 2019-2024\n* Led something")
+    assert [(h.title, h.employer) for h in hits] == [("Senior Engineer", "Acme Corp")]
+
+
+def test_no_evidence_about_order_means_no_facts_at_all():
+    """Neither segment carries a job-title word: the parser cannot tell which is the employer, so it
+    says nothing. An abstention with a reason beats a fifty-fifty transposition."""
+    report = ParseReport()
+    hits = fields.role_lines("Aurelia Finance, Kestrel Group 2019-2024", report)
+    assert hits == []
+    assert Code.ROLE_LINE_AMBIGUOUS.value in report.codes()
+
+
+def test_role_line_with_the_date_on_the_following_line_is_still_a_role():
+    """cv-22: the line is role-shaped, the date is one line down, and the whole entry used to vanish."""
+    body = ("QA Lead, Luz Systems\n2019 - 2024\n"
+            "* Built the regression suite\n\nTester, Tejo Digital\n2014 - 2019\n")
+    hits = fields.role_lines(body)
+    assert [(h.title, h.employer, h.start, h.end) for h in hits] == [
+        ("QA Lead", "Luz Systems", "2019", "2024"), ("Tester", "Tejo Digital", "2014", "2019")]
+    assert hits[0].bullets == ["Built the regression suite"]
+
+
+def test_a_bullet_is_never_promoted_into_a_role_by_the_next_line_date():
+    """The pairing looks backwards for a role line; it must stop at bullets and at blank lines."""
+    body = "Engineering Lead, Acme 2019-2024\n* Ran the programme\nPicked up the on-call rota\n"
+    hits = fields.role_lines(body)
+    assert [(h.title, h.employer) for h in hits] == [("Engineering Lead", "Acme")]
+
+
+def test_a_lone_date_line_with_no_role_above_it_is_not_a_role():
+    body = "SKILLS\n2019 - 2024\n"
+    assert fields.role_lines(body) == []
+
+
+def test_a_skills_table_row_keeps_its_items_and_drops_its_row_label():
+    """cv-23: "Languages\tpython, go" is a label and a list, not two skills."""
+    ledger = build_ledger_text("EXPERIENCE\nPlatform Engineer, Sumida Systems 2017-2025\n"
+                               "* Cut the backlog\n\nSKILLS\nLanguages\tpython, go\n"
+                               "Infrastructure	kubernetes, terraform\n")
+    assert {f.value for f in ledger.facts if f.kind == "skill"} == {
+        "python", "go", "kubernetes", "terraform"}
+
+
+def test_two_skills_joined_by_and_are_two_skills():
+    """cv-13: "* git and docker" is one list item carrying two tools."""
+    ledger = build_ledger_text("EXPERIENCE\nBackend Engineer, Aurelia 2018-2024\n"
+                               "* Built services\n\nSKILLS\n* python\n* git and docker\n")
+    assert {f.value for f in ledger.facts if f.kind == "skill"} == {"python", "git", "docker"}
+
+
+def test_prose_that_happens_to_contain_and_is_not_split_into_skills():
+    """The false-positive side of the same rule: a skills line that reads as prose stays one value."""
+    ledger = build_ledter = build_ledger_text(
+        "EXPERIENCE\nAnalyst, Aurelia 2018-2024\n* Reported weekly\n\nSKILLS\n"
+        "Design and implementation of distributed systems\n")
+    assert {f.value for f in ledger.facts if f.kind == "skill"} == {
+        "Design and implementation of distributed systems"}
+
+
+def test_a_skill_level_column_is_not_read_as_a_skill():
+    """The opposite table orientation ("Python\tAdvanced") is not solved here; it must not silently
+    invent a skill called "Advanced". Recorded as a known gap if this starts failing."""
+    ledger = build_ledger_text("EXPERIENCE\nAnalyst, Aurelia 2018-2024\n* Reported weekly\n"
+                               "\nSKILLS\nPython\tAdvanced\n")
+    values = {f.value for f in ledger.facts if f.kind == "skill"}
+    assert "Python" in values
